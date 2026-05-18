@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
+import { CategoryIcon } from "@/components/CategoryIcon";
 import { RouteError } from "@/components/RouteError";
 import { categories, getCategory } from "@/data/prompts";
 import { fetchPromptsByCategory, type Prompt, type SortKey } from "@/lib/prompts-api";
@@ -83,15 +84,18 @@ function CategoryPage() {
 
   return (
     <Layout>
-      <section className="max-w-6xl mx-auto px-6 pt-16 pb-8">
-        <div className="text-sm text-muted-foreground mb-2">
-          <Link to="/" className="hover:text-foreground">Home</Link> / Categories
+      <section className="relative max-w-6xl mx-auto px-6 pt-20 pb-8">
+        <div aria-hidden className="absolute inset-x-0 -top-10 h-72 bg-hero-glow pointer-events-none -z-10" />
+        <div className="text-xs text-muted-foreground mb-3">
+          <Link to="/" className="hover:text-foreground">Home</Link> · Categories
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-3xl">{category.emoji}</span>
-          <h1 className="text-4xl font-semibold tracking-tight">{category.name}</h1>
+          <span className="inline-flex w-12 h-12 items-center justify-center rounded-2xl bg-accent-soft text-accent">
+            <CategoryIcon slug={category.slug} className="w-6 h-6" />
+          </span>
+          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-gradient">{category.name}</h1>
         </div>
-        <p className="text-muted-foreground mt-2 max-w-2xl">{category.description}</p>
+        <p className="text-muted-foreground mt-3 max-w-2xl leading-relaxed">{category.description}</p>
       </section>
 
       <section className="max-w-6xl mx-auto px-6 py-8">

@@ -64,13 +64,15 @@ export function CopyButton({
   };
 
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-md font-medium transition-all active:scale-[0.98] select-none";
+    "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 active:scale-[0.98] select-none";
   const sizes = size === "sm" ? "px-3 py-1.5 text-xs" : "px-4 py-2 text-sm";
   const variants =
     variant === "ghost"
-      ? "border border-border bg-card hover:border-accent/60 hover:bg-muted/60 text-foreground"
-      : "bg-primary text-primary-foreground hover:opacity-90 shadow-sm";
-  const success = copied ? "!bg-emerald-500 !text-white !border-emerald-500" : "";
+      ? "border border-border bg-card/60 hover:border-accent/50 hover:bg-card text-foreground"
+      : "bg-foreground text-background hover:bg-foreground/90 shadow-elevated";
+  const success = copied
+    ? "!bg-emerald-500/15 !text-emerald-400 !border-emerald-500/40 !shadow-none"
+    : "";
   const w = fullWidth ? "w-full" : "";
 
   return (

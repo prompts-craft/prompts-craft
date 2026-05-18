@@ -1,8 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { Menu, X, Sparkles } from "lucide-react";
 import { categories } from "@/data/prompts";
 
 export function Layout({ children }: { children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="min-h-screen flex flex-col">
       <a
@@ -11,25 +14,29 @@ export function Layout({ children }: { children: ReactNode }) {
       >
         Skip to content
       </a>
-      <header className="border-b border-border/60 backdrop-blur sticky top-0 z-40 bg-background/80">
+
+      <header className="sticky top-0 z-40 border-b border-border/60 glass-strong">
         <div className="max-w-6xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between gap-4">
           <Link
             to="/"
             className="flex items-center gap-2 font-semibold tracking-tight shrink-0"
             aria-label="PromptStack — Home"
           >
-            <img src="/favicon.svg" alt="" width={24} height={24} className="w-6 h-6 rounded-md" />
+            <span className="relative inline-flex w-7 h-7 items-center justify-center rounded-lg bg-gradient-to-br from-accent to-accent/40 shadow-glow">
+              <Sparkles className="w-4 h-4 text-accent-foreground" strokeWidth={2.25} />
+            </span>
             <span>PromptStack</span>
           </Link>
+
           <nav
-            className="flex items-center gap-3 sm:gap-6 text-sm text-muted-foreground"
+            className="hidden sm:flex items-center gap-7 text-sm text-muted-foreground"
             aria-label="Primary"
           >
             <Link
               to="/categories/$slug"
               params={{ slug: "teachers" }}
               search={{ sort: "latest" as const }}
-              className="hidden sm:inline hover:text-foreground transition-colors"
+              className="hover:text-foreground transition-colors"
             >
               Browse
             </Link>
@@ -48,7 +55,63 @@ export function Layout({ children }: { children: ReactNode }) {
               About
             </Link>
           </nav>
+
+          <div className="hidden sm:flex items-center gap-2">
+            <Link
+              to="/categories/$slug"
+              params={{ slug: "teachers" }}
+              search={{ sort: "trending" as const }}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/60 px-3.5 py-1.5 text-sm font-medium text-foreground hover:border-accent/50 hover:bg-card transition"
+            >
+              Explore prompts
+            </Link>
+          </div>
+
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="sm:hidden inline-flex items-center justify-center w-9 h-9 rounded-md border border-border bg-card/60"
+          >
+            {open ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          </button>
         </div>
+
+        {open && (
+          <div className="sm:hidden border-t border-border/60 bg-background/95 backdrop-blur">
+            <nav className="px-5 py-4 flex flex-col gap-1 text-sm" aria-label="Mobile">
+              <Link
+                to="/categories/$slug"
+                params={{ slug: "teachers" }}
+                search={{ sort: "latest" as const }}
+                onClick={() => setOpen(false)}
+                className="px-3 py-2 rounded-md hover:bg-muted/60"
+              >
+                Browse
+              </Link>
+              <Link to="/blog" onClick={() => setOpen(false)} className="px-3 py-2 rounded-md hover:bg-muted/60">
+                Blog
+              </Link>
+              <Link to="/about" onClick={() => setOpen(false)} className="px-3 py-2 rounded-md hover:bg-muted/60">
+                About
+              </Link>
+              <div className="h-px bg-border my-2" />
+              {categories.map((c) => (
+                <Link
+                  key={c.slug}
+                  to="/categories/$slug"
+                  params={{ slug: c.slug }}
+                  search={{ sort: "latest" as const }}
+                  onClick={() => setOpen(false)}
+                  className="px-3 py-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                >
+                  {c.name}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        )}
       </header>
 
       <main id="main" className="flex-1 page-fade">
@@ -56,22 +119,24 @@ export function Layout({ children }: { children: ReactNode }) {
       </main>
 
       <footer className="border-t border-border/60 mt-24" aria-label="Site footer">
-        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <Link to="/" className="flex items-center gap-2 font-semibold tracking-tight">
-              <img src="/favicon.svg" alt="" width={20} height={20} className="w-5 h-5 rounded" />
+              <span className="inline-flex w-6 h-6 items-center justify-center rounded-md bg-gradient-to-br from-accent to-accent/40">
+                <Sparkles className="w-3.5 h-3.5 text-accent-foreground" strokeWidth={2.25} />
+              </span>
               <span>PromptStack</span>
             </Link>
-            <p className="text-sm text-muted-foreground mt-3 max-w-xs">
-              Free AI prompts for real work. Copy, paste, ship.
+            <p className="text-sm text-muted-foreground mt-3 max-w-xs leading-relaxed">
+              A curated library of AI prompts for real work. Free, fast, no signup.
             </p>
           </div>
 
           <div>
-            <div className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
+            <div className="text-xs uppercase tracking-wider text-muted-foreground mb-4">
               Categories
             </div>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2.5 text-sm">
               {categories.map((c) => (
                 <li key={c.slug}>
                   <Link
@@ -88,10 +153,10 @@ export function Layout({ children }: { children: ReactNode }) {
           </div>
 
           <div>
-            <div className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
+            <div className="text-xs uppercase tracking-wider text-muted-foreground mb-4">
               Resources
             </div>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2.5 text-sm">
               <li>
                 <Link to="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
                   Blog
@@ -114,11 +179,11 @@ export function Layout({ children }: { children: ReactNode }) {
           </div>
 
           <div>
-            <div className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
+            <div className="text-xs uppercase tracking-wider text-muted-foreground mb-4">
               About
             </div>
-            <p className="text-sm text-muted-foreground">
-              Built for everyone who works with AI. No signup, no paywall.
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Built for everyone who works with AI. No signup, no paywall — just prompts that ship.
             </p>
           </div>
         </div>
