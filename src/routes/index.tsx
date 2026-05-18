@@ -26,15 +26,15 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { prompts: initial } = Route.useLoaderData();
+  const loaderData = Route.useLoaderData() as { prompts: Prompt[] };
+  const initial: Prompt[] = loaderData.prompts;
   const [q, setQ] = useState("");
   const navigate = useNavigate();
 
-  // Live cache; falls back to loader data instantly
   const { data: prompts = initial, isLoading } = useQuery<Prompt[]>({
     queryKey: ["prompts", "all"],
     queryFn: fetchAllPrompts,
-    initialData: initial as Prompt[],
+    initialData: initial,
   });
 
   const results = useMemo(() => {
