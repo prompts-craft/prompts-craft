@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PromptsSlugRouteImport } from './routes/prompts.$slug'
 import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogRoute = BlogRouteImport.update({
   id: '/blog',
   path: '/blog',
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/prompts/$slug': typeof PromptsSlugRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/prompts/$slug': typeof PromptsSlugRoute
 }
@@ -60,19 +68,33 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/prompts/$slug': typeof PromptsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/blog' | '/categories/$slug' | '/prompts/$slug'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/blog'
+    | '/sitemap.xml'
+    | '/categories/$slug'
+    | '/prompts/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/blog' | '/categories/$slug' | '/prompts/$slug'
+  to:
+    | '/'
+    | '/about'
+    | '/blog'
+    | '/sitemap.xml'
+    | '/categories/$slug'
+    | '/prompts/$slug'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/blog'
+    | '/sitemap.xml'
     | '/categories/$slug'
     | '/prompts/$slug'
   fileRoutesById: FileRoutesById
@@ -81,12 +103,20 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   BlogRoute: typeof BlogRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   CategoriesSlugRoute: typeof CategoriesSlugRoute
   PromptsSlugRoute: typeof PromptsSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog': {
       id: '/blog'
       path: '/blog'
@@ -129,9 +159,20 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   BlogRoute: BlogRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   CategoriesSlugRoute: CategoriesSlugRoute,
   PromptsSlugRoute: PromptsSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
