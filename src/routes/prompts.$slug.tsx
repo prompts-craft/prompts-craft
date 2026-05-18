@@ -1,17 +1,15 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { CopyButton } from "@/components/CopyButton";
-import { getCategory, getPrompt, getRelated, type Prompt } from "@/data/prompts";
+import { getCategory } from "@/data/prompts";
+import { fetchPromptBySlug, fetchRelated, type Prompt } from "@/lib/prompts-api";
 
 export const Route = createFileRoute("/prompts/$slug")({
-  loader: ({ params }) => {
-    const prompt = getPrompt(params.slug);
+  loader: async ({ params }) => {
+    const prompt = await fetchPromptBySlug(params.slug);
     if (!prompt) throw notFound();
-    return {
-      prompt,
-      category: getCategory(prompt.category),
-      related: getRelated(prompt),
-    };
+    const [category, related] = [getCategory(prompt.category), await fetchRelated(prompt.category, prompt.slug)];
+    return { prompt, category, related };
   },
   head: ({ loaderData, params }) => {
     const p = loaderData?.prompt;
@@ -54,7 +52,9 @@ function PromptPage() {
           )}
         </div>
         <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight">{prompt.title}</h1>
-        <p className="text-lg text-muted-foreground mt-3">{prompt.description}</p>
+        {prompt.description && (
+          <p className="text-lg text-muted-foreground mt-3">{prompt.description}</p>
+        )}
 
         <div className="flex gap-1.5 mt-4 flex-wrap">
           {prompt.tags.map((t: string) => (
@@ -74,12 +74,14 @@ function PromptPage() {
         </div>
 
         {/* Example */}
-        <section className="mt-12">
-          <h2 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Example output</h2>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <pre className="text-sm whitespace-pre-wrap leading-relaxed text-muted-foreground">{prompt.example}</pre>
-          </div>
-        </section>
+        {prompt.example && (
+          <section className="mt-12">
+            <h2 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Example output</h2>
+            <div className="rounded-xl border border-border bg-card p-5">
+              <pre className="text-sm whitespace-pre-wrap leading-relaxed text-muted-foreground">{prompt.example}</pre>
+            </div>
+          </section>
+        )}
 
         {/* Related */}
         {related.length > 0 && (

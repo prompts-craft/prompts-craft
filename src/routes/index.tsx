@@ -1,11 +1,17 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Search, ArrowRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
-import { categories, prompts } from "@/data/prompts";
+import { categories } from "@/data/prompts";
+import { fetchAllPrompts, type Prompt } from "@/lib/prompts-api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  loader: async () => {
+    const prompts = await fetchAllPrompts();
+    return { prompts };
+  },
   head: () => ({
     meta: [
       { title: "PromptStack — AI Prompts for Real Work" },
@@ -16,11 +22,20 @@ export const Route = createFileRoute("/")({
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
+  component: Index,
 });
 
 function Index() {
+  const loaderData = Route.useLoaderData() as { prompts: Prompt[] };
+  const initial: Prompt[] = loaderData.prompts;
   const [q, setQ] = useState("");
   const navigate = useNavigate();
+
+  const { data: prompts = initial, isLoading } = useQuery<Prompt[]>({
+    queryKey: ["prompts", "all"],
+    queryFn: fetchAllPrompts,
+    initialData: initial,
+  });
 
   const results = useMemo(() => {
     if (!q.trim()) return [];
@@ -29,14 +44,15 @@ function Index() {
       .filter(
         (p) =>
           p.title.toLowerCase().includes(needle) ||
-          p.description.toLowerCase().includes(needle) ||
-          p.tags.some((t) => t.includes(needle)),
+          (p.description ?? "").toLowerCase().includes(needle) ||
+          p.category.toLowerCase().includes(needle) ||
+          p.tags.some((t) => t.toLowerCase().includes(needle)),
       )
       .slice(0, 6);
-  }, [q]);
+  }, [q, prompts]);
 
   const trending = prompts.filter((p) => p.trending);
-  const latest = prompts.slice(-4).reverse();
+  const latest = prompts.slice(0, 4);
 
   return (
     <Layout>
@@ -110,39 +126,69 @@ function Index() {
           <h2 className="text-2xl font-semibold tracking-tight">Trending</h2>
           <span className="text-sm text-muted-foreground">Most copied this week</span>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {trending.map((p) => (
-            <PromptCard key={p.slug} slug={p.slug} title={p.title} description={p.description} category={p.category} />
-          ))}
-        </div>
+        {isLoading && trending.length === 0 ? (
+          <CardSkeletonGrid />
+        ) : trending.length === 0 ? (
+          <EmptyState message="No trending prompts yet." />
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {trending.map((p) => (
+              <PromptCard key={p.slug} prompt={p} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Latest */}
       <section className="max-w-6xl mx-auto px-6 py-12">
         <h2 className="text-2xl font-semibold tracking-tight mb-6">Latest</h2>
-        <div className="grid md:grid-cols-2 gap-4">
-          {latest.map((p) => (
-            <PromptCard key={p.slug} slug={p.slug} title={p.title} description={p.description} category={p.category} />
-          ))}
-        </div>
+        {isLoading && latest.length === 0 ? (
+          <CardSkeletonGrid n={4} />
+        ) : latest.length === 0 ? (
+          <EmptyState message="No prompts yet — check back soon." />
+        ) : (
+          <div className="grid md:grid-cols-2 gap-4">
+            {latest.map((p) => (
+              <PromptCard key={p.slug} prompt={p} />
+            ))}
+          </div>
+        )}
       </section>
     </Layout>
   );
 }
 
-function PromptCard({ slug, title, description, category }: { slug: string; title: string; description: string; category: string }) {
-  const cat = categories.find((c) => c.slug === category);
+function PromptCard({ prompt: p }: { prompt: Prompt }) {
+  const cat = categories.find((c) => c.slug === p.category);
   return (
     <Link
       to="/prompts/$slug"
-      params={{ slug }}
+      params={{ slug: p.slug }}
       className="block rounded-xl border border-border bg-card p-5 hover:border-accent/60 transition group"
     >
       <div className="text-xs text-muted-foreground mb-2">
-        {cat?.emoji} {cat?.name}
+        {cat?.emoji} {cat?.name ?? p.category}
       </div>
-      <div className="font-medium group-hover:text-accent transition-colors">{title}</div>
-      <div className="text-sm text-muted-foreground mt-1">{description}</div>
+      <div className="font-medium group-hover:text-accent transition-colors">{p.title}</div>
+      <div className="text-sm text-muted-foreground mt-1">{p.description}</div>
     </Link>
+  );
+}
+
+function CardSkeletonGrid({ n = 6 }: { n?: number }) {
+  return (
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {Array.from({ length: n }).map((_, i) => (
+        <Skeleton key={i} className="h-28 rounded-xl" />
+      ))}
+    </div>
+  );
+}
+
+function EmptyState({ message }: { message: string }) {
+  return (
+    <div className="rounded-xl border border-dashed border-border bg-card/40 p-10 text-center text-sm text-muted-foreground">
+      {message}
+    </div>
   );
 }
