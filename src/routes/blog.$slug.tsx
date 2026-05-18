@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
-import { blogPosts, getBlogPost } from "@/data/blog-posts";
+import { blogPosts, getBlogPost, type BlogPost, type BlogSection } from "@/data/blog-posts";
 import { fetchPromptsByCategory, type Prompt } from "@/lib/prompts-api";
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -104,11 +104,11 @@ function BlogPostPage() {
         <div className="mt-12 space-y-10">
           <p className="text-lg leading-relaxed text-foreground/90">{post.intro}</p>
 
-          {post.sections.map((s) => (
+          {post.sections.map((s: BlogSection) => (
             <section key={s.heading}>
               <h2 className="text-2xl font-semibold tracking-tight mt-2">{s.heading}</h2>
               <div className="mt-4 space-y-4">
-                {s.body.map((para, i) => (
+                {s.body.map((para: string, i: number) => (
                   <p key={i} className="text-base leading-relaxed text-foreground/85">
                     {para}
                   </p>
@@ -124,7 +124,7 @@ function BlogPostPage() {
               Related prompts
             </h2>
             <div className="grid sm:grid-cols-2 gap-3">
-              {relatedPrompts.map((r) => (
+              {relatedPrompts.map((r: Prompt) => (
                 <Link
                   key={r.slug}
                   to="/prompts/$slug"
@@ -160,7 +160,7 @@ function BlogPostPage() {
               Keep reading
             </h2>
             <div className="grid sm:grid-cols-3 gap-3">
-              {relatedPosts.map((r) => (
+              {relatedPosts.map((r: BlogPost) => (
                 <Link
                   key={r.slug}
                   to="/blog/$slug"
