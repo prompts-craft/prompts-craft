@@ -13,16 +13,39 @@ export const Route = createFileRoute("/prompts/$slug")({
   },
   head: ({ loaderData, params }) => {
     const p = loaderData?.prompt;
+    const title = p ? `${p.title} — AI Prompt | PromptStack` : "Prompt";
+    const desc = p?.description ?? `Copy the "${p?.title}" AI prompt instantly. Free, no signup.`;
     return {
       meta: [
-        { title: p ? `${p.title} — AI Prompt | PromptStack` : "Prompt" },
-        { name: "description", content: p?.description ?? "" },
+        { title },
+        { name: "description", content: desc },
+        { name: "keywords", content: p ? [...p.tags, "AI prompt", p.category].join(", ") : "AI prompt" },
         { property: "og:title", content: p?.title ?? "" },
-        { property: "og:description", content: p?.description ?? "" },
+        { property: "og:description", content: desc },
         { property: "og:type", content: "article" },
         { property: "og:url", content: `/prompts/${params.slug}` },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: p?.title ?? "" },
+        { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: `/prompts/${params.slug}` }],
+      scripts: p
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Article",
+                headline: p.title,
+                description: desc,
+                keywords: p.tags.join(", "),
+                datePublished: p.created_at,
+                articleSection: p.category,
+                url: `/prompts/${params.slug}`,
+              }),
+            },
+          ]
+        : [],
     };
   },
   notFoundComponent: () => (
