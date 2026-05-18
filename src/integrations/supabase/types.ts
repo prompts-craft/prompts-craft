@@ -17,6 +17,7 @@ export type Database = {
       prompts: {
         Row: {
           category: string
+          copy_count: number
           created_at: string
           description: string | null
           example: string | null
@@ -29,6 +30,7 @@ export type Database = {
         }
         Insert: {
           category: string
+          copy_count?: number
           created_at?: string
           description?: string | null
           example?: string | null
@@ -41,6 +43,7 @@ export type Database = {
         }
         Update: {
           category?: string
+          copy_count?: number
           created_at?: string
           description?: string | null
           example?: string | null
@@ -58,7 +61,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      increment_prompt_copies: {
+        Args: { prompt_slug: string }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
