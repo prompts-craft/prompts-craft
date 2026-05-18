@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
+import { RouteError } from "@/components/RouteError";
 import { categories, getCategory } from "@/data/prompts";
 import { fetchPromptsByCategory, type Prompt, type SortKey } from "@/lib/prompts-api";
 import { PromptCard } from "@/routes/index";
@@ -54,6 +55,11 @@ export const Route = createFileRoute("/categories/$slug")({
     };
   },
   component: CategoryPage,
+  errorComponent: ({ error, reset }) => (
+    <Layout>
+      <RouteError error={error} reset={reset} />
+    </Layout>
+  ),
   notFoundComponent: () => (
     <Layout>
       <div className="max-w-3xl mx-auto px-6 py-24 text-center">
