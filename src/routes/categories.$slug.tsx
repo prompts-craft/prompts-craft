@@ -66,7 +66,7 @@ function CategoryPage() {
           <p className="text-muted-foreground">No prompts in this category yet.</p>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {prompts.map((p) => (
+            {prompts.map((p: Prompt) => (
               <Link
                 key={p.slug}
                 to="/prompts/$slug"
@@ -76,7 +76,7 @@ function CategoryPage() {
                 <div className="font-medium group-hover:text-accent transition-colors">{p.title}</div>
                 <div className="text-sm text-muted-foreground mt-1">{p.description}</div>
                 <div className="flex gap-1.5 mt-3 flex-wrap">
-                  {p.tags.map((t) => (
+                  {p.tags.map((t: string) => (
                     <span key={t} className="text-xs px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
                       {t}
                     </span>
