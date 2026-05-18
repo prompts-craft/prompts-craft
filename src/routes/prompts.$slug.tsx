@@ -1,6 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { ChevronRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { CopyButton } from "@/components/CopyButton";
+import { CategoryIcon } from "@/components/CategoryIcon";
 import { RouteError } from "@/components/RouteError";
 import { getCategory } from "@/data/prompts";
 import { fetchPromptBySlug, fetchRelated, type Prompt } from "@/lib/prompts-api";
