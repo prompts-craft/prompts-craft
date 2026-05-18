@@ -12,15 +12,37 @@ export const Route = createFileRoute("/categories/$slug")({
   },
   head: ({ loaderData, params }) => {
     const name = loaderData?.category.name ?? "Category";
+    const count = loaderData?.prompts.length ?? 0;
+    const title = `AI Prompts for ${name} — Free & Copy-Ready | PromptStack`;
+    const desc = `${count} curated AI prompts for ${name.toLowerCase()}. ${
+      loaderData?.category.description ?? ""
+    } Copy in one click — no signup required.`;
     return {
       meta: [
-        { title: `${name} AI Prompts — PromptStack` },
-        { name: "description", content: `Curated AI prompts for ${name.toLowerCase()}. ${loaderData?.category.description ?? ""}` },
-        { property: "og:title", content: `${name} AI Prompts — PromptStack` },
-        { property: "og:description", content: loaderData?.category.description ?? "" },
+        { title },
+        { name: "description", content: desc },
+        { name: "keywords", content: `AI prompts for ${name.toLowerCase()}, ChatGPT prompts, ${name.toLowerCase()} AI tools, prompt library` },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:type", content: "website" },
         { property: "og:url", content: `/categories/${params.slug}` },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: `/categories/${params.slug}` }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: title,
+            description: desc,
+            url: `/categories/${params.slug}`,
+          }),
+        },
+      ],
     };
   },
   component: CategoryPage,
