@@ -76,25 +76,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "A free, fast library of AI prompts for teachers, students, freelancers, marketers, and developers. Copy in one click." },
       { name: "author", content: "PromptStack" },
       { property: "og:title", content: "PromptStack — AI Prompts for Real Work" },
-      { property: "og:description", content: "Free AI prompts for teachers, students, freelancers, marketers, and developers." },
+      { property: "og:description", content: "A free, fast library of AI prompts for teachers, students, freelancers, marketers, and developers. Copy in one click." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
 
+      { name: "twitter:title", content: "PromptStack — AI Prompts for Real Work" },
+      { name: "twitter:description", content: "A free, fast library of AI prompts for teachers, students, freelancers, marketers, and developers. Copy in one click." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/450bd2af-83f3-4dee-9482-d832b37a14f9/id-preview-3a7afdaf--702da085-c506-491c-8b0b-5056c5824bc7.lovable.app-1779113020795.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/450bd2af-83f3-4dee-9482-d832b37a14f9/id-preview-3a7afdaf--702da085-c506-491c-8b0b-5056c5824bc7.lovable.app-1779113020795.png" },
     ],
     links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
-    ],
-    scripts: [
       {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: "PromptStack",
-          description: "Free AI prompts for teachers, students, freelancers, marketers, and developers.",
-          url: "/",
-        }),
+        rel: "stylesheet",
+        href: appCss,
       },
     ],
   }),
