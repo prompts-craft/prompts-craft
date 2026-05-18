@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { CopyButton } from "@/components/CopyButton";
-import { getCategory, getPrompt, getRelated } from "@/data/prompts";
+import { getCategory, getPrompt, getRelated, type Prompt } from "@/data/prompts";
 
 export const Route = createFileRoute("/prompts/$slug")({
   loader: ({ params }) => {
