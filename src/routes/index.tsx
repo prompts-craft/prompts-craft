@@ -321,6 +321,7 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
           stopPropagation
         />
       </div>
+      </div>
     </Link>
   );
 }
