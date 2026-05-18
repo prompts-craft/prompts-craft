@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { categories } from "@/data/prompts";
+import { blogPosts } from "@/data/blog-posts";
 import { fetchAllPrompts } from "@/lib/prompts-api";
 
 // TODO: replace with your project URL once a project name or custom domain is set.
@@ -25,6 +26,10 @@ export const Route = createFileRoute("/sitemap.xml")({
 
         for (const c of categories) {
           entries.push({ path: `/categories/${c.slug}`, changefreq: "weekly", priority: "0.8" });
+        }
+
+        for (const b of blogPosts) {
+          entries.push({ path: `/blog/${b.slug}`, changefreq: "monthly", priority: "0.6" });
         }
 
         try {
