@@ -22,6 +22,7 @@ export type Database = {
           description: string | null
           example: string | null
           id: string
+          image_url: string | null
           prompt: string
           slug: string
           tags: string[]
@@ -35,6 +36,7 @@ export type Database = {
           description?: string | null
           example?: string | null
           id?: string
+          image_url?: string | null
           prompt: string
           slug: string
           tags?: string[]
@@ -48,6 +50,7 @@ export type Database = {
           description?: string | null
           example?: string | null
           id?: string
+          image_url?: string | null
           prompt?: string
           slug?: string
           tags?: string[]
