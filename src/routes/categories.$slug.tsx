@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
-import { categories, getCategory, getPromptsByCategory } from "@/data/prompts";
+import { categories, getCategory, getPromptsByCategory, type Prompt } from "@/data/prompts";
 
 export const Route = createFileRoute("/categories/$slug")({
   loader: ({ params }) => {
