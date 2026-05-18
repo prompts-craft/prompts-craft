@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PromptsSlugRouteImport } from './routes/prompts.$slug'
 import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PromptsSlugRoute = PromptsSlugRouteImport.update({
+  id: '/prompts/$slug',
+  path: '/prompts/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CategoriesSlugRoute = CategoriesSlugRouteImport.update({
@@ -26,27 +32,31 @@ const CategoriesSlugRoute = CategoriesSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/categories/$slug': typeof CategoriesSlugRoute
+  '/prompts/$slug': typeof PromptsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/categories/$slug': typeof CategoriesSlugRoute
+  '/prompts/$slug': typeof PromptsSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/categories/$slug': typeof CategoriesSlugRoute
+  '/prompts/$slug': typeof PromptsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/categories/$slug'
+  fullPaths: '/' | '/categories/$slug' | '/prompts/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/categories/$slug'
-  id: '__root__' | '/' | '/categories/$slug'
+  to: '/' | '/categories/$slug' | '/prompts/$slug'
+  id: '__root__' | '/' | '/categories/$slug' | '/prompts/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CategoriesSlugRoute: typeof CategoriesSlugRoute
+  PromptsSlugRoute: typeof PromptsSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prompts/$slug': {
+      id: '/prompts/$slug'
+      path: '/prompts/$slug'
+      fullPath: '/prompts/$slug'
+      preLoaderRoute: typeof PromptsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/categories/$slug': {
@@ -71,7 +88,18 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CategoriesSlugRoute: CategoriesSlugRoute,
+  PromptsSlugRoute: PromptsSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
