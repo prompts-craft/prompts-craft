@@ -1,13 +1,21 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { categories, getCategory } from "@/data/prompts";
-import { fetchPromptsByCategory, type Prompt } from "@/lib/prompts-api";
+import { fetchPromptsByCategory, type Prompt, type SortKey } from "@/lib/prompts-api";
+import { PromptCard } from "@/routes/index";
+import { z } from "zod";
+
+const sortSchema = z.object({
+  sort: z.enum(["latest", "trending", "most-copied"]).catch("latest").default("latest"),
+});
 
 export const Route = createFileRoute("/categories/$slug")({
-  loader: async ({ params }) => {
+  validateSearch: (s) => sortSchema.parse(s),
+  loaderDeps: ({ search }) => ({ sort: search.sort }),
+  loader: async ({ params, deps }) => {
     const category = getCategory(params.slug);
     if (!category) throw notFound();
-    const prompts = await fetchPromptsByCategory(params.slug);
+    const prompts = await fetchPromptsByCategory(params.slug, deps.sort as SortKey);
     return { category, prompts };
   },
   head: ({ loaderData, params }) => {
@@ -56,8 +64,17 @@ export const Route = createFileRoute("/categories/$slug")({
   ),
 });
 
+const SORTS: { key: SortKey; label: string }[] = [
+  { key: "latest", label: "Latest" },
+  { key: "trending", label: "Trending" },
+  { key: "most-copied", label: "Most copied" },
+];
+
 function CategoryPage() {
   const { category, prompts } = Route.useLoaderData();
+  const { sort } = Route.useSearch();
+  const navigate = useNavigate();
+
   return (
     <Layout>
       <section className="max-w-6xl mx-auto px-6 pt-16 pb-8">
@@ -72,18 +89,42 @@ function CategoryPage() {
       </section>
 
       <section className="max-w-6xl mx-auto px-6 py-8">
-        <div className="flex flex-wrap gap-2 mb-8">
+        <div className="flex flex-wrap gap-2 mb-6">
           {categories.map((c) => (
             <Link
               key={c.slug}
               to="/categories/$slug"
               params={{ slug: c.slug }}
+              search={{ sort: "latest" as SortKey }}
               className="text-sm px-3 py-1.5 rounded-full border border-border hover:border-accent/60 transition"
               activeProps={{ className: "border-accent bg-accent/10 text-accent" }}
             >
               {c.name}
             </Link>
           ))}
+        </div>
+
+        {/* Sort tabs */}
+        <div className="flex items-center justify-between mb-6 border-b border-border/60">
+          <div className="flex gap-1">
+            {SORTS.map((s) => {
+              const active = s.key === sort;
+              return (
+                <button
+                  key={s.key}
+                  onClick={() => navigate({ to: ".", search: { sort: s.key }, replace: true })}
+                  className={`px-3 py-2 text-sm transition border-b-2 -mb-px ${
+                    active
+                      ? "border-accent text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {s.label}
+                </button>
+              );
+            })}
+          </div>
+          <span className="text-xs text-muted-foreground">{prompts.length} prompts</span>
         </div>
 
         {prompts.length === 0 ? (
@@ -93,22 +134,7 @@ function CategoryPage() {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {prompts.map((p: Prompt) => (
-              <Link
-                key={p.slug}
-                to="/prompts/$slug"
-                params={{ slug: p.slug }}
-                className="block rounded-xl border border-border bg-card p-5 hover:border-accent/60 transition group"
-              >
-                <div className="font-medium group-hover:text-accent transition-colors">{p.title}</div>
-                <div className="text-sm text-muted-foreground mt-1">{p.description}</div>
-                <div className="flex gap-1.5 mt-3 flex-wrap">
-                  {p.tags.map((t: string) => (
-                    <span key={t} className="text-xs px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </Link>
+              <PromptCard key={p.slug} prompt={p} />
             ))}
           </div>
         )}
