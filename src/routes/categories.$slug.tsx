@@ -1,12 +1,14 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
-import { categories, getCategory, getPromptsByCategory, type Prompt } from "@/data/prompts";
+import { categories, getCategory } from "@/data/prompts";
+import { fetchPromptsByCategory, type Prompt } from "@/lib/prompts-api";
 
 export const Route = createFileRoute("/categories/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const category = getCategory(params.slug);
     if (!category) throw notFound();
-    return { category, prompts: getPromptsByCategory(params.slug) };
+    const prompts = await fetchPromptsByCategory(params.slug);
+    return { category, prompts };
   },
   head: ({ loaderData, params }) => {
     const name = loaderData?.category.name ?? "Category";
@@ -63,7 +65,9 @@ function CategoryPage() {
         </div>
 
         {prompts.length === 0 ? (
-          <p className="text-muted-foreground">No prompts in this category yet.</p>
+          <div className="rounded-xl border border-dashed border-border bg-card/40 p-10 text-center text-sm text-muted-foreground">
+            No prompts in this category yet.
+          </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {prompts.map((p: Prompt) => (
