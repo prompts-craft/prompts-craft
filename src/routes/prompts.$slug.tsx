@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { CopyButton } from "@/components/CopyButton";
+import { RouteError } from "@/components/RouteError";
 import { getCategory } from "@/data/prompts";
 import { fetchPromptBySlug, fetchRelated, type Prompt } from "@/lib/prompts-api";
 
@@ -48,6 +49,11 @@ export const Route = createFileRoute("/prompts/$slug")({
         : [],
     };
   },
+  errorComponent: ({ error, reset }) => (
+    <Layout>
+      <RouteError error={error} reset={reset} />
+    </Layout>
+  ),
   notFoundComponent: () => (
     <Layout>
       <div className="max-w-3xl mx-auto px-6 py-24 text-center">

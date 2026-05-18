@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Search, ArrowRight, SearchX } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { CopyButton } from "@/components/CopyButton";
+import { RouteError } from "@/components/RouteError";
 import { categories } from "@/data/prompts";
 import { fetchAllPrompts, type Prompt } from "@/lib/prompts-api";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -23,6 +24,11 @@ export const Route = createFileRoute("/")({
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
+  errorComponent: ({ error, reset }) => (
+    <Layout>
+      <RouteError error={error} reset={reset} />
+    </Layout>
+  ),
   component: Index,
 });
 

@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
+import { RouteError } from "@/components/RouteError";
 import { blogPosts, getBlogPost, type BlogPost, type BlogSection } from "@/data/blog-posts";
 import { fetchPromptsByCategory, type Prompt } from "@/lib/prompts-api";
 
@@ -58,6 +59,11 @@ export const Route = createFileRoute("/blog/$slug")({
         : [],
     };
   },
+  errorComponent: ({ error, reset }) => (
+    <Layout>
+      <RouteError error={error} reset={reset} />
+    </Layout>
+  ),
   notFoundComponent: () => (
     <Layout>
       <div className="max-w-3xl mx-auto px-6 py-24 text-center">
