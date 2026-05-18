@@ -5,6 +5,9 @@ import {
   Megaphone,
   Code2,
   Sparkles,
+  ImageUp,
+  Scissors,
+  Palette,
   type LucideIcon,
 } from "lucide-react";
 
@@ -14,6 +17,9 @@ const MAP: Record<string, LucideIcon> = {
   freelancers: Briefcase,
   marketing: Megaphone,
   developers: Code2,
+  upscaling: ImageUp,
+  "background-removal": Scissors,
+  "creative-images": Palette,
 };
 
 export function CategoryIcon({
