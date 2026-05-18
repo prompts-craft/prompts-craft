@@ -86,7 +86,7 @@ function PromptPage() {
           <section className="mt-16">
             <h2 className="text-sm uppercase tracking-wider text-muted-foreground mb-4">Related prompts</h2>
             <div className="grid sm:grid-cols-2 gap-3">
-              {related.map((r) => (
+              {related.map((r: Prompt) => (
                 <Link
                   key={r.slug}
                   to="/prompts/$slug"
