@@ -91,9 +91,12 @@ function PromptPage() {
         <div className="mt-10 rounded-xl border border-border bg-card overflow-hidden">
           <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-muted/30">
             <span className="text-xs uppercase tracking-wider text-muted-foreground">Prompt</span>
-            <CopyButton text={prompt.prompt} />
+            <CopyButton text={prompt.prompt} slug={prompt.slug} />
           </div>
           <pre className="p-5 text-sm whitespace-pre-wrap font-mono leading-relaxed">{prompt.prompt}</pre>
+          <div className="px-5 py-3 border-t border-border bg-muted/20 sm:hidden">
+            <CopyButton text={prompt.prompt} slug={prompt.slug} fullWidth />
+          </div>
         </div>
 
         {/* Example */}

@@ -1,8 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Search, ArrowRight } from "lucide-react";
+import { Search, ArrowRight, SearchX } from "lucide-react";
 import { Layout } from "@/components/Layout";
+import { CopyButton } from "@/components/CopyButton";
 import { categories } from "@/data/prompts";
 import { fetchAllPrompts, type Prompt } from "@/lib/prompts-api";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -38,21 +39,22 @@ function Index() {
   });
 
   const results = useMemo(() => {
-    if (!q.trim()) return [];
+    if (!q.trim()) return [] as Prompt[];
     const needle = q.toLowerCase();
-    return prompts
-      .filter(
-        (p) =>
-          p.title.toLowerCase().includes(needle) ||
-          (p.description ?? "").toLowerCase().includes(needle) ||
-          p.category.toLowerCase().includes(needle) ||
-          p.tags.some((t) => t.toLowerCase().includes(needle)),
-      )
-      .slice(0, 6);
+    return prompts.filter(
+      (p) =>
+        p.title.toLowerCase().includes(needle) ||
+        (p.description ?? "").toLowerCase().includes(needle) ||
+        p.category.toLowerCase().includes(needle) ||
+        p.tags.some((t) => t.toLowerCase().includes(needle)),
+    );
   }, [q, prompts]);
 
+  const searching = q.trim().length > 0;
   const trending = prompts.filter((p) => p.trending);
-  const latest = prompts.slice(0, 4);
+  const latest = [...prompts]
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 4);
 
   return (
     <Layout>
@@ -76,26 +78,32 @@ function Index() {
               type="search"
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search prompts, tags, professions…"
+              placeholder="Search by title, category, or tag…"
               className="w-full h-14 pl-12 pr-4 rounded-xl bg-card border border-border focus:border-accent/60 focus:outline-none focus:ring-2 focus:ring-accent/20 transition"
               aria-label="Search prompts"
             />
           </div>
-          {results.length > 0 && (
-            <div className="absolute left-0 right-0 mt-2 rounded-xl bg-card border border-border shadow-lg overflow-hidden z-10 text-left">
-              {results.map((p) => (
+          {searching && results.length > 0 && (
+            <div className="absolute left-0 right-0 mt-2 rounded-xl bg-card border border-border shadow-lg overflow-hidden z-10 text-left max-h-96 overflow-y-auto">
+              {results.slice(0, 8).map((p) => (
                 <button
                   key={p.slug}
                   onClick={() => navigate({ to: "/prompts/$slug", params: { slug: p.slug } })}
-                  className="w-full px-4 py-3 hover:bg-muted/60 transition flex items-center justify-between gap-4"
+                  className="w-full px-4 py-3 hover:bg-muted/60 transition flex items-center justify-between gap-4 text-left"
                 >
-                  <div>
-                    <div className="font-medium">{p.title}</div>
-                    <div className="text-xs text-muted-foreground">{p.description}</div>
+                  <div className="min-w-0">
+                    <div className="font-medium truncate">{p.title}</div>
+                    <div className="text-xs text-muted-foreground truncate">{p.description}</div>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                  <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
                 </button>
               ))}
+            </div>
+          )}
+          {searching && results.length === 0 && (
+            <div className="absolute left-0 right-0 mt-2 rounded-xl bg-card border border-border shadow-lg z-10 px-4 py-6 text-center text-sm text-muted-foreground">
+              <SearchX className="w-5 h-5 mx-auto mb-2 opacity-60" />
+              No prompts match "{q}". Try a different keyword.
             </div>
           )}
         </div>
@@ -158,19 +166,47 @@ function Index() {
   );
 }
 
-function PromptCard({ prompt: p }: { prompt: Prompt }) {
+export function PromptCard({ prompt: p }: { prompt: Prompt }) {
   const cat = categories.find((c) => c.slug === p.category);
   return (
     <Link
       to="/prompts/$slug"
       params={{ slug: p.slug }}
-      className="block rounded-xl border border-border bg-card p-5 hover:border-accent/60 transition group"
+      className="group flex flex-col rounded-xl border border-border bg-card p-5 hover:border-accent/60 transition"
     >
-      <div className="text-xs text-muted-foreground mb-2">
-        {cat?.emoji} {cat?.name ?? p.category}
+      <div className="flex items-center gap-2 mb-3">
+        <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
+          <span>{cat?.emoji}</span>
+          {cat?.name ?? p.category}
+        </span>
+        {p.copy_count > 0 && (
+          <span className="text-xs text-muted-foreground">· {p.copy_count} copies</span>
+        )}
       </div>
-      <div className="font-medium group-hover:text-accent transition-colors">{p.title}</div>
-      <div className="text-sm text-muted-foreground mt-1">{p.description}</div>
+      <div className="font-medium leading-snug group-hover:text-accent transition-colors">{p.title}</div>
+      {p.description && (
+        <div className="text-sm text-muted-foreground mt-1.5 line-clamp-2">{p.description}</div>
+      )}
+      {p.tags.length > 0 && (
+        <div className="flex gap-1.5 mt-3 flex-wrap">
+          {p.tags.slice(0, 4).map((t) => (
+            <span key={t} className="text-[11px] px-2 py-0.5 rounded-md bg-muted/60 text-muted-foreground">
+              #{t}
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="mt-4 pt-3 border-t border-border/60 flex items-center justify-between gap-2">
+        <span className="text-xs text-muted-foreground">Open prompt →</span>
+        <CopyButton
+          text={p.prompt}
+          slug={p.slug}
+          label="Copy"
+          size="sm"
+          variant="ghost"
+          stopPropagation
+        />
+      </div>
     </Link>
   );
 }
@@ -179,7 +215,7 @@ function CardSkeletonGrid({ n = 6 }: { n?: number }) {
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
       {Array.from({ length: n }).map((_, i) => (
-        <Skeleton key={i} className="h-28 rounded-xl" />
+        <Skeleton key={i} className="h-44 rounded-xl" />
       ))}
     </div>
   );

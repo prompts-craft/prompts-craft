@@ -10,8 +10,23 @@ export type Prompt = {
   example: string | null;
   tags: string[];
   trending: boolean;
+  copy_count: number;
   created_at: string;
 };
+
+export type SortKey = "latest" | "trending" | "most-copied";
+
+function applySort<T extends Prompt>(rows: T[], sort: SortKey): T[] {
+  const arr = [...rows];
+  if (sort === "trending") {
+    arr.sort((a, b) => Number(b.trending) - Number(a.trending) || b.copy_count - a.copy_count);
+  } else if (sort === "most-copied") {
+    arr.sort((a, b) => b.copy_count - a.copy_count);
+  } else {
+    arr.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  }
+  return arr;
+}
 
 export async function fetchAllPrompts(): Promise<Prompt[]> {
   const { data, error } = await supabase
@@ -22,14 +37,13 @@ export async function fetchAllPrompts(): Promise<Prompt[]> {
   return (data ?? []) as Prompt[];
 }
 
-export async function fetchPromptsByCategory(category: string): Promise<Prompt[]> {
+export async function fetchPromptsByCategory(category: string, sort: SortKey = "latest"): Promise<Prompt[]> {
   const { data, error } = await supabase
     .from("prompts")
     .select("*")
-    .eq("category", category)
-    .order("created_at", { ascending: false });
+    .eq("category", category);
   if (error) throw error;
-  return (data ?? []) as Prompt[];
+  return applySort((data ?? []) as Prompt[], sort);
 }
 
 export async function fetchPromptBySlug(slug: string): Promise<Prompt | null> {
