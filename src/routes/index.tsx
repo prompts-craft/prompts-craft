@@ -31,10 +31,10 @@ function Index() {
   const navigate = useNavigate();
 
   // Live cache; falls back to loader data instantly
-  const { data: prompts = initial, isLoading } = useQuery({
+  const { data: prompts = initial, isLoading } = useQuery<Prompt[]>({
     queryKey: ["prompts", "all"],
     queryFn: fetchAllPrompts,
-    initialData: initial,
+    initialData: initial as Prompt[],
   });
 
   const results = useMemo(() => {
