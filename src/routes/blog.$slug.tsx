@@ -146,12 +146,12 @@ function BlogPostPage() {
         <section className="mt-16 rounded-2xl border border-border bg-gradient-to-br from-accent/10 via-primary/5 to-transparent p-8">
           <h2 className="text-2xl font-semibold tracking-tight">{post.cta.title}</h2>
           <p className="text-muted-foreground mt-2">{post.cta.body}</p>
-          <Link
-            to={post.cta.href}
+          <a
+            href={post.cta.href}
             className="inline-flex items-center mt-5 px-5 py-2.5 rounded-lg bg-foreground text-background text-sm font-medium hover:opacity-90 transition"
           >
             {post.cta.label} →
-          </Link>
+          </a>
         </section>
 
         {relatedPosts.length > 0 && (
