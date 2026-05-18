@@ -260,12 +260,25 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
     <Link
       to="/prompts/$slug"
       params={{ slug: p.slug }}
-      className="group relative flex flex-col rounded-2xl border border-border bg-card/60 backdrop-blur p-5 hover:border-accent/40 hover:bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevated overflow-hidden"
+      className="group relative flex flex-col rounded-2xl border border-border bg-card/60 backdrop-blur hover:border-accent/40 hover:bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevated overflow-hidden"
     >
       <div
         aria-hidden
         className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent opacity-0 group-hover:opacity-100 transition"
       />
+      {p.image_url && (
+        <div className="aspect-[16/10] w-full overflow-hidden border-b border-border/60 bg-muted/40">
+          <img
+            src={p.image_url}
+            alt={`Result of: ${p.title}`}
+            loading="lazy"
+            width={1024}
+            height={640}
+            className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+          />
+        </div>
+      )}
+      <div className="flex flex-col p-5">
       <div className="flex items-center gap-2 mb-3">
         <span className="inline-flex items-center gap-1.5 text-xs px-2 py-1 rounded-md bg-accent-soft text-accent font-medium">
           <CategoryIcon slug={p.category} className="w-3.5 h-3.5" />
@@ -307,6 +320,7 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
           variant="ghost"
           stopPropagation
         />
+      </div>
       </div>
     </Link>
   );
