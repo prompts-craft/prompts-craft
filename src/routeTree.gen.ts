@@ -11,11 +11,16 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PromptsSlugRouteImport } from './routes/prompts.$slug'
 import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AdminPromptsRouteImport } from './routes/admin.prompts'
+import { Route as AdminPromptsNewRouteImport } from './routes/admin.prompts.new'
+import { Route as AdminPromptsIdRouteImport } from './routes/admin.prompts.$id'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -27,6 +32,11 @@ const BlogRoute = BlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -36,6 +46,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const PromptsSlugRoute = PromptsSlugRouteImport.update({
   id: '/prompts/$slug',
@@ -52,68 +67,112 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BlogRoute,
 } as any)
+const AdminPromptsRoute = AdminPromptsRouteImport.update({
+  id: '/prompts',
+  path: '/prompts',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPromptsNewRoute = AdminPromptsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminPromptsRoute,
+} as any)
+const AdminPromptsIdRoute = AdminPromptsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminPromptsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/blog': typeof BlogRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/prompts': typeof AdminPromptsRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/prompts/$slug': typeof PromptsSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/prompts/$id': typeof AdminPromptsIdRoute
+  '/admin/prompts/new': typeof AdminPromptsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/blog': typeof BlogRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/prompts': typeof AdminPromptsRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/prompts/$slug': typeof PromptsSlugRoute
+  '/admin': typeof AdminIndexRoute
+  '/admin/prompts/$id': typeof AdminPromptsIdRoute
+  '/admin/prompts/new': typeof AdminPromptsNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/blog': typeof BlogRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/prompts': typeof AdminPromptsRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/prompts/$slug': typeof PromptsSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/prompts/$id': typeof AdminPromptsIdRoute
+  '/admin/prompts/new': typeof AdminPromptsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
     | '/blog'
     | '/sitemap.xml'
+    | '/admin/prompts'
     | '/blog/$slug'
     | '/categories/$slug'
     | '/prompts/$slug'
+    | '/admin/'
+    | '/admin/prompts/$id'
+    | '/admin/prompts/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/blog'
     | '/sitemap.xml'
+    | '/admin/prompts'
     | '/blog/$slug'
     | '/categories/$slug'
     | '/prompts/$slug'
+    | '/admin'
+    | '/admin/prompts/$id'
+    | '/admin/prompts/new'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
     | '/blog'
     | '/sitemap.xml'
+    | '/admin/prompts'
     | '/blog/$slug'
     | '/categories/$slug'
     | '/prompts/$slug'
+    | '/admin/'
+    | '/admin/prompts/$id'
+    | '/admin/prompts/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
   BlogRoute: typeof BlogRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   CategoriesSlugRoute: typeof CategoriesSlugRoute
@@ -136,6 +195,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -149,6 +215,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/prompts/$slug': {
       id: '/prompts/$slug'
@@ -171,8 +244,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
     }
+    '/admin/prompts': {
+      id: '/admin/prompts'
+      path: '/prompts'
+      fullPath: '/admin/prompts'
+      preLoaderRoute: typeof AdminPromptsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/prompts/new': {
+      id: '/admin/prompts/new'
+      path: '/new'
+      fullPath: '/admin/prompts/new'
+      preLoaderRoute: typeof AdminPromptsNewRouteImport
+      parentRoute: typeof AdminPromptsRoute
+    }
+    '/admin/prompts/$id': {
+      id: '/admin/prompts/$id'
+      path: '/$id'
+      fullPath: '/admin/prompts/$id'
+      preLoaderRoute: typeof AdminPromptsIdRouteImport
+      parentRoute: typeof AdminPromptsRoute
+    }
   }
 }
+
+interface AdminPromptsRouteChildren {
+  AdminPromptsIdRoute: typeof AdminPromptsIdRoute
+  AdminPromptsNewRoute: typeof AdminPromptsNewRoute
+}
+
+const AdminPromptsRouteChildren: AdminPromptsRouteChildren = {
+  AdminPromptsIdRoute: AdminPromptsIdRoute,
+  AdminPromptsNewRoute: AdminPromptsNewRoute,
+}
+
+const AdminPromptsRouteWithChildren = AdminPromptsRoute._addFileChildren(
+  AdminPromptsRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminPromptsRoute: typeof AdminPromptsRouteWithChildren
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminPromptsRoute: AdminPromptsRouteWithChildren,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface BlogRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
@@ -187,6 +307,7 @@ const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
   BlogRoute: BlogRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   CategoriesSlugRoute: CategoriesSlugRoute,
