@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { Check, Copy } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { incrementPromptCopyCount } from "@/lib/prompt-copy.functions";
 
 export type CopyButtonProps = {
   text: string;
@@ -47,6 +48,7 @@ export function CopyButton({
   stopPropagation,
 }: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
+  const incrementCopyCount = useServerFn(incrementPromptCopyCount);
 
   const handleClick = async (e: React.MouseEvent) => {
     if (stopPropagation) {
@@ -59,7 +61,7 @@ export function CopyButton({
     setTimeout(() => setCopied(false), 1800);
     if (slug) {
       // fire-and-forget; we don't want to block the UX
-      supabase.rpc("increment_prompt_copies", { prompt_slug: slug }).then(() => {});
+      incrementCopyCount({ data: { slug } }).catch(() => {});
     }
   };
 
