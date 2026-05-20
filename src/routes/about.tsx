@@ -6,9 +6,9 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About — PromptStack" },
-      { name: "description", content: "PromptStack is a free library of AI prompts curated for working professionals." },
+      { name: "description", content: "PromptStack is a Nexura product: a free library of AI prompts curated for working professionals." },
       { property: "og:title", content: "About — PromptStack" },
-      { property: "og:description", content: "A free library of AI prompts curated for working professionals." },
+      { property: "og:description", content: "A Nexura product offering a free library of AI prompts curated for working professionals." },
       { property: "og:url", content: "/about" },
     ],
     links: [{ rel: "canonical", href: "/about" }],
@@ -24,6 +24,10 @@ function AboutPage() {
           <p>
             PromptStack is a free, curated library of AI prompts built for people who actually use them at work —
             teachers, students, freelancers, marketers, and developers.
+          </p>
+          <p>
+            PromptStack is a product of Nexura, created to make practical AI workflows faster, cleaner, and easier
+            to use every day.
           </p>
           <p>
             Every prompt here is opinionated. We don't index thousands of low-quality variations. We pick a few
