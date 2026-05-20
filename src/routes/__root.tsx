@@ -76,6 +76,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "A free, fast library of AI prompts for teachers, students, freelancers, marketers, and developers. Copy in one click." },
       { name: "author", content: "PromptStack" },
       { name: "google-site-verification", content: "NOE0WRUtLxltYwHuBXkVLptXWbXDfSeMpxCIu-Gm10k" },
+      { name: "google-site-verification", content: "thJYZpcCaPxb_pXXOvFxM7tXsmtaAXH6D3LmlFiohfk" },
       { property: "og:title", content: "PromptStack — AI Prompts for Real Work" },
       { property: "og:description", content: "A free, fast library of AI prompts for teachers, students, freelancers, marketers, and developers. Copy in one click." },
       { property: "og:type", content: "website" },
