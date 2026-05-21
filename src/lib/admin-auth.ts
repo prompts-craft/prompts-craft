@@ -13,31 +13,59 @@ export function useAdminAuth(): AdminAuthState & { refresh: () => void } {
 
   useEffect(() => {
     let cancelled = false;
+    let resolved = false;
+    const timeout = window.setTimeout(() => {
+      if (!cancelled && !resolved) {
+        resolved = true;
+        setState({ status: "anonymous" });
+      }
+    }, 8000);
 
-    async function check() {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const user = sessionData.session?.user;
+    function finish(next: AdminAuthState) {
+      if (cancelled) return;
+      resolved = true;
+      window.clearTimeout(timeout);
+      setState(next);
+    }
+
+    async function check(userFromEvent?: Awaited<ReturnType<typeof supabase.auth.getUser>>["data"]["user"] | null) {
+      const user = userFromEvent ?? (await supabase.auth.getUser()).data.user;
       if (!user) {
-        if (!cancelled) setState({ status: "anonymous" });
+        finish({ status: "anonymous" });
         return;
       }
-      const { data: roles } = await supabase
+      const { data: role, error } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", user.id);
-      const isAdmin = (roles ?? []).some((r) => r.role === "admin");
-      if (cancelled) return;
-      setState(
-        isAdmin
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+
+      if (error) console.error("Admin role check failed", error);
+      finish(
+        role?.role === "admin"
           ? { status: "admin", userId: user.id, email: user.email ?? null }
           : { status: "not-admin", email: user.email ?? null },
       );
     }
 
-    check();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => check());
+    check().catch((error) => {
+      console.error("Admin auth check failed", error);
+      finish({ status: "anonymous" });
+    });
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      window.setTimeout(() => {
+        check(session?.user ?? null).catch((error) => {
+          console.error("Admin auth refresh failed", error);
+          finish({ status: "anonymous" });
+        });
+      }, 0);
+    });
+
     return () => {
       cancelled = true;
+      window.clearTimeout(timeout);
       sub.subscription.unsubscribe();
     };
   }, [tick]);
