@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { Plus, Search, Trash2, Pencil, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { categories } from "@/data/prompts";
+import { deleteAdminPrompt } from "@/lib/admin-prompts.functions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +24,7 @@ export const Route = createFileRoute("/admin/prompts")({
 
 function AdminPromptsList() {
   const qc = useQueryClient();
+  const deletePrompt = useServerFn(deleteAdminPrompt);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("all");
   const [toDelete, setToDelete] = useState<{ id: string; title: string } | null>(null);
@@ -55,15 +58,18 @@ function AdminPromptsList() {
   async function confirmDelete() {
     if (!toDelete) return;
     setDeleting(true);
-    const { error } = await supabase.from("prompts").delete().eq("id", toDelete.id);
-    setDeleting(false);
-    if (error) {
-      toast.error(error.message);
+    try {
+      await deletePrompt({ data: { id: toDelete.id } });
+      toast.success("Prompt deleted");
+      setToDelete(null);
+      qc.invalidateQueries({ queryKey: ["admin"] });
+      qc.invalidateQueries({ queryKey: ["prompts"] });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to delete prompt");
+    } finally {
+      setDeleting(false);
       return;
     }
-    toast.success("Prompt deleted");
-    setToDelete(null);
-    qc.invalidateQueries({ queryKey: ["admin"] });
   }
 
   return (
