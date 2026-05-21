@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { PromptForm, emptyPromptForm, type PromptFormValues } from "@/components/admin/PromptForm";
+import { createAdminPrompt } from "@/lib/admin-prompts.functions";
 
 export const Route = createFileRoute("/admin/prompts/new")({
   component: NewPromptPage,
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/admin/prompts/new")({
 function NewPromptPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const createPrompt = useServerFn(createAdminPrompt);
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(values: PromptFormValues) {
@@ -21,9 +23,9 @@ function NewPromptPage() {
       .split(",")
       .map((t) => t.trim())
       .filter(Boolean);
-    const { data, error } = await supabase
-      .from("prompts")
-      .insert({
+    try {
+      const data = await createPrompt({
+        data: {
         title: values.title.trim(),
         slug: values.slug.trim(),
         category: values.category,
@@ -34,17 +36,17 @@ function NewPromptPage() {
         image_url: values.image_url.trim() || null,
         trending: values.trending,
         featured: values.featured,
-      })
-      .select("id")
-      .single();
-    setSubmitting(false);
-    if (error) {
-      toast.error(error.message);
+        },
+      });
+      toast.success("Prompt created");
+      qc.invalidateQueries({ queryKey: ["admin"] });
+      navigate({ to: "/admin/prompts/$id", params: { id: data.id } });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to create prompt");
+    } finally {
+      setSubmitting(false);
       return;
     }
-    toast.success("Prompt created");
-    qc.invalidateQueries({ queryKey: ["admin"] });
-    navigate({ to: "/admin/prompts/$id", params: { id: data.id } });
   }
 
   return (
