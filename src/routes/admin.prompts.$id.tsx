@@ -35,11 +35,7 @@ function EditPromptPage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin", "prompt", id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("prompts")
-        .select("*")
-        .eq("id", id)
-        .maybeSingle();
+      const { data, error } = await supabase.from("prompts").select("*").eq("id", id).maybeSingle();
       if (error) throw error;
       return data;
     },
@@ -72,7 +68,10 @@ function EditPromptPage() {
 
   async function handleSubmit(values: PromptFormValues) {
     setSubmitting(true);
-    const tags = values.tags.split(",").map((t) => t.trim()).filter(Boolean);
+    const tags = values.tags
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
     try {
       await updatePrompt({
         data: {
@@ -98,7 +97,6 @@ function EditPromptPage() {
       toast.error(error instanceof Error ? error.message : "Failed to update prompt");
     } finally {
       setSubmitting(false);
-      return;
     }
   }
 
@@ -114,7 +112,6 @@ function EditPromptPage() {
       toast.error(error instanceof Error ? error.message : "Failed to delete prompt");
     } finally {
       setDeleting(false);
-      return;
     }
   }
 
