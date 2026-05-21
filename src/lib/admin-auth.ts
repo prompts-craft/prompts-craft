@@ -28,7 +28,9 @@ export function useAdminAuth(): AdminAuthState & { refresh: () => void } {
       setState(next);
     }
 
-    async function check(userFromEvent?: Awaited<ReturnType<typeof supabase.auth.getUser>>["data"]["user"] | null) {
+    async function check(
+      userFromEvent?: Awaited<ReturnType<typeof supabase.auth.getUser>>["data"]["user"] | null,
+    ) {
       const user = userFromEvent ?? (await supabase.auth.getUser()).data.user;
       if (!user) {
         finish({ status: "anonymous" });
