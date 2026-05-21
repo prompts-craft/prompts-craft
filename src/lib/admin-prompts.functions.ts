@@ -6,7 +6,10 @@ import type { Database } from "@/integrations/supabase/types";
 
 const promptPayloadSchema = z.object({
   title: z.string().trim().min(1).max(180),
-  slug: z.string().trim().regex(/^[a-z0-9-]{1,180}$/),
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9-]{1,180}$/),
   category: z.string().trim().min(1).max(80),
   description: z.string().trim().max(280).nullable(),
   prompt: z.string().trim().min(1).max(20000),
@@ -51,10 +54,7 @@ export const updateAdminPrompt = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
-    const { error } = await context.supabase
-      .from("prompts")
-      .update(data.values)
-      .eq("id", data.id);
+    const { error } = await context.supabase.from("prompts").update(data.values).eq("id", data.id);
 
     if (error) throw new Error(error.message);
     return { ok: true };
