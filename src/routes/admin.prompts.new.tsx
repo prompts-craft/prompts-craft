@@ -26,16 +26,16 @@ function NewPromptPage() {
     try {
       const data = await createPrompt({
         data: {
-        title: values.title.trim(),
-        slug: values.slug.trim(),
-        category: values.category,
-        description: values.description.trim() || null,
-        prompt: values.prompt,
-        example: values.example.trim() || null,
-        tags,
-        image_url: values.image_url.trim() || null,
-        trending: values.trending,
-        featured: values.featured,
+          title: values.title.trim(),
+          slug: values.slug.trim(),
+          category: values.category,
+          description: values.description.trim() || null,
+          prompt: values.prompt,
+          example: values.example.trim() || null,
+          tags,
+          image_url: values.image_url.trim() || null,
+          trending: values.trending,
+          featured: values.featured,
         },
       });
       toast.success("Prompt created");
@@ -45,7 +45,6 @@ function NewPromptPage() {
       toast.error(error instanceof Error ? error.message : "Failed to create prompt");
     } finally {
       setSubmitting(false);
-      return;
     }
   }
 
