@@ -1,10 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PromptForm, type PromptFormValues } from "@/components/admin/PromptForm";
+import { deleteAdminPrompt, updateAdminPrompt } from "@/lib/admin-prompts.functions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,6 +26,8 @@ function EditPromptPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const updatePrompt = useServerFn(updateAdminPrompt);
+  const deletePrompt = useServerFn(deleteAdminPrompt);
   const [submitting, setSubmitting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -69,41 +73,49 @@ function EditPromptPage() {
   async function handleSubmit(values: PromptFormValues) {
     setSubmitting(true);
     const tags = values.tags.split(",").map((t) => t.trim()).filter(Boolean);
-    const { error } = await supabase
-      .from("prompts")
-      .update({
-        title: values.title.trim(),
-        slug: values.slug.trim(),
-        category: values.category,
-        description: values.description.trim() || null,
-        prompt: values.prompt,
-        example: values.example.trim() || null,
-        tags,
-        image_url: values.image_url.trim() || null,
-        trending: values.trending,
-        featured: values.featured,
-      })
-      .eq("id", id);
-    setSubmitting(false);
-    if (error) {
-      toast.error(error.message);
+    try {
+      await updatePrompt({
+        data: {
+          id,
+          values: {
+            title: values.title.trim(),
+            slug: values.slug.trim(),
+            category: values.category,
+            description: values.description.trim() || null,
+            prompt: values.prompt,
+            example: values.example.trim() || null,
+            tags,
+            image_url: values.image_url.trim() || null,
+            trending: values.trending,
+            featured: values.featured,
+          },
+        },
+      });
+      toast.success("Prompt updated");
+      qc.invalidateQueries({ queryKey: ["admin"] });
+      qc.invalidateQueries({ queryKey: ["prompts"] });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to update prompt");
+    } finally {
+      setSubmitting(false);
       return;
     }
-    toast.success("Prompt updated");
-    qc.invalidateQueries({ queryKey: ["admin"] });
   }
 
   async function doDelete() {
     setDeleting(true);
-    const { error } = await supabase.from("prompts").delete().eq("id", id);
-    setDeleting(false);
-    if (error) {
-      toast.error(error.message);
+    try {
+      await deletePrompt({ data: { id } });
+      toast.success("Prompt deleted");
+      qc.invalidateQueries({ queryKey: ["admin"] });
+      qc.invalidateQueries({ queryKey: ["prompts"] });
+      navigate({ to: "/admin/prompts" });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to delete prompt");
+    } finally {
+      setDeleting(false);
       return;
     }
-    toast.success("Prompt deleted");
-    qc.invalidateQueries({ queryKey: ["admin"] });
-    navigate({ to: "/admin/prompts" });
   }
 
   return (
