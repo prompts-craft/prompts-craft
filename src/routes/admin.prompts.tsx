@@ -68,7 +68,6 @@ function AdminPromptsList() {
       toast.error(error instanceof Error ? error.message : "Failed to delete prompt");
     } finally {
       setDeleting(false);
-      return;
     }
   }
 
@@ -77,9 +76,7 @@ function AdminPromptsList() {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">All prompts</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Search, edit, or remove prompts.
-          </p>
+          <p className="text-sm text-muted-foreground mt-1">Search, edit, or remove prompts.</p>
         </div>
         <Link
           to="/admin/prompts/new"
