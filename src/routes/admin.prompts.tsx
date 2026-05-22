@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
@@ -19,8 +19,13 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/admin/prompts")({
-  component: AdminPromptsList,
+  component: AdminPromptsRoute,
 });
+
+function AdminPromptsRoute() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  return pathname === "/admin/prompts" ? <AdminPromptsList /> : <Outlet />;
+}
 
 function AdminPromptsList() {
   const qc = useQueryClient();
