@@ -4,8 +4,7 @@ import { categories } from "@/data/prompts";
 import { blogPosts } from "@/data/blog-posts";
 import { fetchAllPrompts } from "@/lib/prompts-api";
 
-// TODO: replace with your project URL once a project name or custom domain is set.
-const BASE_URL = "";
+const BASE_URL = "https://instant-prompt-box.lovable.app";
 
 interface SitemapEntry {
   path: string;
