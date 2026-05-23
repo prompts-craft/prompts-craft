@@ -1,0 +1,24 @@
+# PromptStack
+
+> A free, curated library of AI prompts for teachers, students, freelancers, marketers, and developers. Copy in one click — no signup. A product of Nexura.
+
+## Pages
+
+- [Home](/): Browse and search the prompt library.
+- [About](/about): What PromptStack is and who built it.
+- [Blog](/blog): Practical guides on using AI prompts for real work.
+
+## Categories
+
+- [Teachers](/categories/teachers): Lesson plans, rubrics, and classroom helpers.
+- [Students](/categories/students): Study aids, essay helpers, and exam prep.
+- [Freelancers](/categories/freelancers): Proposals, client emails, and pricing.
+- [Marketing](/categories/marketing): Ad copy, social posts, and campaigns.
+- [Developers](/categories/developers): Code reviews, debugging, and docs.
+- [Image Upscaling](/categories/upscaling): Sharpen and upscale photos.
+- [Background Removal](/categories/background-removal): Clean image cutouts.
+- [Creative Images](/categories/creative-images): AI artwork and concept visuals.
+
+## Optional
+
+- [Sitemap](/sitemap.xml): Full list of indexable URLs.
