@@ -23,7 +23,7 @@ export const Route = createFileRoute("/categories/$slug")({
   head: ({ loaderData, params }) => {
     const name = loaderData?.category.name ?? "Category";
     const count = loaderData?.prompts.length ?? 0;
-    const title = `AI Prompts for ${name} — Free & Copy-Ready | PromptStack`;
+    const title = `${name} AI Prompts | PromptStack`;
     const desc = `${count} curated AI prompts for ${name.toLowerCase()}. ${
       loaderData?.category.description ?? ""
     } Copy in one click — no signup required.`;
