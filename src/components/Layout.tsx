@@ -1,10 +1,15 @@
 import { Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X, Moon, Sun } from "lucide-react";
+import logoSrc from "@/assets/logo.png";
+import { useTheme } from "@/hooks/use-theme";
+
 import { categories } from "@/data/prompts";
 
 export function Layout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const { theme, toggle } = useTheme();
+
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -19,14 +24,13 @@ export function Layout({ children }: { children: ReactNode }) {
         <div className="max-w-6xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between gap-4">
           <Link
             to="/"
-            className="flex items-center gap-2 font-semibold tracking-tight shrink-0"
+            className="flex items-center gap-2.5 font-semibold tracking-tight shrink-0"
             aria-label="PromptStack — Home"
           >
-            <span className="relative inline-flex w-7 h-7 items-center justify-center rounded-lg bg-gradient-to-br from-accent to-accent/40 shadow-glow">
-              <Sparkles className="w-4 h-4 text-accent-foreground" strokeWidth={2.25} />
-            </span>
-            <span>PromptStack</span>
+            <img src={logoSrc} alt="PromptStack logo" className="w-8 h-8 rounded-lg shadow-glow" />
+            <span style={{ fontFamily: "var(--font-display)" }} className="text-lg tracking-wide">PromptStack</span>
           </Link>
+
 
           <nav
             className="hidden sm:flex items-center gap-7 text-sm text-muted-foreground"
