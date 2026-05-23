@@ -61,6 +61,14 @@ export function Layout({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="hidden sm:flex items-center gap-2">
+            <button
+              type="button"
+              onClick={toggle}
+              aria-label="Toggle theme"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-card/60 text-foreground hover:border-accent/50 hover:bg-card transition"
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
             <Link
               to="/categories/$slug"
               params={{ slug: "teachers" }}
@@ -70,6 +78,18 @@ export function Layout({ children }: { children: ReactNode }) {
               Explore prompts
             </Link>
           </div>
+
+          <div className="flex sm:hidden items-center gap-2">
+            <button
+              type="button"
+              onClick={toggle}
+              aria-label="Toggle theme"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-md border border-border bg-card/60"
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+          </div>
+
 
           <button
             type="button"
@@ -126,11 +146,10 @@ export function Layout({ children }: { children: ReactNode }) {
         <div className="max-w-6xl mx-auto px-5 sm:px-6 py-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <Link to="/" className="flex items-center gap-2 font-semibold tracking-tight">
-              <span className="inline-flex w-6 h-6 items-center justify-center rounded-md bg-gradient-to-br from-accent to-accent/40">
-                <Sparkles className="w-3.5 h-3.5 text-accent-foreground" strokeWidth={2.25} />
-              </span>
-              <span>PromptStack</span>
+              <img src={logoSrc} alt="" className="w-6 h-6 rounded-md" />
+              <span style={{ fontFamily: "var(--font-display)" }}>PromptStack</span>
             </Link>
+
             <p className="text-sm text-muted-foreground mt-3 max-w-xs leading-relaxed">
               A curated library of AI prompts for real work. Free, fast, no signup.
             </p>
