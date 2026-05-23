@@ -93,6 +93,37 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "PromptStack",
+          url: "https://instant-prompt-box.lovable.app",
+          description: "A free library of AI prompts for teachers, students, freelancers, marketers, and developers.",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://instant-prompt-box.lovable.app/?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Nexura",
+          url: "https://instant-prompt-box.lovable.app",
+          logo: "https://instant-prompt-box.lovable.app/favicon.svg",
+          brand: {
+            "@type": "Brand",
+            name: "PromptStack",
+          },
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
