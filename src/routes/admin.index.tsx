@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { FileText, Layers, TrendingUp, Plus } from "lucide-react";
+
 import { supabase } from "@/integrations/supabase/client";
 import { categories } from "@/data/prompts";
 
@@ -36,12 +37,20 @@ function AdminDashboard() {
             Overview of your prompt library.
           </p>
         </div>
-        <Link
-          to="/admin/prompts/new"
-          className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90"
-        >
-          <Plus className="w-4 h-4" /> New prompt
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            to="/admin/categories"
+            className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-muted"
+          >
+            <Layers className="w-4 h-4" /> Add category
+          </Link>
+          <Link
+            to="/admin/prompts/new"
+            className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90"
+          >
+            <Plus className="w-4 h-4" /> New prompt
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { LayoutDashboard, ListChecks, Plus, LogOut, Sparkles } from "lucide-react";
+import { LayoutDashboard, ListChecks, Plus, LogOut, Sparkles, Layers } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminAuth } from "@/lib/admin-auth";
@@ -58,6 +58,7 @@ function AdminLayout({ email }: { email: string | null }) {
     { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
     { to: "/admin/prompts", label: "All Prompts", icon: ListChecks },
     { to: "/admin/prompts/new", label: "New Prompt", icon: Plus },
+    { to: "/admin/categories", label: "Categories", icon: Layers },
   ];
 
   const isActive = (to: string, exact?: boolean) =>
