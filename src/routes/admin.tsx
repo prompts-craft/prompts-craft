@@ -31,26 +31,13 @@ function AdminShell() {
   }
 
   if (auth.status === "not-admin") {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 text-center">
-        <h1 className="text-xl font-semibold">Not authorized</h1>
-        <p className="mt-2 text-sm text-muted-foreground max-w-sm">
-          Signed in as {auth.email}. This account doesn't have admin access.
-        </p>
-        <button
-          onClick={() => supabase.auth.signOut()}
-          className="mt-6 inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm hover:bg-muted"
-        >
-          <LogOut className="w-4 h-4" /> Sign out
-        </button>
-      </div>
-    );
+    return <RequestAccessPanel email={auth.email} userId={auth.userId} />;
   }
 
-  return <AdminLayout email={auth.email} />;
+  return <AdminLayout email={auth.email} isSuperAdmin={auth.isSuperAdmin} />;
 }
 
-function AdminLayout({ email }: { email: string | null }) {
+function AdminLayout({ email, isSuperAdmin }: { email: string | null; isSuperAdmin: boolean }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [navOpen, setNavOpen] = useState(false);
 
@@ -59,6 +46,12 @@ function AdminLayout({ email }: { email: string | null }) {
     { to: "/admin/prompts", label: "All Prompts", icon: ListChecks },
     { to: "/admin/prompts/new", label: "New Prompt", icon: Plus },
     { to: "/admin/categories", label: "Categories", icon: Layers },
+    ...(isSuperAdmin
+      ? [
+          { to: "/admin/activity", label: "Activity Log", icon: Activity },
+          { to: "/admin/requests", label: "Admin Requests", icon: UserPlus },
+        ]
+      : []),
   ];
 
   const isActive = (to: string, exact?: boolean) =>
