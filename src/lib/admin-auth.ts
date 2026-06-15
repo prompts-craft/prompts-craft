@@ -4,8 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 export type AdminAuthState =
   | { status: "loading" }
   | { status: "anonymous" }
-  | { status: "not-admin"; email: string | null }
-  | { status: "admin"; userId: string; email: string | null };
+  | { status: "not-admin"; email: string | null; userId: string }
+  | { status: "admin"; userId: string; email: string | null; isSuperAdmin: boolean };
+
 
 export function useAdminAuth(): AdminAuthState & { refresh: () => void } {
   const [state, setState] = useState<AdminAuthState>({ status: "loading" });
@@ -36,18 +37,23 @@ export function useAdminAuth(): AdminAuthState & { refresh: () => void } {
         finish({ status: "anonymous" });
         return;
       }
-      const { data: role, error } = await supabase
+      const { data: roles, error } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", user.id)
-        .eq("role", "admin")
-        .maybeSingle();
+        .eq("user_id", user.id);
 
       if (error) console.error("Admin role check failed", error);
+      const roleSet = new Set((roles ?? []).map((r) => r.role));
+      const isAdmin = roleSet.has("admin") || roleSet.has("super_admin");
       finish(
-        role?.role === "admin"
-          ? { status: "admin", userId: user.id, email: user.email ?? null }
-          : { status: "not-admin", email: user.email ?? null },
+        isAdmin
+          ? {
+              status: "admin",
+              userId: user.id,
+              email: user.email ?? null,
+              isSuperAdmin: roleSet.has("super_admin"),
+            }
+          : { status: "not-admin", email: user.email ?? null, userId: user.id },
       );
     }
 
