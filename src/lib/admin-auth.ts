@@ -4,8 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 export type AdminAuthState =
   | { status: "loading" }
   | { status: "anonymous" }
-  | { status: "not-admin"; email: string | null }
-  | { status: "admin"; userId: string; email: string | null };
+  | { status: "not-admin"; email: string | null; userId: string }
+  | { status: "admin"; userId: string; email: string | null; isSuperAdmin: boolean };
+
 
 export function useAdminAuth(): AdminAuthState & { refresh: () => void } {
   const [state, setState] = useState<AdminAuthState>({ status: "loading" });
