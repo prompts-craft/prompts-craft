@@ -228,3 +228,86 @@ function LoginPanel() {
     </div>
   );
 }
+
+function RequestAccessPanel({ email, userId }: { email: string | null; userId: string }) {
+  const [reason, setReason] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<"idle" | "pending" | "approved" | "rejected">("idle");
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase
+      .from("admin_requests")
+      .select("status")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data?.status === "pending") setStatus("pending");
+        else if (data?.status === "rejected") setStatus("rejected");
+      });
+  }, [userId]);
+
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    const { error } = await supabase
+      .from("admin_requests")
+      .insert({ user_id: userId, email: email ?? "", reason, status: "pending" });
+    setLoading(false);
+    if (error) setError(error.message);
+    else setStatus("pending");
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 text-center">
+      <div className="w-full max-w-md rounded-xl border border-border bg-card/60 p-6">
+        <h1 className="text-xl font-semibold">Request admin access</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Signed in as {email}. This account doesn't have admin access yet.
+        </p>
+
+        {status === "pending" ? (
+          <p className="mt-6 rounded-md border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+            Your request is pending review. You'll get access once a super admin approves it.
+          </p>
+        ) : (
+          <form onSubmit={submit} className="mt-6 space-y-3 text-left">
+            {status === "rejected" && (
+              <div className="text-xs text-destructive">
+                Your previous request was rejected. You can submit a new one.
+              </div>
+            )}
+            <label className="block text-xs text-muted-foreground">
+              Why do you want admin access?
+              <textarea
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                rows={4}
+                className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-accent"
+                placeholder="Briefly explain your role and why you need access…"
+              />
+            </label>
+            {error && <div className="text-xs text-destructive">{error}</div>}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-md bg-primary text-primary-foreground px-3 py-2 text-sm font-medium hover:bg-primary/90 disabled:opacity-60"
+            >
+              {loading ? "Submitting…" : "Submit request"}
+            </button>
+          </form>
+        )}
+
+        <button
+          onClick={() => supabase.auth.signOut()}
+          className="mt-6 inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm hover:bg-muted"
+        >
+          <LogOut className="w-4 h-4" /> Sign out
+        </button>
+      </div>
+    </div>
+  );
+}
