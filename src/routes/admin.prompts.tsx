@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { categories } from "@/data/prompts";
 import { deleteAdminPrompt } from "@/lib/admin-prompts.functions";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,6 +35,9 @@ function AdminPromptsList() {
   const [category, setCategory] = useState<string>("all");
   const [toDelete, setToDelete] = useState<{ id: string; title: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkConfirm, setBulkConfirm] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "prompts"],
@@ -60,6 +64,27 @@ function AdminPromptsList() {
     });
   }, [data, query, category]);
 
+  function toggleOne(id: string, checked: boolean) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }
+
+  const allVisibleSelected = filtered.length > 0 && filtered.every((p) => selected.has(p.id));
+  const someVisibleSelected = filtered.some((p) => selected.has(p.id));
+
+  function toggleAll(checked: boolean) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (checked) filtered.forEach((p) => next.add(p.id));
+      else filtered.forEach((p) => next.delete(p.id));
+      return next;
+    });
+  }
+
   async function confirmDelete() {
     if (!toDelete) return;
     setDeleting(true);
@@ -73,6 +98,28 @@ function AdminPromptsList() {
       toast.error(error instanceof Error ? error.message : "Failed to delete prompt");
     } finally {
       setDeleting(false);
+    }
+  }
+
+  async function confirmBulkDelete() {
+    const ids = Array.from(selected);
+    if (ids.length === 0) return;
+    setBulkDeleting(true);
+    let ok = 0;
+    let fail = 0;
+    try {
+      const results = await Promise.allSettled(
+        ids.map((id) => deletePrompt({ data: { id } })),
+      );
+      results.forEach((r) => (r.status === "fulfilled" ? ok++ : fail++));
+      if (ok) toast.success(`Deleted ${ok} prompt${ok === 1 ? "" : "s"}`);
+      if (fail) toast.error(`Failed to delete ${fail} prompt${fail === 1 ? "" : "s"}`);
+      setSelected(new Set());
+      setBulkConfirm(false);
+      qc.invalidateQueries({ queryKey: ["admin"] });
+      qc.invalidateQueries({ queryKey: ["prompts"] });
+    } finally {
+      setBulkDeleting(false);
     }
   }
 
@@ -115,6 +162,28 @@ function AdminPromptsList() {
         </select>
       </div>
 
+      {filtered.length > 0 && (
+        <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-muted/30 px-4 py-2">
+          <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
+            <Checkbox
+              checked={allVisibleSelected ? true : someVisibleSelected ? "indeterminate" : false}
+              onCheckedChange={(v) => toggleAll(v === true)}
+            />
+            {selected.size > 0
+              ? `${selected.size} selected`
+              : "Select all"}
+          </label>
+          {selected.size > 0 && (
+            <button
+              onClick={() => setBulkConfirm(true)}
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs text-destructive hover:bg-destructive/10"
+            >
+              <Trash2 className="w-3.5 h-3.5" /> Delete selected
+            </button>
+          )}
+        </div>
+      )}
+
       <div className="rounded-lg border border-border bg-card/40 overflow-hidden">
         {isLoading && <div className="p-4 text-sm text-muted-foreground">Loading…</div>}
         {!isLoading && filtered.length === 0 && (
@@ -124,8 +193,13 @@ function AdminPromptsList() {
           {filtered.map((p) => (
             <li
               key={p.id}
-              className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-muted/30"
+              className="flex items-center gap-3 px-4 py-3 hover:bg-muted/30"
             >
+              <Checkbox
+                checked={selected.has(p.id)}
+                onCheckedChange={(v) => toggleOne(p.id, v === true)}
+                aria-label={`Select ${p.title}`}
+              />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <Link
@@ -181,6 +255,27 @@ function AdminPromptsList() {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {deleting ? "Deleting…" : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={bulkConfirm} onOpenChange={(o) => !bulkDeleting && setBulkConfirm(o)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete {selected.size} prompt{selected.size === 1 ? "" : "s"}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              The selected prompts will be permanently removed. This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={bulkDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmBulkDelete}
+              disabled={bulkDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {bulkDeleting ? "Deleting…" : "Delete all"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
