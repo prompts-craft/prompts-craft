@@ -20,6 +20,7 @@ import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminRequestsRouteImport } from './routes/admin.requests'
 import { Route as AdminPromptsRouteImport } from './routes/admin.prompts'
+import { Route as AdminImportRouteImport } from './routes/admin.import'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as AdminPromptsNewRouteImport } from './routes/admin.prompts.new'
@@ -80,6 +81,11 @@ const AdminPromptsRoute = AdminPromptsRouteImport.update({
   path: '/prompts',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminImportRoute = AdminImportRouteImport.update({
+  id: '/import',
+  path: '/import',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
   id: '/categories',
   path: '/categories',
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/import': typeof AdminImportRoute
   '/admin/prompts': typeof AdminPromptsRouteWithChildren
   '/admin/requests': typeof AdminRequestsRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/import': typeof AdminImportRoute
   '/admin/prompts': typeof AdminPromptsRouteWithChildren
   '/admin/requests': typeof AdminRequestsRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/import': typeof AdminImportRoute
   '/admin/prompts': typeof AdminPromptsRouteWithChildren
   '/admin/requests': typeof AdminRequestsRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin/activity'
     | '/admin/categories'
+    | '/admin/import'
     | '/admin/prompts'
     | '/admin/requests'
     | '/blog/$slug'
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin/activity'
     | '/admin/categories'
+    | '/admin/import'
     | '/admin/prompts'
     | '/admin/requests'
     | '/blog/$slug'
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin/activity'
     | '/admin/categories'
+    | '/admin/import'
     | '/admin/prompts'
     | '/admin/requests'
     | '/blog/$slug'
@@ -294,6 +306,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPromptsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/import': {
+      id: '/admin/import'
+      path: '/import'
+      fullPath: '/admin/import'
+      preLoaderRoute: typeof AdminImportRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/categories': {
       id: '/admin/categories'
       path: '/categories'
@@ -342,6 +361,7 @@ const AdminPromptsRouteWithChildren = AdminPromptsRoute._addFileChildren(
 interface AdminRouteChildren {
   AdminActivityRoute: typeof AdminActivityRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminImportRoute: typeof AdminImportRoute
   AdminPromptsRoute: typeof AdminPromptsRouteWithChildren
   AdminRequestsRoute: typeof AdminRequestsRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -350,6 +370,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminActivityRoute: AdminActivityRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminImportRoute: AdminImportRoute,
   AdminPromptsRoute: AdminPromptsRouteWithChildren,
   AdminRequestsRoute: AdminRequestsRoute,
   AdminIndexRoute: AdminIndexRoute,
