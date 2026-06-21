@@ -162,12 +162,10 @@
   .glass {
     background: color-mix(in oklab, var(--card) 70%, transparent);
     backdrop-filter: saturate(150%) blur(14px);
-    -webkit-backdrop-filter: saturate(150%) blur(14px);
   }
   .glass-strong {
-    background: color-mix(in oklab, var(--background) 70%, transparent);
+    background: color-mix(in oklab, var(--background) 72%, transparent);
     backdrop-filter: saturate(160%) blur(20px);
-    -webkit-backdrop-filter: saturate(160%) blur(20px);
   }
   .text-gradient {
     background: var(--gradient-text);
@@ -181,12 +179,49 @@
     background-clip: text;
     color: transparent;
   }
+  .bg-gradient-accent {
+    background-image: var(--gradient-accent);
+  }
   .bg-hero-glow {
     background-image: var(--gradient-hero);
   }
   .shadow-elevated { box-shadow: var(--shadow-elevated); }
   .shadow-glow { box-shadow: var(--shadow-glow); }
+  .shadow-glow-soft { box-shadow: var(--shadow-glow-soft); }
   .ring-border-subtle { box-shadow: inset 0 0 0 1px oklch(1 0 0 / 6%); }
+
+  /* Gradient-border card: subtle purple→blue rim that intensifies on hover */
+  .gradient-border {
+    position: relative;
+    isolation: isolate;
+  }
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--gradient-border);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    opacity: 0.4;
+    transition: opacity 240ms ease;
+    pointer-events: none;
+  }
+  .gradient-border:hover::before { opacity: 1; }
+
+  /* Soft ambient glow blob (behind hero/cards) */
+  .glow-orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(60px);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
   .grid-pattern {
     background-image:
       linear-gradient(oklch(1 0 0 / 4%) 1px, transparent 1px),
