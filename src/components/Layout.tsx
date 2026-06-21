@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { Menu, X, Moon, Sun } from "lucide-react";
-import logoSrc from "@/assets/logo.png";
+import logoSymbol from "@/assets/logo-symbol.svg";
+import logoAsset from "@/assets/promptcraft-logo.png.asset.json";
 import { useTheme } from "@/hooks/use-theme";
 
 import { categories } from "@/data/prompts";
