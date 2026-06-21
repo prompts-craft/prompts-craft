@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="pc-grad" x1="6" y1="6" x2="58" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="55%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <filter id="pc-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="1.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#pc-glow)" stroke="url(#pc-grad)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill="none">
+    <path d="M14 12 H46 a8 8 0 0 1 8 8 v14 a8 8 0 0 1 -8 8 H36 l-8 8 v-8 H14 a8 8 0 0 1 -8 -8 V20 a8 8 0 0 1 8 -8 z"/>
+    <path d="M18 22 H42" />
+    <path d="M18 28 H38" />
+    <path d="M18 34 H34" />
+  </g>
+  <g fill="url(#pc-grad)" filter="url(#pc-glow)">
+    <path d="M40 38 l10 10 -3 6 -3 -3 -6 3 z" opacity="0.95"/>
+    <circle cx="44" cy="49" r="1.5" fill="#0b0b14"/>
+  </g>
+</svg>

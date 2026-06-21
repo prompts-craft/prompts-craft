@@ -39,41 +39,56 @@
 }
 
 
-/* Dark-mode default — deep slate w/ subtle violet tint */
+/* Dark-mode default — deep midnight matching PromptCraft logo */
 :root {
-  --radius: 0.75rem;
-  --background: oklch(0.145 0.012 265);
+  --radius: 0.875rem;
+  --background: oklch(0.13 0.018 265);
   --foreground: oklch(0.985 0.003 250);
-  --card: oklch(0.195 0.014 265);
+  --card: oklch(0.185 0.02 265);
   --card-foreground: oklch(0.985 0.003 250);
-  --popover: oklch(0.205 0.014 265);
+  --popover: oklch(0.2 0.022 265);
   --popover-foreground: oklch(0.985 0.003 250);
   --primary: oklch(0.97 0.005 250);
-  --primary-foreground: oklch(0.17 0.012 265);
-  --secondary: oklch(0.255 0.014 265);
+  --primary-foreground: oklch(0.16 0.018 265);
+  --secondary: oklch(0.25 0.022 265);
   --secondary-foreground: oklch(0.985 0.003 250);
-  --muted: oklch(0.235 0.014 265);
-  --muted-foreground: oklch(0.7 0.02 265);
-  --accent: oklch(0.72 0.17 285);
-  --accent-foreground: oklch(0.16 0.012 265);
-  --accent-soft: oklch(0.72 0.17 285 / 14%);
+  --muted: oklch(0.23 0.02 265);
+  --muted-foreground: oklch(0.72 0.025 265);
+  --accent: oklch(0.7 0.18 285);
+  --accent-foreground: oklch(0.16 0.018 265);
+  --accent-soft: oklch(0.7 0.18 285 / 14%);
+  --accent-2: oklch(0.78 0.14 230);
   --destructive: oklch(0.68 0.2 25);
   --destructive-foreground: oklch(0.985 0.003 250);
-  --border: oklch(1 0 0 / 7%);
+  --border: oklch(1 0 0 / 8%);
   --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.72 0.17 285 / 50%);
+  --ring: oklch(0.7 0.18 285 / 55%);
 
   --gradient-hero: radial-gradient(
-      60% 50% at 50% 0%,
-      oklch(0.72 0.17 285 / 22%) 0%,
-      transparent 70%
+      55% 45% at 50% 0%,
+      oklch(0.72 0.18 285 / 28%) 0%,
+      oklch(0.72 0.14 230 / 14%) 45%,
+      transparent 75%
     );
-  --gradient-accent: linear-gradient(135deg, oklch(0.72 0.17 285), oklch(0.78 0.14 245));
-  --gradient-text: linear-gradient(180deg, oklch(0.99 0.003 250) 0%, oklch(0.78 0.02 265) 100%);
+  --gradient-accent: linear-gradient(
+    135deg,
+    oklch(0.7 0.2 300) 0%,
+    oklch(0.68 0.19 275) 45%,
+    oklch(0.78 0.14 220) 100%
+  );
+  --gradient-text: linear-gradient(180deg, oklch(0.99 0.003 250) 0%, oklch(0.78 0.025 265) 100%);
+  --gradient-border: linear-gradient(
+    135deg,
+    oklch(0.7 0.2 300 / 60%),
+    oklch(0.72 0.16 240 / 30%) 50%,
+    oklch(0.78 0.14 220 / 60%)
+  );
   --shadow-elevated: 0 1px 0 0 oklch(1 0 0 / 6%) inset,
-                     0 20px 40px -20px oklch(0 0 0 / 60%);
-  --shadow-glow: 0 0 0 1px oklch(0.72 0.17 285 / 25%),
-                 0 20px 80px -20px oklch(0.72 0.17 285 / 35%);
+                     0 24px 48px -22px oklch(0 0 0 / 70%);
+  --shadow-glow: 0 0 0 1px oklch(0.7 0.18 285 / 30%),
+                 0 24px 90px -20px oklch(0.7 0.2 300 / 45%);
+  --shadow-glow-soft: 0 10px 40px -10px oklch(0.7 0.18 285 / 25%),
+                      0 4px 20px -6px oklch(0.78 0.14 220 / 20%);
 }
 
 .light {
@@ -117,8 +132,9 @@
   }
   body {
     background-image:
-      radial-gradient(80% 60% at 50% -10%, oklch(0.72 0.17 285 / 10%), transparent 60%),
-      radial-gradient(40% 30% at 90% 10%, oklch(0.78 0.14 245 / 8%), transparent 60%);
+      radial-gradient(70% 50% at 50% -10%, oklch(0.72 0.2 295 / 14%), transparent 65%),
+      radial-gradient(40% 30% at 92% 8%, oklch(0.78 0.14 225 / 10%), transparent 65%),
+      radial-gradient(35% 28% at 8% 95%, oklch(0.7 0.18 285 / 8%), transparent 65%);
     background-attachment: fixed;
   }
   h1, h2, h3, h4 {
