@@ -165,7 +165,7 @@ function Index() {
               to="/categories/$slug"
               params={{ slug: c.slug }}
               search={{ sort: "latest" as const }}
-              className="group gradient-border relative rounded-2xl border border-border bg-card/60 backdrop-blur p-5 hover:bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-glow-soft overflow-hidden"
+              className="group prompt-glow gradient-border relative rounded-2xl border border-border bg-card/60 backdrop-blur p-5 hover:bg-card transition-all duration-200 hover:-translate-y-0.5 overflow-hidden"
             >
               <div
                 aria-hidden
@@ -262,7 +262,7 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
     <Link
       to="/prompts/$slug"
       params={{ slug: p.slug }}
-      className="group gradient-border relative flex flex-col rounded-2xl border border-border bg-card/60 backdrop-blur hover:bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-glow-soft overflow-hidden"
+      className="group prompt-glow gradient-border relative flex flex-col rounded-2xl border border-border bg-card/60 backdrop-blur hover:bg-card transition-all duration-200 hover:-translate-y-0.5 overflow-hidden"
     >
       <div
         aria-hidden
