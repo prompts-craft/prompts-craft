@@ -222,7 +222,7 @@ export function Layout({ children }: { children: ReactNode }) {
         </div>
         <div className="border-t border-border/60">
           <div className="max-w-6xl mx-auto px-5 sm:px-6 py-5 text-xs text-muted-foreground flex flex-col sm:flex-row gap-2 justify-between">
-            <div>© {new Date().getFullYear()} PromptStack. Free for everyone.</div>
+            <div>© {new Date().getFullYear()} PromptCraft. Craft better prompts.</div>
             <div>Made for builders, teachers, and curious humans.</div>
           </div>
         </div>

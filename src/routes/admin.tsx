@@ -8,7 +8,7 @@ import { useAdminAuth } from "@/lib/admin-auth";
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Admin — PromptStack" },
+      { title: "Admin — PromptCraft" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),

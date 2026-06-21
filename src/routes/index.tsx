@@ -17,9 +17,9 @@ export const Route = createFileRoute("/")({
   },
   head: () => ({
     meta: [
-      { title: "PromptStack — AI Prompts for Real Work" },
+      { title: "PromptCraft — AI Prompts for Real Work" },
       { name: "description", content: "Browse and copy AI prompts for teachers, students, freelancers, marketers, and developers. Free, fast, no signup." },
-      { property: "og:title", content: "PromptStack — AI Prompts for Real Work" },
+      { property: "og:title", content: "PromptCraft — AI Prompts for Real Work" },
       { property: "og:description", content: "Browse and copy AI prompts for teachers, students, freelancers, marketers, and developers." },
       { property: "og:url", content: "/" },
     ],

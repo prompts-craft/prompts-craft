@@ -6,7 +6,7 @@ export const Route = createFileRoute("/blog")({
   component: BlogPage,
   head: () => ({
     meta: [
-      { title: "Blog — AI Prompt Guides & Tutorials | PromptStack" },
+      { title: "Blog — AI Prompt Guides & Tutorials | PromptCraft" },
       {
         name: "description",
         content:
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/blog")({
         content:
           "AI prompt guides, best AI prompts, ChatGPT tutorials, AI for productivity, AI for teachers, AI for students",
       },
-      { property: "og:title", content: "Blog — AI Prompt Guides | PromptStack" },
+      { property: "og:title", content: "Blog — AI Prompt Guides | PromptCraft" },
       {
         property: "og:description",
         content: "Practical AI prompt guides for real work — teaching, studying, freelancing, and productivity.",
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/blog")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Blog",
-          name: "PromptStack Blog",
+          name: "PromptCraft Blog",
           description: "AI prompt guides and tutorials.",
           blogPost: blogPosts.map((p) => ({
             "@type": "BlogPosting",
