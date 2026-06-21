@@ -1,11 +1,11 @@
-# PromptStack
+# PromptCraft
 
 > A free, curated library of AI prompts for teachers, students, freelancers, marketers, and developers. Copy in one click — no signup. A product of Nexura.
 
 ## Pages
 
 - [Home](/): Browse and search the prompt library.
-- [About](/about): What PromptStack is and who built it.
+- [About](/about): What PromptCraft is and who built it.
 - [Blog](/blog): Practical guides on using AI prompts for real work.
 
 ## Categories

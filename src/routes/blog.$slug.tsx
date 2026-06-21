@@ -22,7 +22,7 @@ export const Route = createFileRoute("/blog/$slug")({
   },
   head: ({ loaderData, params }) => {
     const p = loaderData?.post;
-    const title = p ? `${p.title} | PromptStack Blog` : "Blog";
+    const title = p ? `${p.title} | PromptCraft Blog` : "Blog";
     const desc = p?.description ?? "";
     return {
       meta: [

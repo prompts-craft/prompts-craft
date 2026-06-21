@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { Menu, X, Moon, Sun } from "lucide-react";
-import logoSrc from "@/assets/logo.png";
+import logoSymbol from "@/assets/logo-symbol.svg";
+import logoAsset from "@/assets/promptcraft-logo.png.asset.json";
 import { useTheme } from "@/hooks/use-theme";
 
 import { categories } from "@/data/prompts";
@@ -24,11 +25,14 @@ export function Layout({ children }: { children: ReactNode }) {
         <div className="max-w-6xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between gap-4">
           <Link
             to="/"
-            className="flex items-center gap-2.5 font-semibold tracking-tight shrink-0"
-            aria-label="PromptStack — Home"
+            className="flex items-center gap-2.5 font-semibold tracking-tight shrink-0 group"
+            aria-label="PromptCraft — Home"
           >
-            <img src={logoSrc} alt="PromptStack logo" className="w-8 h-8 rounded-lg shadow-glow" />
-            <span style={{ fontFamily: "var(--font-display)" }} className="text-lg tracking-wide">PromptStack</span>
+            <span className="relative inline-flex items-center justify-center">
+              <span aria-hidden className="absolute inset-0 rounded-xl bg-gradient-accent opacity-40 blur-md group-hover:opacity-70 transition" />
+              <img src={logoSymbol} alt="" className="relative w-9 h-9 rounded-xl ring-1 ring-border bg-card/60" />
+            </span>
+            <span style={{ fontFamily: "var(--font-display)" }} className="text-lg tracking-wide text-gradient">PromptCraft</span>
           </Link>
 
 
@@ -146,13 +150,19 @@ export function Layout({ children }: { children: ReactNode }) {
         <div className="max-w-6xl mx-auto px-5 sm:px-6 py-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <Link to="/" className="flex items-center gap-2 font-semibold tracking-tight">
-              <img src={logoSrc} alt="" className="w-6 h-6 rounded-md" />
-              <span style={{ fontFamily: "var(--font-display)" }}>PromptStack</span>
+              <img src={logoSymbol} alt="" className="w-7 h-7 rounded-md" />
+              <span style={{ fontFamily: "var(--font-display)" }} className="text-gradient">PromptCraft</span>
             </Link>
 
             <p className="text-sm text-muted-foreground mt-3 max-w-xs leading-relaxed">
-              A curated library of AI prompts for real work. Free, fast, no signup.
+              Craft better prompts. Get better results. A free, curated library of AI prompts for real work.
             </p>
+            <img
+              src={logoAsset.url}
+              alt="PromptCraft"
+              className="mt-5 w-32 opacity-80 hidden sm:block"
+              loading="lazy"
+            />
           </div>
 
           <div>
@@ -212,7 +222,7 @@ export function Layout({ children }: { children: ReactNode }) {
         </div>
         <div className="border-t border-border/60">
           <div className="max-w-6xl mx-auto px-5 sm:px-6 py-5 text-xs text-muted-foreground flex flex-col sm:flex-row gap-2 justify-between">
-            <div>© {new Date().getFullYear()} PromptStack. Free for everyone.</div>
+            <div>© {new Date().getFullYear()} PromptCraft. Craft better prompts.</div>
             <div>Made for builders, teachers, and curious humans.</div>
           </div>
         </div>

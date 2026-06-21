@@ -5,9 +5,9 @@ export const Route = createFileRoute("/about")({
   component: AboutPage,
   head: () => ({
     meta: [
-      { title: "About — PromptStack" },
-      { name: "description", content: "PromptStack is a Nexura product: a free library of AI prompts curated for working professionals." },
-      { property: "og:title", content: "About — PromptStack" },
+      { title: "About — PromptCraft" },
+      { name: "description", content: "PromptCraft is a Nexura product: a free library of AI prompts curated for working professionals." },
+      { property: "og:title", content: "About — PromptCraft" },
       { property: "og:description", content: "A Nexura product offering a free library of AI prompts curated for working professionals." },
       { property: "og:url", content: "/about" },
     ],
@@ -19,14 +19,14 @@ function AboutPage() {
   return (
     <Layout>
       <section className="max-w-2xl mx-auto px-6 pt-20 pb-20">
-        <h1 className="text-4xl font-semibold tracking-tight">About PromptStack</h1>
+        <h1 className="text-4xl font-semibold tracking-tight">About PromptCraft</h1>
         <div className="prose prose-invert mt-6 text-muted-foreground space-y-4 leading-relaxed">
           <p>
-            PromptStack is a free, curated library of AI prompts built for people who actually use them at work —
+            PromptCraft is a free, curated library of AI prompts built for people who actually use them at work —
             teachers, students, freelancers, marketers, and developers.
           </p>
           <p>
-            PromptStack is a product of Nexura, created to make practical AI workflows faster, cleaner, and easier
+            PromptCraft is a product of Nexura, created to make practical AI workflows faster, cleaner, and easier
             to use every day.
           </p>
           <p>

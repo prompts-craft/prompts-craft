@@ -72,17 +72,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "PromptStack — AI Prompts for Real Work" },
+      { title: "PromptCraft — AI Prompts for Real Work" },
       { name: "description", content: "A free, fast library of AI prompts for teachers, students, freelancers, marketers, and developers. Copy in one click." },
-      { name: "author", content: "PromptStack" },
+      { name: "author", content: "PromptCraft" },
       { name: "google-site-verification", content: "NOE0WRUtLxltYwHuBXkVLptXWbXDfSeMpxCIu-Gm10k" },
       { name: "google-site-verification", content: "thJYZpcCaPxb_pXXOvFxM7tXsmtaAXH6D3LmlFiohfk" },
-      { property: "og:title", content: "PromptStack — AI Prompts for Real Work" },
+      { property: "og:title", content: "PromptCraft — AI Prompts for Real Work" },
       { property: "og:description", content: "A free, fast library of AI prompts for teachers, students, freelancers, marketers, and developers. Copy in one click." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
 
-      { name: "twitter:title", content: "PromptStack — AI Prompts for Real Work" },
+      { name: "twitter:title", content: "PromptCraft — AI Prompts for Real Work" },
       { name: "twitter:description", content: "A free, fast library of AI prompts for teachers, students, freelancers, marketers, and developers. Copy in one click." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/450bd2af-83f3-4dee-9482-d832b37a14f9/id-preview-3a7afdaf--702da085-c506-491c-8b0b-5056c5824bc7.lovable.app-1779113020795.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/450bd2af-83f3-4dee-9482-d832b37a14f9/id-preview-3a7afdaf--702da085-c506-491c-8b0b-5056c5824bc7.lovable.app-1779113020795.png" },
@@ -99,7 +99,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "PromptStack",
+          name: "PromptCraft",
           url: "https://instant-prompt-box.lovable.app",
           description: "A free library of AI prompts for teachers, students, freelancers, marketers, and developers.",
           potentialAction: {
@@ -119,7 +119,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           logo: "https://instant-prompt-box.lovable.app/favicon.svg",
           brand: {
             "@type": "Brand",
-            name: "PromptStack",
+            name: "PromptCraft",
           },
         }),
       },

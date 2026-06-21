@@ -17,9 +17,9 @@ export const Route = createFileRoute("/")({
   },
   head: () => ({
     meta: [
-      { title: "PromptStack — AI Prompts for Real Work" },
+      { title: "PromptCraft — AI Prompts for Real Work" },
       { name: "description", content: "Browse and copy AI prompts for teachers, students, freelancers, marketers, and developers. Free, fast, no signup." },
-      { property: "og:title", content: "PromptStack — AI Prompts for Real Work" },
+      { property: "og:title", content: "PromptCraft — AI Prompts for Real Work" },
       { property: "og:description", content: "Browse and copy AI prompts for teachers, students, freelancers, marketers, and developers." },
       { property: "og:url", content: "/" },
     ],
@@ -68,21 +68,23 @@ function Index() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 grid-pattern pointer-events-none" />
-        <div aria-hidden className="absolute inset-x-0 -top-20 h-[520px] bg-hero-glow pointer-events-none" />
+        <div aria-hidden className="absolute inset-x-0 -top-20 h-[560px] bg-hero-glow pointer-events-none" />
+        <div aria-hidden className="glow-orb w-[420px] h-[420px] left-[-120px] top-24 bg-[oklch(0.7_0.2_300)]" />
+        <div aria-hidden className="glow-orb w-[360px] h-[360px] right-[-100px] top-10 bg-[oklch(0.78_0.14_220)]" />
         <div className="relative max-w-3xl mx-auto px-6 pt-24 sm:pt-32 pb-20 text-center">
-          <div className="inline-flex items-center gap-2 text-xs text-muted-foreground border border-border/80 bg-card/50 backdrop-blur rounded-full pl-2 pr-3 py-1 mb-8">
+          <div className="inline-flex items-center gap-2 text-xs text-muted-foreground border border-border/80 bg-card/50 backdrop-blur rounded-full pl-2 pr-3 py-1 mb-8 shadow-glow-soft">
             <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-medium text-accent bg-accent-soft px-2 py-0.5 rounded-full">
               <Sparkles className="w-3 h-3" /> New
             </span>
             <span>{prompts.length} prompts · no signup required</span>
           </div>
           <h1 className="text-5xl sm:text-7xl font-semibold tracking-tight leading-[1.02] text-gradient">
-            AI Prompts for
+            Craft Better Prompts.
             <br />
-            <span className="text-gradient-accent">Real Work.</span>
+            <span className="text-gradient-accent">Get Better Results.</span>
           </h1>
           <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            A curated library of high-leverage prompts for the work you actually ship.
+            A curated library of high-leverage AI prompts for the work you actually ship.
             Find one, copy it, move on.
           </p>
 
@@ -163,13 +165,13 @@ function Index() {
               to="/categories/$slug"
               params={{ slug: c.slug }}
               search={{ sort: "latest" as const }}
-              className="group relative rounded-2xl border border-border bg-card/60 backdrop-blur p-5 hover:border-accent/40 hover:bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevated overflow-hidden"
+              className="group gradient-border relative rounded-2xl border border-border bg-card/60 backdrop-blur p-5 hover:bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-glow-soft overflow-hidden"
             >
               <div
                 aria-hidden
                 className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent opacity-0 group-hover:opacity-100 transition"
               />
-              <div className="inline-flex w-10 h-10 items-center justify-center rounded-xl bg-accent-soft text-accent mb-4 group-hover:scale-105 transition-transform">
+              <div className="inline-flex w-10 h-10 items-center justify-center rounded-xl bg-gradient-accent text-primary-foreground mb-4 group-hover:scale-105 transition-transform shadow-glow-soft">
                 <CategoryIcon slug={c.slug} className="w-5 h-5" />
               </div>
               <div className="font-medium">{c.name}</div>
@@ -260,7 +262,7 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
     <Link
       to="/prompts/$slug"
       params={{ slug: p.slug }}
-      className="group relative flex flex-col rounded-2xl border border-border bg-card/60 backdrop-blur hover:border-accent/40 hover:bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevated overflow-hidden"
+      className="group gradient-border relative flex flex-col rounded-2xl border border-border bg-card/60 backdrop-blur hover:bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-glow-soft overflow-hidden"
     >
       <div
         aria-hidden

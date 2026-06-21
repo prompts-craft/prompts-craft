@@ -16,7 +16,7 @@ export const Route = createFileRoute("/prompts/$slug")({
   },
   head: ({ loaderData, params }) => {
     const p = loaderData?.prompt;
-    const title = p ? `${p.title} | PromptStack` : "Prompt";
+    const title = p ? `${p.title} | PromptCraft` : "Prompt";
     const desc = p?.description ?? `Copy the "${p?.title}" AI prompt instantly. Free, no signup.`;
     return {
       meta: [
