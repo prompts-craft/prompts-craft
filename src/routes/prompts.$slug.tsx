@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { CopyButton } from "@/components/CopyButton";
+import { OpenInAIButtons } from "@/components/OpenInAIButtons";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { RouteError } from "@/components/RouteError";
 import { getCategory } from "@/data/prompts";
@@ -157,6 +158,8 @@ function PromptPage() {
             </div>
           </div>
         </div>
+
+        <OpenInAIButtons prompt={prompt.prompt} />
 
         {/* Example */}
         {prompt.example && (
