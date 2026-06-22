@@ -118,21 +118,21 @@ function PromptPage() {
           </div>
         )}
 
-        {prompt.image_url && (
-          <figure className="mt-10 rounded-2xl overflow-hidden border border-border bg-card/60 shadow-elevated">
-            <img
-              src={prompt.image_url}
-              alt={`Example result for: ${prompt.title}`}
-              loading="lazy"
-              width={1024}
-              height={640}
-              className="w-full h-auto object-cover"
-            />
+        <figure className="mt-10 rounded-2xl overflow-hidden border border-border bg-card/60 shadow-elevated">
+          <img
+            src={promptThumb(prompt.image_url)}
+            alt={`Example result for: ${prompt.title}`}
+            loading="lazy"
+            width={1024}
+            height={640}
+            className="w-full h-auto object-cover"
+          />
+          {prompt.image_url && (
             <figcaption className="px-5 py-2.5 text-xs text-muted-foreground border-t border-border/60 bg-background/40">
               Example result generated from this prompt.
             </figcaption>
-          </figure>
-        )}
+          )}
+        </figure>
 
         {/* Prompt box — main focus */}
         <div className="relative mt-10 rounded-2xl p-px bg-gradient-to-br from-accent/40 via-border to-border shadow-elevated">
