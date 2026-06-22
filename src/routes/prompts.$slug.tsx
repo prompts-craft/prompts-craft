@@ -7,6 +7,7 @@ import { CategoryIcon } from "@/components/CategoryIcon";
 import { RouteError } from "@/components/RouteError";
 import { getCategory } from "@/data/prompts";
 import { fetchPromptBySlug, fetchRelated, type Prompt } from "@/lib/prompts-api";
+import { promptThumb } from "@/lib/default-thumb";
 
 export const Route = createFileRoute("/prompts/$slug")({
   loader: async ({ params }) => {
