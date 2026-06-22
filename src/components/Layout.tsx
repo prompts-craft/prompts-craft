@@ -10,7 +10,7 @@ import { categories } from "@/data/prompts";
 
 export function Layout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
-  const { theme, toggle } = useTheme();
+  const { theme, toggle, mounted } = useTheme();
 
 
   return (
