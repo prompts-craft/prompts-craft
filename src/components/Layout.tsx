@@ -4,12 +4,13 @@ import { Menu, X, Moon, Sun } from "lucide-react";
 import logoSymbol from "@/assets/logo-symbol.svg";
 import logoAsset from "@/assets/promptcraft-logo.png.asset.json";
 import { useTheme } from "@/hooks/use-theme";
+import { SocialLinks } from "@/components/SocialLinks";
 
 import { categories } from "@/data/prompts";
 
 export function Layout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
-  const { theme, toggle } = useTheme();
+  const { theme, toggle, mounted } = useTheme();
 
 
   return (
@@ -34,6 +35,10 @@ export function Layout({ children }: { children: ReactNode }) {
             </span>
             <span style={{ fontFamily: "var(--font-display)" }} className="text-lg tracking-wide text-gradient">PromptCraft</span>
           </Link>
+
+          <div className="hidden sm:flex items-center gap-1.5 ml-2">
+            <SocialLinks size="sm" />
+          </div>
 
 
           <nav
@@ -71,7 +76,7 @@ export function Layout({ children }: { children: ReactNode }) {
               aria-label="Toggle theme"
               className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-card/60 text-foreground hover:border-accent/50 hover:bg-card transition"
             >
-              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {mounted ? theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" /> : <span className="w-4 h-4" />}
             </button>
             <Link
               to="/categories/$slug"
@@ -90,7 +95,7 @@ export function Layout({ children }: { children: ReactNode }) {
               aria-label="Toggle theme"
               className="inline-flex items-center justify-center w-9 h-9 rounded-md border border-border bg-card/60"
             >
-              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {mounted ? theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" /> : <span className="w-4 h-4" />}
             </button>
           </div>
 
@@ -157,6 +162,11 @@ export function Layout({ children }: { children: ReactNode }) {
             <p className="text-sm text-muted-foreground mt-3 max-w-xs leading-relaxed">
               Craft better prompts. Get better results. A free, curated library of AI prompts for real work.
             </p>
+
+            <div className="mt-4">
+              <SocialLinks size="sm" />
+            </div>
+
             <img
               src={logoAsset.url}
               alt="PromptCraft"

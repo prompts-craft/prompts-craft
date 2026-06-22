@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
+import { SocialLinks } from "@/components/SocialLinks";
 
 export const Route = createFileRoute("/about")({
   component: AboutPage,
@@ -39,6 +40,13 @@ function AboutPage() {
           <p>
             Have a prompt you swear by? <Link to="/" className="text-accent">Send it in</Link>.
           </p>
+        </div>
+
+        <div className="mt-12">
+          <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-4">
+            Follow us
+          </div>
+          <SocialLinks size="lg" />
         </div>
       </section>
     </Layout>
