@@ -8,6 +8,7 @@ import { CategoryIcon } from "@/components/CategoryIcon";
 import { RouteError } from "@/components/RouteError";
 import { categories } from "@/data/prompts";
 import { fetchAllPrompts, type Prompt } from "@/lib/prompts-api";
+import { promptThumb } from "@/lib/default-thumb";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/")({
