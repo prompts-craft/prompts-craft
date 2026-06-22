@@ -159,6 +159,10 @@ function PromptPage() {
           </div>
         </div>
 
+        <OpenInAIButtons prompt={prompt.prompt} />
+          </div>
+        </div>
+
         {/* Example */}
         {prompt.example && (
           <section className="mt-14">
