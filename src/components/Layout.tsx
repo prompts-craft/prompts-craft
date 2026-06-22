@@ -36,6 +36,10 @@ export function Layout({ children }: { children: ReactNode }) {
             <span style={{ fontFamily: "var(--font-display)" }} className="text-lg tracking-wide text-gradient">PromptCraft</span>
           </Link>
 
+          <div className="hidden sm:flex items-center gap-1.5 ml-2">
+            <SocialLinks size="sm" />
+          </div>
+
 
           <nav
             className="hidden sm:flex items-center gap-7 text-sm text-muted-foreground"
@@ -158,6 +162,11 @@ export function Layout({ children }: { children: ReactNode }) {
             <p className="text-sm text-muted-foreground mt-3 max-w-xs leading-relaxed">
               Craft better prompts. Get better results. A free, curated library of AI prompts for real work.
             </p>
+
+            <div className="mt-4">
+              <SocialLinks size="sm" />
+            </div>
+
             <img
               src={logoAsset.url}
               alt="PromptCraft"
