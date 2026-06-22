@@ -160,8 +160,6 @@ function PromptPage() {
         </div>
 
         <OpenInAIButtons prompt={prompt.prompt} />
-          </div>
-        </div>
 
         {/* Example */}
         {prompt.example && (
