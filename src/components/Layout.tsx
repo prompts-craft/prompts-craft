@@ -76,7 +76,7 @@ export function Layout({ children }: { children: ReactNode }) {
               aria-label="Toggle theme"
               className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-card/60 text-foreground hover:border-accent/50 hover:bg-card transition"
             >
-              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {mounted ? theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" /> : <span className="w-4 h-4" />}
             </button>
             <Link
               to="/categories/$slug"
