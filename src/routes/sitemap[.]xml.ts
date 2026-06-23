@@ -4,7 +4,7 @@ import { categories } from "@/data/prompts";
 import { blogPosts } from "@/data/blog-posts";
 import { fetchAllPrompts } from "@/lib/prompts-api";
 
-const BASE_URL = "https://prompts-stack.lovable.app";
+const BASE_URL = "https://prompts-craft.lovable.app";
 
 interface SitemapEntry {
   path: string;

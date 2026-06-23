@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://prompts-stack.lovable.app/sitemap.xml
+Sitemap: https://prompts-craft.lovable.app/sitemap.xml
