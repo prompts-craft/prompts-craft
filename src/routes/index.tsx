@@ -263,13 +263,13 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
     <Link
       to="/prompts/$slug"
       params={{ slug: p.slug }}
-      className="group prompt-glow gradient-border relative flex flex-col rounded-2xl border border-border bg-card/60 backdrop-blur hover:bg-card transition-all duration-200 hover:-translate-y-0.5 overflow-hidden"
+      className="group prompt-glow gradient-border relative mb-4 break-inside-avoid flex flex-col rounded-2xl border border-border bg-card/60 backdrop-blur hover:bg-card transition-all duration-200 hover:-translate-y-0.5 overflow-hidden"
     >
       <div
         aria-hidden
         className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent opacity-0 group-hover:opacity-100 transition"
       />
-      <div className="aspect-[16/10] w-full overflow-hidden border-b border-border/60 bg-muted/40">
+      <div className="w-full overflow-hidden border-b border-border/60 bg-muted/40">
         <img
           src={promptThumb(p.image_url)}
           alt={`Result of: ${p.title}`}
