@@ -198,7 +198,7 @@ function Index() {
         ) : trending.length === 0 ? (
           <EmptyState message="No trending prompts yet." />
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
             {trending.map((p) => (
               <PromptCard key={p.slug} prompt={p} />
             ))}
