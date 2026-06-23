@@ -219,7 +219,7 @@ function Index() {
         ) : latest.length === 0 ? (
           <EmptyState message="No prompts yet — check back soon." />
         ) : (
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="columns-1 md:columns-2 gap-4 [column-fill:_balance]">
             {latest.map((p) => (
               <PromptCard key={p.slug} prompt={p} />
             ))}
