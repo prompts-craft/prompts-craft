@@ -142,7 +142,7 @@ function CategoryPage() {
             No prompts in this category yet.
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
             {prompts.map((p: Prompt) => (
               <PromptCard key={p.slug} prompt={p} />
             ))}
