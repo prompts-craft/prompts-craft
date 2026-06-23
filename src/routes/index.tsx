@@ -274,9 +274,7 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
           src={promptThumb(p.image_url)}
           alt={`Result of: ${p.title}`}
           loading="lazy"
-          width={1024}
-          height={640}
-          className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+          className="w-full h-auto block group-hover:scale-[1.02] transition-transform duration-300"
         />
       </div>
       <div className="flex flex-col p-5">
