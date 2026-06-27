@@ -57,7 +57,7 @@ export async function fetchPromptBySlug(slug: string): Promise<Prompt | null> {
   return (data ?? null) as Prompt | null;
 }
 
-export async function fetchRelated(category: string, excludeSlug: string, n = 3): Promise<Prompt[]> {
+export async function fetchRelated(category: string, excludeSlug: string, n = 10): Promise<Prompt[]> {
   const { data, error } = await supabase
     .from("prompts")
     .select("*")
@@ -65,5 +65,15 @@ export async function fetchRelated(category: string, excludeSlug: string, n = 3)
     .neq("slug", excludeSlug)
     .limit(n);
   if (error) throw error;
-  return (data ?? []) as Prompt[];
+  let rows = (data ?? []) as Prompt[];
+  if (rows.length < n) {
+    const { data: extra } = await supabase
+      .from("prompts")
+      .select("*")
+      .neq("category", category)
+      .neq("slug", excludeSlug)
+      .limit(n - rows.length);
+    rows = [...rows, ...((extra ?? []) as Prompt[])];
+  }
+  return rows;
 }
