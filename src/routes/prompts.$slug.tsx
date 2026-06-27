@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Sparkles, Image as ImageIcon, Gauge, Palette, Layers, BookOpen, Calendar, User } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { CopyButton } from "@/components/CopyButton";
 import { OpenInAIButtons } from "@/components/OpenInAIButtons";
@@ -8,49 +8,115 @@ import { RouteError } from "@/components/RouteError";
 import { getCategory } from "@/data/prompts";
 import { fetchPromptBySlug, fetchRelated, type Prompt } from "@/lib/prompts-api";
 import { promptThumb } from "@/lib/default-thumb";
+import {
+  getPromptDetails,
+  getHowToUse,
+  getExampleOutputSummary,
+  getCustomizationTips,
+  getFaqs,
+  getSeoKeywords,
+} from "@/lib/prompt-content";
+
+const SITE_URL = "https://prompts-craft.lovable.app";
 
 export const Route = createFileRoute("/prompts/$slug")({
   loader: async ({ params }) => {
     const prompt = await fetchPromptBySlug(params.slug);
     if (!prompt) throw notFound();
-    const [category, related] = [getCategory(prompt.category), await fetchRelated(prompt.category, prompt.slug)];
+    const [category, related] = [getCategory(prompt.category), await fetchRelated(prompt.category, prompt.slug, 12)];
     return { prompt, category, related };
   },
   head: ({ loaderData, params }) => {
     const p = loaderData?.prompt;
-    const title = p ? `${p.title} | PromptCraft` : "Prompt";
-    const desc = p?.description ?? `Copy the "${p?.title}" AI prompt instantly. Free, no signup.`;
+    if (!p) {
+      return { meta: [{ title: "Prompt" }] };
+    }
+    const title = `${p.title} — Free AI Prompt | PromptCraft`;
+    const desc =
+      (p.description ?? `Copy the "${p.title}" AI prompt instantly.`).slice(0, 155) +
+      ` Free, one-click copy. Works with GPT-4o, Claude, Midjourney & more.`;
+    const url = `${SITE_URL}/prompts/${params.slug}`;
+    const image = p.image_url ?? `${SITE_URL}/og-default.jpg`;
+    const keywords = getSeoKeywords(p).join(", ");
+    const faqs = getFaqs(p);
+    const category = getCategory(p.category);
+
     return {
       meta: [
         { title },
         { name: "description", content: desc },
-        { name: "keywords", content: p ? [...p.tags, "AI prompt", p.category].join(", ") : "AI prompt" },
-        { property: "og:title", content: p?.title ?? "" },
+        { name: "keywords", content: keywords },
+        { property: "og:title", content: p.title },
         { property: "og:description", content: desc },
         { property: "og:type", content: "article" },
-        { property: "og:url", content: `/prompts/${params.slug}` },
+        { property: "og:url", content: url },
+        { property: "og:image", content: image },
         { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: p?.title ?? "" },
+        { name: "twitter:title", content: p.title },
         { name: "twitter:description", content: desc },
+        { name: "twitter:image", content: image },
       ],
-      links: [{ rel: "canonical", href: `/prompts/${params.slug}` }],
-      scripts: p
-        ? [
-            {
-              type: "application/ld+json",
-              children: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "Article",
-                headline: p.title,
-                description: desc,
-                keywords: p.tags.join(", "),
-                datePublished: p.created_at,
-                articleSection: p.category,
-                url: `/prompts/${params.slug}`,
-              }),
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: p.title,
+            description: desc,
+            image: [image],
+            keywords,
+            datePublished: p.created_at,
+            dateModified: p.created_at,
+            articleSection: category?.name ?? p.category,
+            author: { "@type": "Organization", name: "PromptCraft" },
+            publisher: {
+              "@type": "Organization",
+              name: "PromptCraft",
+              logo: { "@type": "ImageObject", url: `${SITE_URL}/favicon.svg` },
             },
-          ]
-        : [],
+            mainEntityOfPage: { "@type": "WebPage", "@id": url },
+            url,
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+              ...(category
+                ? [{ "@type": "ListItem", position: 2, name: category.name, item: `${SITE_URL}/categories/${category.slug}` }]
+                : []),
+              { "@type": "ListItem", position: category ? 3 : 2, name: p.title, item: url },
+            ],
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqs.map((f) => ({
+              "@type": "Question",
+              name: f.q,
+              acceptedAnswer: { "@type": "Answer", text: f.a },
+            })),
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "PromptCraft",
+            url: SITE_URL,
+            logo: `${SITE_URL}/favicon.svg`,
+          }),
+        },
+      ],
     };
   },
   errorComponent: ({ error, reset }) => (
@@ -71,6 +137,16 @@ export const Route = createFileRoute("/prompts/$slug")({
 
 function PromptPage() {
   const { prompt, category, related } = Route.useLoaderData();
+  const details = getPromptDetails(prompt);
+  const howTo = getHowToUse(prompt);
+  const exampleSummary = getExampleOutputSummary(prompt);
+  const tips = getCustomizationTips(prompt);
+  const faqs = getFaqs(prompt);
+  const updated = new Date(prompt.created_at).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <Layout>
@@ -162,17 +238,84 @@ function PromptPage() {
 
         <OpenInAIButtons prompt={prompt.prompt} />
 
-        {/* Example */}
-        {prompt.example && (
-          <section className="mt-14">
-            <h2 className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-3">
-              Example output
-            </h2>
-            <div className="rounded-2xl border border-border bg-card/60 backdrop-blur p-6">
+        {/* How to Use */}
+        <section className="mt-14">
+          <h2 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-accent" /> How to Use This Prompt
+          </h2>
+          <div className="mt-4 space-y-4 text-[15px] leading-relaxed text-muted-foreground">
+            {howTo.map((para, i) => (
+              <p key={i}>{para}</p>
+            ))}
+          </div>
+        </section>
+
+        {/* Example Output */}
+        <section className="mt-12">
+          <h2 className="text-2xl font-semibold tracking-tight">Example Output</h2>
+          <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">{exampleSummary}</p>
+          {prompt.example && (
+            <div className="mt-4 rounded-2xl border border-border bg-card/60 backdrop-blur p-6">
               <pre className="text-sm whitespace-pre-wrap leading-relaxed text-muted-foreground">{prompt.example}</pre>
             </div>
-          </section>
-        )}
+          )}
+        </section>
+
+        {/* Prompt Details Card */}
+        <section className="mt-12">
+          <h2 className="text-2xl font-semibold tracking-tight">Prompt Details</h2>
+          <div className="mt-4 rounded-2xl border border-border bg-card/60 backdrop-blur p-6 grid sm:grid-cols-2 gap-5">
+            <DetailRow icon={<Sparkles className="w-4 h-4" />} label="Best AI Models" value={details.bestModels.join(" · ")} />
+            <DetailRow icon={<ImageIcon className="w-4 h-4" />} label="Aspect Ratio" value={details.aspectRatio} />
+            <DetailRow icon={<Palette className="w-4 h-4" />} label="Style" value={details.style} />
+            <DetailRow icon={<Layers className="w-4 h-4" />} label="Quality" value={details.quality} />
+            <DetailRow icon={<Gauge className="w-4 h-4" />} label="Difficulty" value={details.difficulty} />
+            {category && (
+              <DetailRow icon={<CategoryIcon slug={category.slug} className="w-4 h-4" />} label="Category" value={category.name} />
+            )}
+          </div>
+        </section>
+
+        {/* Customization Tips */}
+        <section className="mt-12">
+          <h2 className="text-2xl font-semibold tracking-tight">Customization Tips</h2>
+          <ul className="mt-4 space-y-2.5 text-[15px] text-muted-foreground">
+            {tips.map((tip, i) => (
+              <li key={i} className="flex gap-3 leading-relaxed">
+                <span className="mt-2 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                <span>{tip}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* FAQ */}
+        <section className="mt-12">
+          <h2 className="text-2xl font-semibold tracking-tight">Frequently Asked Questions</h2>
+          <div className="mt-4 divide-y divide-border/60 rounded-2xl border border-border bg-card/60 backdrop-blur">
+            {faqs.map((f, i) => (
+              <details key={i} className="group p-5">
+                <summary className="cursor-pointer font-medium text-foreground/90 list-none flex items-center justify-between">
+                  <span>{f.q}</span>
+                  <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90 opacity-60" />
+                </summary>
+                <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        {/* Author & Last Updated */}
+        <section className="mt-12 rounded-2xl border border-border bg-card/60 backdrop-blur p-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <User className="w-4 h-4 text-accent" />
+            <span>By <span className="text-foreground/90 font-medium">PromptCraft Team</span></span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-accent" />
+            <span>Last updated: <span className="text-foreground/90">{updated}</span></span>
+          </div>
+        </section>
 
         {/* Related */}
         {related.length > 0 && (
@@ -199,5 +342,19 @@ function PromptPage() {
         )}
       </article>
     </Layout>
+  );
+}
+
+function DetailRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  return (
+    <div className="flex items-start gap-3">
+      <span className="mt-0.5 inline-flex items-center justify-center w-8 h-8 rounded-lg bg-accent-soft text-accent shrink-0">
+        {icon}
+      </span>
+      <div className="min-w-0">
+        <div className="text-xs uppercase tracking-wider text-muted-foreground">{label}</div>
+        <div className="text-sm text-foreground/90 mt-0.5 break-words">{value}</div>
+      </div>
+    </div>
   );
 }
