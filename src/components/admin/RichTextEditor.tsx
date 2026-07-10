@@ -27,10 +27,10 @@ export function RichTextEditor({
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ heading: { levels: [1, 2, 3, 4, 5, 6] } }),
-      Link.configure({ openOnClick: false, HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" } }),
-      Image.configure({ inline: false, allowBase64: false }),
-      Youtube.configure({ width: 640, height: 360, nocookie: true }),
-      Table.configure({ resizable: true }),
+      TiptapLink.configure({ openOnClick: false, HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" } }),
+      TiptapImage.configure({ inline: false, allowBase64: false }),
+      TiptapYoutube.configure({ width: 640, height: 360, nocookie: true }),
+      TiptapTable.configure({ resizable: true }),
       TableRow,
       TableHeader,
       TableCell,
