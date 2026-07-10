@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
-import { LayoutDashboard, ListChecks, Plus, LogOut, Sparkles, Layers, Activity, UserPlus, Upload } from "lucide-react";
+import { LayoutDashboard, ListChecks, Plus, LogOut, Sparkles, Layers, Activity, UserPlus, Upload, FileText } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminAuth } from "@/lib/admin-auth";
@@ -47,6 +47,7 @@ function AdminLayout({ email, isSuperAdmin }: { email: string | null; isSuperAdm
     { to: "/admin/prompts/new", label: "New Prompt", icon: Plus },
     { to: "/admin/categories", label: "Categories", icon: Layers },
     { to: "/admin/import", label: "Import XLSX", icon: Upload },
+    { to: "/admin/blogs", label: "Blogs", icon: FileText },
     ...(isSuperAdmin
       ? [
           { to: "/admin/activity", label: "Activity Log", icon: Activity },
