@@ -1,9 +1,9 @@
 import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { Link } from "@tiptap/extension-link";
-import { Image } from "@tiptap/extension-image";
-import { Youtube } from "@tiptap/extension-youtube";
-import { Table } from "@tiptap/extension-table";
+import { Link as TiptapLink } from "@tiptap/extension-link";
+import { Image as TiptapImage } from "@tiptap/extension-image";
+import { Youtube as TiptapYoutube } from "@tiptap/extension-youtube";
+import { Table as TiptapTable } from "@tiptap/extension-table";
 import { TableRow } from "@tiptap/extension-table-row";
 import { TableCell } from "@tiptap/extension-table-cell";
 import { TableHeader } from "@tiptap/extension-table-header";
