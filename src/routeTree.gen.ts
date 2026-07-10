@@ -22,9 +22,12 @@ import { Route as AdminRequestsRouteImport } from './routes/admin.requests'
 import { Route as AdminPromptsRouteImport } from './routes/admin.prompts'
 import { Route as AdminImportRouteImport } from './routes/admin.import'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
+import { Route as AdminBlogsRouteImport } from './routes/admin.blogs'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as AdminPromptsNewRouteImport } from './routes/admin.prompts.new'
 import { Route as AdminPromptsIdRouteImport } from './routes/admin.prompts.$id'
+import { Route as AdminBlogsNewRouteImport } from './routes/admin.blogs.new'
+import { Route as AdminBlogsIdRouteImport } from './routes/admin.blogs.$id'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -91,6 +94,11 @@ const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
   path: '/categories',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBlogsRoute = AdminBlogsRouteImport.update({
+  id: '/blogs',
+  path: '/blogs',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminActivityRoute = AdminActivityRouteImport.update({
   id: '/activity',
   path: '/activity',
@@ -106,6 +114,16 @@ const AdminPromptsIdRoute = AdminPromptsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AdminPromptsRoute,
 } as any)
+const AdminBlogsNewRoute = AdminBlogsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminBlogsRoute,
+} as any)
+const AdminBlogsIdRoute = AdminBlogsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminBlogsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -114,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/activity': typeof AdminActivityRoute
+  '/admin/blogs': typeof AdminBlogsRouteWithChildren
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/prompts': typeof AdminPromptsRouteWithChildren
@@ -122,6 +141,8 @@ export interface FileRoutesByFullPath {
   '/categories/$slug': typeof CategoriesSlugRoute
   '/prompts/$slug': typeof PromptsSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/blogs/$id': typeof AdminBlogsIdRoute
+  '/admin/blogs/new': typeof AdminBlogsNewRoute
   '/admin/prompts/$id': typeof AdminPromptsIdRoute
   '/admin/prompts/new': typeof AdminPromptsNewRoute
 }
@@ -131,6 +152,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/activity': typeof AdminActivityRoute
+  '/admin/blogs': typeof AdminBlogsRouteWithChildren
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/prompts': typeof AdminPromptsRouteWithChildren
@@ -139,6 +161,8 @@ export interface FileRoutesByTo {
   '/categories/$slug': typeof CategoriesSlugRoute
   '/prompts/$slug': typeof PromptsSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/blogs/$id': typeof AdminBlogsIdRoute
+  '/admin/blogs/new': typeof AdminBlogsNewRoute
   '/admin/prompts/$id': typeof AdminPromptsIdRoute
   '/admin/prompts/new': typeof AdminPromptsNewRoute
 }
@@ -150,6 +174,7 @@ export interface FileRoutesById {
   '/blog': typeof BlogRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/activity': typeof AdminActivityRoute
+  '/admin/blogs': typeof AdminBlogsRouteWithChildren
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/prompts': typeof AdminPromptsRouteWithChildren
@@ -158,6 +183,8 @@ export interface FileRoutesById {
   '/categories/$slug': typeof CategoriesSlugRoute
   '/prompts/$slug': typeof PromptsSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/blogs/$id': typeof AdminBlogsIdRoute
+  '/admin/blogs/new': typeof AdminBlogsNewRoute
   '/admin/prompts/$id': typeof AdminPromptsIdRoute
   '/admin/prompts/new': typeof AdminPromptsNewRoute
 }
@@ -170,6 +197,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/sitemap.xml'
     | '/admin/activity'
+    | '/admin/blogs'
     | '/admin/categories'
     | '/admin/import'
     | '/admin/prompts'
@@ -178,6 +206,8 @@ export interface FileRouteTypes {
     | '/categories/$slug'
     | '/prompts/$slug'
     | '/admin/'
+    | '/admin/blogs/$id'
+    | '/admin/blogs/new'
     | '/admin/prompts/$id'
     | '/admin/prompts/new'
   fileRoutesByTo: FileRoutesByTo
@@ -187,6 +217,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/sitemap.xml'
     | '/admin/activity'
+    | '/admin/blogs'
     | '/admin/categories'
     | '/admin/import'
     | '/admin/prompts'
@@ -195,6 +226,8 @@ export interface FileRouteTypes {
     | '/categories/$slug'
     | '/prompts/$slug'
     | '/admin'
+    | '/admin/blogs/$id'
+    | '/admin/blogs/new'
     | '/admin/prompts/$id'
     | '/admin/prompts/new'
   id:
@@ -205,6 +238,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/sitemap.xml'
     | '/admin/activity'
+    | '/admin/blogs'
     | '/admin/categories'
     | '/admin/import'
     | '/admin/prompts'
@@ -213,6 +247,8 @@ export interface FileRouteTypes {
     | '/categories/$slug'
     | '/prompts/$slug'
     | '/admin/'
+    | '/admin/blogs/$id'
+    | '/admin/blogs/new'
     | '/admin/prompts/$id'
     | '/admin/prompts/new'
   fileRoutesById: FileRoutesById
@@ -320,6 +356,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCategoriesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/blogs': {
+      id: '/admin/blogs'
+      path: '/blogs'
+      fullPath: '/admin/blogs'
+      preLoaderRoute: typeof AdminBlogsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/activity': {
       id: '/admin/activity'
       path: '/activity'
@@ -341,8 +384,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPromptsIdRouteImport
       parentRoute: typeof AdminPromptsRoute
     }
+    '/admin/blogs/new': {
+      id: '/admin/blogs/new'
+      path: '/new'
+      fullPath: '/admin/blogs/new'
+      preLoaderRoute: typeof AdminBlogsNewRouteImport
+      parentRoute: typeof AdminBlogsRoute
+    }
+    '/admin/blogs/$id': {
+      id: '/admin/blogs/$id'
+      path: '/$id'
+      fullPath: '/admin/blogs/$id'
+      preLoaderRoute: typeof AdminBlogsIdRouteImport
+      parentRoute: typeof AdminBlogsRoute
+    }
   }
 }
+
+interface AdminBlogsRouteChildren {
+  AdminBlogsIdRoute: typeof AdminBlogsIdRoute
+  AdminBlogsNewRoute: typeof AdminBlogsNewRoute
+}
+
+const AdminBlogsRouteChildren: AdminBlogsRouteChildren = {
+  AdminBlogsIdRoute: AdminBlogsIdRoute,
+  AdminBlogsNewRoute: AdminBlogsNewRoute,
+}
+
+const AdminBlogsRouteWithChildren = AdminBlogsRoute._addFileChildren(
+  AdminBlogsRouteChildren,
+)
 
 interface AdminPromptsRouteChildren {
   AdminPromptsIdRoute: typeof AdminPromptsIdRoute
@@ -360,6 +431,7 @@ const AdminPromptsRouteWithChildren = AdminPromptsRoute._addFileChildren(
 
 interface AdminRouteChildren {
   AdminActivityRoute: typeof AdminActivityRoute
+  AdminBlogsRoute: typeof AdminBlogsRouteWithChildren
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminImportRoute: typeof AdminImportRoute
   AdminPromptsRoute: typeof AdminPromptsRouteWithChildren
@@ -369,6 +441,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminActivityRoute: AdminActivityRoute,
+  AdminBlogsRoute: AdminBlogsRouteWithChildren,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminImportRoute: AdminImportRoute,
   AdminPromptsRoute: AdminPromptsRouteWithChildren,
