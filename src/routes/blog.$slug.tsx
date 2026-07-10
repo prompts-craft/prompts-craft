@@ -180,7 +180,7 @@ function BlogPostPage() {
 
         {post.tags.length > 0 && (
           <div className="mt-10 flex flex-wrap gap-2">
-            {post.tags.map((t) => (
+            {post.tags.map((t: string) => (
               <span
                 key={t}
                 className="text-xs px-2.5 py-1 rounded-full border border-border bg-card text-muted-foreground"
