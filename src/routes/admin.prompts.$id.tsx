@@ -6,6 +6,7 @@ import { ArrowLeft, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PromptForm, type PromptFormValues } from "@/components/admin/PromptForm";
+import { AiRatingsEditor } from "@/components/admin/AiRatingsEditor";
 import { deleteAdminPrompt, updateAdminPrompt } from "@/lib/admin-prompts.functions";
 import {
   AlertDialog,
@@ -142,6 +143,8 @@ function EditPromptPage() {
         submitLabel="Save changes"
         onSubmit={handleSubmit}
       />
+
+      <AiRatingsEditor promptId={id} />
 
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <AlertDialogContent>
