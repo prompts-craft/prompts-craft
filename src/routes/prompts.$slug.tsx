@@ -16,6 +16,8 @@ import {
   getFaqs,
   getSeoKeywords,
 } from "@/lib/prompt-content";
+import { PromptReviews } from "@/components/PromptReviews";
+import { PromptAIRatings } from "@/components/PromptAIRatings";
 
 const SITE_URL = "https://prompts-craft.lovable.app";
 
@@ -316,6 +318,12 @@ function PromptPage() {
             <span>Last updated: <span className="text-foreground/90">{updated}</span></span>
           </div>
         </section>
+
+        {/* AI Model Ratings */}
+        <PromptAIRatings promptId={prompt.id} />
+
+        {/* Reviews */}
+        <PromptReviews promptId={prompt.id} />
 
         {/* Related */}
         {related.length > 0 && (
