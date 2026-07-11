@@ -144,8 +144,8 @@ function EditableRow({
   onDelete,
 }: {
   row: Row;
-  onSave: (id: string, patch: Partial<Row>) => Promise<void>;
-  onDelete: (id: string) => Promise<void>;
+  onSave: (id: string, patch: Partial<Row>) => void | Promise<unknown>;
+  onDelete: (id: string) => void | Promise<unknown>;
 }) {
   const [stars, setStars] = useState(row.stars);
   const [rec, setRec] = useState(row.is_recommended);
