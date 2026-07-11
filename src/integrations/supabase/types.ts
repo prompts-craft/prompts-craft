@@ -185,6 +185,91 @@ export type Database = {
         }
         Relationships: []
       }
+      prompt_ai_ratings: {
+        Row: {
+          ai_model: string
+          created_at: string
+          id: string
+          is_recommended: boolean
+          notes: string | null
+          prompt_id: string
+          sort_order: number
+          stars: number
+          updated_at: string
+        }
+        Insert: {
+          ai_model: string
+          created_at?: string
+          id?: string
+          is_recommended?: boolean
+          notes?: string | null
+          prompt_id: string
+          sort_order?: number
+          stars: number
+          updated_at?: string
+        }
+        Update: {
+          ai_model?: string
+          created_at?: string
+          id?: string
+          is_recommended?: boolean
+          notes?: string | null
+          prompt_id?: string
+          sort_order?: number
+          stars?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_ai_ratings_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prompt_reviews: {
+        Row: {
+          comment: string
+          created_at: string
+          id: string
+          prompt_id: string
+          rating: number
+          updated_at: string
+          user_email: string | null
+          user_id: string
+        }
+        Insert: {
+          comment: string
+          created_at?: string
+          id?: string
+          prompt_id: string
+          rating: number
+          updated_at?: string
+          user_email?: string | null
+          user_id: string
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          id?: string
+          prompt_id?: string
+          rating?: number
+          updated_at?: string
+          user_email?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_reviews_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prompts: {
         Row: {
           category: string
