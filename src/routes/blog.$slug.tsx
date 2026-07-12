@@ -1,9 +1,50 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo } from "react";
 import DOMPurify from "isomorphic-dompurify";
+import { Calendar, User, Clock, ChevronRight, Share2, BookOpen, HelpCircle } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { RouteError } from "@/components/RouteError";
+import { BlogReviews } from "@/components/BlogReviews";
 import { fetchBlogBySlug, fetchBlogsBySlugs, fetchPublishedBlogs, type Blog } from "@/lib/blogs-api";
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function readingTime(html: string): number {
+  const words = stripHtml(html).split(" ").filter(Boolean).length;
+  return Math.max(1, Math.round(words / 220));
+}
+
+function buildFaqs(post: Blog): { q: string; a: string }[] {
+  const topic = post.category ?? "this topic";
+  return [
+    {
+      q: `What is "${post.title}" about?`,
+      a:
+        post.description ??
+        `This guide walks you through ${post.title.toLowerCase()} with practical, copy-ready steps you can apply today.`,
+    },
+    {
+      q: `Who is this blog for?`,
+      a: `Anyone interested in ${topic} — from beginners exploring AI prompts to power users looking to refine their workflow.`,
+    },
+    {
+      q: `Can I use these prompts with ChatGPT, Claude, or Gemini?`,
+      a: `Yes. The ideas and prompts covered here work across leading AI models including ChatGPT (GPT-4o), Claude, Gemini, and most modern LLMs. Small wording tweaks may improve results on specific models.`,
+    },
+    {
+      q: `Is this content free to use?`,
+      a: `Absolutely. Everything on PromptCraft is free to read, copy, and adapt for personal or commercial projects.`,
+    },
+    {
+      q: `How often is this guide updated?`,
+      a: `We revisit popular guides regularly and update them as AI models evolve. Last updated: ${new Date(
+        post.updated_at,
+      ).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}.`,
+    },
+  ];
+}
 
 const SITE = "https://prompts-craft.lovable.app";
 
@@ -81,6 +122,18 @@ export const Route = createFileRoute("/blog/$slug")({
                 ],
               }),
             },
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: buildFaqs(p).map((f) => ({
+                  "@type": "Question",
+                  name: f.q,
+                  acceptedAnswer: { "@type": "Answer", text: f.a },
+                })),
+              }),
+            },
           ]
         : [],
     };
@@ -127,6 +180,16 @@ function BlogPostPage() {
     [post.content],
   );
 
+  const minutes = useMemo(() => readingTime(post.content), [post.content]);
+  const faqs = useMemo(() => buildFaqs(post), [post]);
+  const updated = new Date(post.updated_at).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const shareUrl = `${SITE}/blog/${post.slug}`;
+  const shareText = encodeURIComponent(post.title);
+
   return (
     <Layout>
       <article className="max-w-3xl mx-auto px-6 pt-12 pb-20">
@@ -144,6 +207,10 @@ function BlogPostPage() {
           <time dateTime={post.published_at ?? post.created_at}>
             {formatDate(post.published_at ?? post.created_at)}
           </time>
+          <span>·</span>
+          <span className="inline-flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5" /> {minutes} min read
+          </span>
         </div>
 
         <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight mt-4 leading-tight">
@@ -190,6 +257,88 @@ function BlogPostPage() {
             ))}
           </div>
         )}
+
+        {/* Share */}
+        <section className="mt-10 rounded-2xl border border-border bg-card/60 backdrop-blur p-5 flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Share2 className="w-4 h-4 text-accent" />
+            <span>Found this helpful? Share it.</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <a
+              href={`https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs px-3 py-1.5 rounded-md border border-border hover:border-accent/60 hover:text-accent transition"
+            >
+              Twitter / X
+            </a>
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs px-3 py-1.5 rounded-md border border-border hover:border-accent/60 hover:text-accent transition"
+            >
+              LinkedIn
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs px-3 py-1.5 rounded-md border border-border hover:border-accent/60 hover:text-accent transition"
+            >
+              Facebook
+            </a>
+          </div>
+        </section>
+
+        {/* Author card */}
+        <section className="mt-8 rounded-2xl border border-border bg-card/60 backdrop-blur p-6 flex items-start gap-4">
+          <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent-soft text-accent font-semibold shrink-0">
+            <User className="w-5 h-5" />
+          </span>
+          <div className="min-w-0">
+            <div className="text-sm font-semibold text-foreground/90">
+              Written by the PromptCraft Team
+            </div>
+            <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+              We're a small team of AI enthusiasts, writers, and prompt engineers who publish
+              practical, tested guides on using AI for real work — no hype, no fluff.
+            </p>
+            <div className="flex items-center gap-x-5 gap-y-1 flex-wrap mt-3 text-xs text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-accent" />
+                Last updated: <span className="text-foreground/90">{updated}</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <BookOpen className="w-3.5 h-3.5 text-accent" />
+                {minutes} min read
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="mt-12">
+          <h2 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
+            <HelpCircle className="w-5 h-5 text-accent" /> Frequently Asked Questions
+          </h2>
+          <div className="mt-4 divide-y divide-border/60 rounded-2xl border border-border bg-card/60 backdrop-blur">
+            {faqs.map((f, i) => (
+              <details key={i} className="group p-5">
+                <summary className="cursor-pointer font-medium text-foreground/90 list-none flex items-center justify-between">
+                  <span>{f.q}</span>
+                  <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90 opacity-60" />
+                </summary>
+                <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        {/* Reviews */}
+        <BlogReviews blogId={post.id} />
+
 
         {(prev || next) && (
           <nav
