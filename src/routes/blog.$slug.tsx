@@ -258,6 +258,88 @@ function BlogPostPage() {
           </div>
         )}
 
+        {/* Share */}
+        <section className="mt-10 rounded-2xl border border-border bg-card/60 backdrop-blur p-5 flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Share2 className="w-4 h-4 text-accent" />
+            <span>Found this helpful? Share it.</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <a
+              href={`https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs px-3 py-1.5 rounded-md border border-border hover:border-accent/60 hover:text-accent transition"
+            >
+              Twitter / X
+            </a>
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs px-3 py-1.5 rounded-md border border-border hover:border-accent/60 hover:text-accent transition"
+            >
+              LinkedIn
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs px-3 py-1.5 rounded-md border border-border hover:border-accent/60 hover:text-accent transition"
+            >
+              Facebook
+            </a>
+          </div>
+        </section>
+
+        {/* Author card */}
+        <section className="mt-8 rounded-2xl border border-border bg-card/60 backdrop-blur p-6 flex items-start gap-4">
+          <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent-soft text-accent font-semibold shrink-0">
+            <User className="w-5 h-5" />
+          </span>
+          <div className="min-w-0">
+            <div className="text-sm font-semibold text-foreground/90">
+              Written by the PromptCraft Team
+            </div>
+            <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+              We're a small team of AI enthusiasts, writers, and prompt engineers who publish
+              practical, tested guides on using AI for real work — no hype, no fluff.
+            </p>
+            <div className="flex items-center gap-x-5 gap-y-1 flex-wrap mt-3 text-xs text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-accent" />
+                Last updated: <span className="text-foreground/90">{updated}</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <BookOpen className="w-3.5 h-3.5 text-accent" />
+                {minutes} min read
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="mt-12">
+          <h2 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
+            <HelpCircle className="w-5 h-5 text-accent" /> Frequently Asked Questions
+          </h2>
+          <div className="mt-4 divide-y divide-border/60 rounded-2xl border border-border bg-card/60 backdrop-blur">
+            {faqs.map((f, i) => (
+              <details key={i} className="group p-5">
+                <summary className="cursor-pointer font-medium text-foreground/90 list-none flex items-center justify-between">
+                  <span>{f.q}</span>
+                  <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90 opacity-60" />
+                </summary>
+                <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        {/* Reviews */}
+        <BlogReviews blogId={post.id} />
+
+
         {(prev || next) && (
           <nav
             aria-label="Post navigation"
