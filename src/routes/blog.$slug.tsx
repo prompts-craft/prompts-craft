@@ -1,9 +1,50 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo } from "react";
 import DOMPurify from "isomorphic-dompurify";
+import { Calendar, User, Clock, ChevronRight, Share2, BookOpen, HelpCircle } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { RouteError } from "@/components/RouteError";
+import { BlogReviews } from "@/components/BlogReviews";
 import { fetchBlogBySlug, fetchBlogsBySlugs, fetchPublishedBlogs, type Blog } from "@/lib/blogs-api";
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function readingTime(html: string): number {
+  const words = stripHtml(html).split(" ").filter(Boolean).length;
+  return Math.max(1, Math.round(words / 220));
+}
+
+function buildFaqs(post: Blog): { q: string; a: string }[] {
+  const topic = post.category ?? "this topic";
+  return [
+    {
+      q: `What is "${post.title}" about?`,
+      a:
+        post.description ??
+        `This guide walks you through ${post.title.toLowerCase()} with practical, copy-ready steps you can apply today.`,
+    },
+    {
+      q: `Who is this blog for?`,
+      a: `Anyone interested in ${topic} — from beginners exploring AI prompts to power users looking to refine their workflow.`,
+    },
+    {
+      q: `Can I use these prompts with ChatGPT, Claude, or Gemini?`,
+      a: `Yes. The ideas and prompts covered here work across leading AI models including ChatGPT (GPT-4o), Claude, Gemini, and most modern LLMs. Small wording tweaks may improve results on specific models.`,
+    },
+    {
+      q: `Is this content free to use?`,
+      a: `Absolutely. Everything on PromptCraft is free to read, copy, and adapt for personal or commercial projects.`,
+    },
+    {
+      q: `How often is this guide updated?`,
+      a: `We revisit popular guides regularly and update them as AI models evolve. Last updated: ${new Date(
+        post.updated_at,
+      ).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}.`,
+    },
+  ];
+}
 
 const SITE = "https://prompts-craft.lovable.app";
 
