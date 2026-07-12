@@ -8,7 +8,7 @@ import { fetchPublishedBlogs, type Blog } from "@/lib/blogs-api";
 const PAGE_SIZE = 9;
 const SITE = "https://prompts-craft.lovable.app";
 
-export const Route = createFileRoute("/blog")({
+export const Route = createFileRoute("/blog/")({
   loader: async ({ context }) =>
     context.queryClient.ensureQueryData({
       queryKey: ["blogs", "published"],
