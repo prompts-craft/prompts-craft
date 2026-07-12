@@ -7,7 +7,6 @@ import { StarRating } from "@/components/StarRating";
 type Review = {
   id: string;
   user_id: string;
-  user_email: string | null;
   rating: number;
   comment: string;
   created_at: string;
@@ -42,7 +41,7 @@ export function PromptReviews({ promptId }: { promptId: string }) {
     setLoading(true);
     const { data, error } = await supabase
       .from("prompt_reviews")
-      .select("id, user_id, user_email, rating, comment, created_at, updated_at")
+      .select("id, user_id, rating, comment, created_at, updated_at")
       .eq("prompt_id", promptId)
       .order("created_at", { ascending: false });
     if (error) console.error(error);
@@ -80,7 +79,6 @@ export function PromptReviews({ promptId }: { promptId: string }) {
       {
         prompt_id: promptId,
         user_id: user.id,
-        user_email: user.email,
         rating,
         comment: comment.trim(),
       },
@@ -163,9 +161,7 @@ export function PromptReviews({ promptId }: { promptId: string }) {
               required
             />
             <div className="flex items-center justify-between gap-3 flex-wrap">
-              <span className="text-xs text-muted-foreground">
-                Posting as <span className="text-foreground/90">{user.email}</span>
-              </span>
+              <span className="text-xs text-muted-foreground">Posting as a signed-in user</span>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -199,10 +195,9 @@ export function PromptReviews({ promptId }: { promptId: string }) {
         )}
         {reviews.map((r) => {
           const isMine = user?.id === r.user_id;
-          const initial = (r.user_email ?? "U").charAt(0).toUpperCase();
-          const nameLabel = r.user_email
-            ? r.user_email.replace(/^(.).+(@.+)$/, "$1***$2")
-            : "Anonymous";
+          const shortId = r.user_id.slice(0, 6);
+          const initial = shortId.charAt(0).toUpperCase();
+          const nameLabel = `User ${shortId}`;
           const date = new Date(r.created_at).toLocaleDateString("en-US", {
             year: "numeric",
             month: "short",
