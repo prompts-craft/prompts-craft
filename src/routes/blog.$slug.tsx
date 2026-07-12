@@ -180,6 +180,16 @@ function BlogPostPage() {
     [post.content],
   );
 
+  const minutes = useMemo(() => readingTime(post.content), [post.content]);
+  const faqs = useMemo(() => buildFaqs(post), [post]);
+  const updated = new Date(post.updated_at).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const shareUrl = `${SITE}/blog/${post.slug}`;
+  const shareText = encodeURIComponent(post.title);
+
   return (
     <Layout>
       <article className="max-w-3xl mx-auto px-6 pt-12 pb-20">
@@ -197,6 +207,10 @@ function BlogPostPage() {
           <time dateTime={post.published_at ?? post.created_at}>
             {formatDate(post.published_at ?? post.created_at)}
           </time>
+          <span>·</span>
+          <span className="inline-flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5" /> {minutes} min read
+          </span>
         </div>
 
         <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight mt-4 leading-tight">
