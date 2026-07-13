@@ -87,6 +87,7 @@ export type Database = {
           created_at: string
           id: string
           rating: number
+          reviewer_hash: string | null
           updated_at: string
           user_id: string
         }
@@ -96,6 +97,7 @@ export type Database = {
           created_at?: string
           id?: string
           rating: number
+          reviewer_hash?: string | null
           updated_at?: string
           user_id: string
         }
@@ -105,6 +107,7 @@ export type Database = {
           created_at?: string
           id?: string
           rating?: number
+          reviewer_hash?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -274,6 +277,7 @@ export type Database = {
           id: string
           prompt_id: string
           rating: number
+          reviewer_hash: string | null
           updated_at: string
           user_id: string
         }
@@ -283,6 +287,7 @@ export type Database = {
           id?: string
           prompt_id: string
           rating: number
+          reviewer_hash?: string | null
           updated_at?: string
           user_id: string
         }
@@ -292,6 +297,7 @@ export type Database = {
           id?: string
           prompt_id?: string
           rating?: number
+          reviewer_hash?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -376,88 +382,7 @@ export type Database = {
       }
     }
     Views: {
-      blog_reviews_public: {
-        Row: {
-          blog_id: string | null
-          comment: string | null
-          created_at: string | null
-          id: string | null
-          is_mine: boolean | null
-          rating: number | null
-          reviewer_hash: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          blog_id?: string | null
-          comment?: string | null
-          created_at?: string | null
-          id?: string | null
-          is_mine?: never
-          rating?: number | null
-          reviewer_hash?: never
-          updated_at?: string | null
-        }
-        Update: {
-          blog_id?: string | null
-          comment?: string | null
-          created_at?: string | null
-          id?: string | null
-          is_mine?: never
-          rating?: number | null
-          reviewer_hash?: never
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "blog_reviews_blog_id_fkey"
-            columns: ["blog_id"]
-            isOneToOne: false
-            referencedRelation: "blogs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      prompt_reviews_public: {
-        Row: {
-          comment: string | null
-          created_at: string | null
-          id: string | null
-          is_mine: boolean | null
-          prompt_id: string | null
-          rating: number | null
-          reviewer_hash: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          comment?: string | null
-          created_at?: string | null
-          id?: string | null
-          is_mine?: never
-          prompt_id?: string | null
-          rating?: number | null
-          reviewer_hash?: never
-          updated_at?: string | null
-        }
-        Update: {
-          comment?: string | null
-          created_at?: string | null
-          id?: string | null
-          is_mine?: never
-          prompt_id?: string | null
-          rating?: number | null
-          reviewer_hash?: never
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "prompt_reviews_prompt_id_fkey"
-            columns: ["prompt_id"]
-            isOneToOne: false
-            referencedRelation: "prompts"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       has_role: {
