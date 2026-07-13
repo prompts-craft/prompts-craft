@@ -120,8 +120,8 @@ export function BlogForm({
         <textarea value={values.description} onChange={(e) => update("description", e.target.value)} rows={2} className="input" />
       </Field>
 
-      <Field label="Featured image URL" hint="Paste an https image URL. Used as OG image too.">
       <Field label="Featured image" hint="Paste an image URL or upload a file. Used as OG image too.">
+
         <ImageUploadField
           value={values.featured_image}
           onChange={(v) => update("featured_image", v)}
