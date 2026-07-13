@@ -3,10 +3,11 @@ import { MessageSquare, Trash2, LogIn } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { StarRating } from "@/components/StarRating";
+import { reviewerHashFor } from "@/lib/md5";
 
 type Review = {
   id: string;
-  user_id: string;
+  reviewer_hash: string;
   rating: number;
   comment: string;
   created_at: string;
