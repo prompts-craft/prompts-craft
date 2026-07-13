@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { slugify } from "@/lib/admin-auth";
 import { RichTextEditor } from "./RichTextEditor";
+import { ImageUploadField } from "./ImageUploadField";
 
 export type BlogFormValues = {
   title: string;
@@ -119,11 +120,13 @@ export function BlogForm({
         <textarea value={values.description} onChange={(e) => update("description", e.target.value)} rows={2} className="input" />
       </Field>
 
-      <Field label="Featured image URL" hint="Paste an https image URL. Used as OG image too.">
-        <input value={values.featured_image} onChange={(e) => update("featured_image", e.target.value)} placeholder="https://…" className="input" />
-        {values.featured_image && (
-          <img src={values.featured_image} alt="preview" className="mt-3 max-h-48 rounded-md border border-border object-cover" />
-        )}
+      <Field label="Featured image" hint="Paste an image URL or upload a file. Used as OG image too.">
+
+        <ImageUploadField
+          value={values.featured_image}
+          onChange={(v) => update("featured_image", v)}
+          folder="blogs"
+        />
       </Field>
 
       <Field label="Blog content" required>

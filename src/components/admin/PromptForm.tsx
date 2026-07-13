@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { categories } from "@/data/prompts";
 import { slugify } from "@/lib/admin-auth";
+import { ImageUploadField } from "./ImageUploadField";
 
 export type PromptFormValues = {
   title: string;
@@ -135,12 +136,11 @@ export function PromptForm({
             className="input"
           />
         </Field>
-        <Field label="Image URL" hint="Optional preview image.">
-          <input
+        <Field label="Thumbnail image" hint="Paste an image URL or upload a file.">
+          <ImageUploadField
             value={values.image_url}
-            onChange={(e) => update("image_url", e.target.value)}
-            placeholder="https://…"
-            className="input"
+            onChange={(v) => update("image_url", v)}
+            folder="prompts"
           />
         </Field>
       </div>
