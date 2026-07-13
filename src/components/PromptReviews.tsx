@@ -23,9 +23,10 @@ export function PromptReviews({ promptId }: { promptId: string }) {
   const [authOpen, setAuthOpen] = useState(false);
 
   // form state
+  const myHash = useMemo(() => (user ? reviewerHashFor(user.id) : null), [user]);
   const existingMine = useMemo(
-    () => (user ? reviews.find((r) => r.user_id === user.id) ?? null : null),
-    [reviews, user],
+    () => (myHash ? reviews.find((r) => r.reviewer_hash === myHash) ?? null : null),
+    [reviews, myHash],
   );
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
@@ -42,7 +43,7 @@ export function PromptReviews({ promptId }: { promptId: string }) {
     setLoading(true);
     const { data, error } = await supabase
       .from("prompt_reviews")
-      .select("id, user_id, rating, comment, created_at, updated_at")
+      .select("id, reviewer_hash, rating, comment, created_at, updated_at")
       .eq("prompt_id", promptId)
       .order("created_at", { ascending: false });
     if (error) console.error(error);
