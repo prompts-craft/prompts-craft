@@ -191,8 +191,8 @@ export function BlogReviews({ blogId }: { blogId: string }) {
           </div>
         )}
         {reviews.map((r) => {
-          const isMine = user?.id === r.user_id;
-          const shortId = r.user_id.slice(0, 6);
+          const isMine = myHash === r.reviewer_hash;
+          const shortId = r.reviewer_hash.slice(0, 6);
           const initial = shortId.charAt(0).toUpperCase();
           const nameLabel = `User ${shortId}`;
           const date = new Date(r.created_at).toLocaleDateString("en-US", {
