@@ -3,10 +3,11 @@ import { MessageSquare, Trash2, LogIn } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { StarRating } from "@/components/StarRating";
+import { reviewerHashFor } from "@/lib/md5";
 
 type Review = {
   id: string;
-  user_id: string;
+  reviewer_hash: string;
   rating: number;
   comment: string;
   created_at: string;
@@ -21,9 +22,10 @@ export function BlogReviews({ blogId }: { blogId: string }) {
   const [user, setUser] = useState<SessionUser>(null);
   const [authOpen, setAuthOpen] = useState(false);
 
+  const myHash = useMemo(() => (user ? reviewerHashFor(user.id) : null), [user]);
   const existingMine = useMemo(
-    () => (user ? reviews.find((r) => r.user_id === user.id) ?? null : null),
-    [reviews, user],
+    () => (myHash ? reviews.find((r) => r.reviewer_hash === myHash) ?? null : null),
+    [reviews, myHash],
   );
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
@@ -40,7 +42,7 @@ export function BlogReviews({ blogId }: { blogId: string }) {
     setLoading(true);
     const { data, error } = await supabase
       .from("blog_reviews")
-      .select("id, user_id, rating, comment, created_at, updated_at")
+      .select("id, reviewer_hash, rating, comment, created_at, updated_at")
       .eq("blog_id", blogId)
       .order("created_at", { ascending: false });
     if (error) console.error(error);
@@ -189,8 +191,8 @@ export function BlogReviews({ blogId }: { blogId: string }) {
           </div>
         )}
         {reviews.map((r) => {
-          const isMine = user?.id === r.user_id;
-          const shortId = r.user_id.slice(0, 6);
+          const isMine = myHash === r.reviewer_hash;
+          const shortId = r.reviewer_hash.slice(0, 6);
           const initial = shortId.charAt(0).toUpperCase();
           const nameLabel = `User ${shortId}`;
           const date = new Date(r.created_at).toLocaleDateString("en-US", {

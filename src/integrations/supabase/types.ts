@@ -87,6 +87,7 @@ export type Database = {
           created_at: string
           id: string
           rating: number
+          reviewer_hash: string | null
           updated_at: string
           user_id: string
         }
@@ -96,6 +97,7 @@ export type Database = {
           created_at?: string
           id?: string
           rating: number
+          reviewer_hash?: string | null
           updated_at?: string
           user_id: string
         }
@@ -105,6 +107,7 @@ export type Database = {
           created_at?: string
           id?: string
           rating?: number
+          reviewer_hash?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -274,6 +277,7 @@ export type Database = {
           id: string
           prompt_id: string
           rating: number
+          reviewer_hash: string | null
           updated_at: string
           user_id: string
         }
@@ -283,6 +287,7 @@ export type Database = {
           id?: string
           prompt_id: string
           rating: number
+          reviewer_hash?: string | null
           updated_at?: string
           user_id: string
         }
@@ -292,6 +297,7 @@ export type Database = {
           id?: string
           prompt_id?: string
           rating?: number
+          reviewer_hash?: string | null
           updated_at?: string
           user_id?: string
         }
