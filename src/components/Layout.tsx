@@ -100,6 +100,39 @@ export function Layout({ children }: { children: ReactNode }) {
             >
               Explore prompts
             </Link>
+            {userEmail ? (
+              <div className="flex items-center gap-2 pl-1">
+                <span
+                  className="inline-flex items-center gap-1.5 text-xs text-muted-foreground max-w-[140px] truncate"
+                  title={userEmail}
+                >
+                  <User className="w-3.5 h-3.5" />
+                  {userEmail}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/60 px-3 py-1.5 text-sm font-medium text-foreground hover:border-accent/50 hover:bg-card transition"
+                >
+                  <LogOut className="w-4 h-4" /> Sign out
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link
+                  to="/auth"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/60 px-3 py-1.5 text-sm font-medium text-foreground hover:border-accent/50 hover:bg-card transition"
+                >
+                  <LogIn className="w-4 h-4" /> Sign in
+                </Link>
+                <Link
+                  to="/auth"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 py-1.5 text-sm font-medium hover:bg-primary/90 transition"
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
           </div>
 
           <div className="flex sm:hidden items-center gap-2">
