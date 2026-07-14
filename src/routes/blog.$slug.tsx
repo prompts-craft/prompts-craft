@@ -460,15 +460,42 @@ function BlogPostPage() {
           aria-label="Breadcrumb"
           className="text-sm text-muted-foreground mb-6 max-w-3xl"
         >
-          <Link to="/" className="hover:text-foreground">
-            Home
-          </Link>
-          <span className="mx-1.5">/</span>
-          <Link to="/blog" className="hover:text-foreground">
-            Blog
-          </Link>
-          <span className="mx-1.5">/</span>
-          <span className="text-foreground line-clamp-1 inline align-bottom">{post.title}</span>
+          <ol className="flex flex-wrap items-center gap-x-1.5" itemScope itemType="https://schema.org/BreadcrumbList">
+            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+              <Link to="/" className="hover:text-foreground" itemProp="item">
+                <span itemProp="name">Home</span>
+              </Link>
+              <meta itemProp="position" content="1" />
+            </li>
+            <span aria-hidden>/</span>
+            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+              <Link to="/blog" className="hover:text-foreground" itemProp="item">
+                <span itemProp="name">Blog</span>
+              </Link>
+              <meta itemProp="position" content="2" />
+            </li>
+            {post.category && (
+              <>
+                <span aria-hidden>/</span>
+                <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+                  <Link to="/blog" className="hover:text-foreground" itemProp="item">
+                    <span itemProp="name">{post.category}</span>
+                  </Link>
+                  <meta itemProp="position" content="3" />
+                </li>
+              </>
+            )}
+            <span aria-hidden>/</span>
+            <li
+              itemProp="itemListElement"
+              itemScope
+              itemType="https://schema.org/ListItem"
+              className="text-foreground line-clamp-1 inline align-bottom min-w-0"
+            >
+              <span itemProp="name">{post.title}</span>
+              <meta itemProp="position" content={post.category ? "4" : "3"} />
+            </li>
+          </ol>
         </nav>
 
         <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-12">
