@@ -797,12 +797,19 @@ function BlogPostPage() {
                         {r.featured_image ? (
                           <img
                             src={r.featured_image}
-                            alt={r.title}
+                            alt={`${r.title} — related PromptCraft article cover`}
                             loading="lazy"
+                            decoding="async"
+                            width={480}
+                            height={200}
                             className="w-full h-full object-cover group-hover:scale-[1.02] transition"
                           />
                         ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-purple-500/15 to-pink-500/20" />
+                          <div
+                            className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-purple-500/15 to-pink-500/20"
+                            role="presentation"
+                            aria-hidden="true"
+                          />
                         )}
                       </div>
                       <div className="p-4">
