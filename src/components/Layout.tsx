@@ -12,6 +12,19 @@ import { categories } from "@/data/prompts";
 export function Layout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const { theme, toggle, mounted } = useTheme();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUserEmail(data.user?.email ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUserEmail(session?.user?.email ?? null);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+  }
 
 
   return (
