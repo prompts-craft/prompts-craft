@@ -1,16 +1,30 @@
 import { Link } from "@tanstack/react-router";
-import { useState, type ReactNode } from "react";
-import { Menu, X, Moon, Sun } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Menu, X, Moon, Sun, LogIn, LogOut, User } from "lucide-react";
 import logoSymbol from "@/assets/logo-symbol.svg";
 import logoAsset from "@/assets/promptcraft-logo.png.asset.json";
 import { useTheme } from "@/hooks/use-theme";
 import { SocialLinks } from "@/components/SocialLinks";
+import { supabase } from "@/integrations/supabase/client";
 
 import { categories } from "@/data/prompts";
 
 export function Layout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const { theme, toggle, mounted } = useTheme();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUserEmail(data.user?.email ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUserEmail(session?.user?.email ?? null);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+  }
 
 
   return (
@@ -86,6 +100,39 @@ export function Layout({ children }: { children: ReactNode }) {
             >
               Explore prompts
             </Link>
+            {userEmail ? (
+              <div className="flex items-center gap-2 pl-1">
+                <span
+                  className="inline-flex items-center gap-1.5 text-xs text-muted-foreground max-w-[140px] truncate"
+                  title={userEmail}
+                >
+                  <User className="w-3.5 h-3.5" />
+                  {userEmail}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/60 px-3 py-1.5 text-sm font-medium text-foreground hover:border-accent/50 hover:bg-card transition"
+                >
+                  <LogOut className="w-4 h-4" /> Sign out
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link
+                  to="/auth"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/60 px-3 py-1.5 text-sm font-medium text-foreground hover:border-accent/50 hover:bg-card transition"
+                >
+                  <LogIn className="w-4 h-4" /> Sign in
+                </Link>
+                <Link
+                  to="/auth"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 py-1.5 text-sm font-medium hover:bg-primary/90 transition"
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
           </div>
 
           <div className="flex sm:hidden items-center gap-2">
@@ -142,6 +189,36 @@ export function Layout({ children }: { children: ReactNode }) {
                   {c.name}
                 </Link>
               ))}
+              <div className="h-px bg-border my-2" />
+              {userEmail ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    handleSignOut();
+                  }}
+                  className="text-left px-3 py-2 rounded-md hover:bg-muted/60 inline-flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" /> Sign out ({userEmail})
+                </button>
+              ) : (
+                <>
+                  <Link
+                    to="/auth"
+                    onClick={() => setOpen(false)}
+                    className="px-3 py-2 rounded-md hover:bg-muted/60 inline-flex items-center gap-2"
+                  >
+                    <LogIn className="w-4 h-4" /> Sign in
+                  </Link>
+                  <Link
+                    to="/auth"
+                    onClick={() => setOpen(false)}
+                    className="px-3 py-2 rounded-md bg-primary text-primary-foreground font-medium"
+                  >
+                    Sign up
+                  </Link>
+                </>
+              )}
             </nav>
           </div>
         )}
