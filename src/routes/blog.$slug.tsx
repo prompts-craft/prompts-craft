@@ -659,6 +659,51 @@ function BlogPostPage() {
               </div>
             )}
 
+            {/* Explore more on PromptCraft (internal linking) */}
+            <section className="mt-12" aria-labelledby="explore-more-heading">
+              <h2
+                id="explore-more-heading"
+                className="text-sm uppercase tracking-wider text-muted-foreground mb-3"
+              >
+                Explore more on PromptCraft
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <InternalLink
+                  to="/blog"
+                  title="Browse all AI prompt guides"
+                  description="Fresh tutorials on ChatGPT, Claude, Gemini and more."
+                />
+                <InternalLink
+                  to="/categories/$slug"
+                  params={{ slug: "teachers" }}
+                  title="Ready-to-use prompt library"
+                  description="Copy-and-paste prompts organized by role and use case."
+                />
+              </div>
+            </section>
+
+            {/* Further reading (external references) */}
+            <section className="mt-8" aria-labelledby="further-reading-heading">
+              <h2
+                id="further-reading-heading"
+                className="text-sm uppercase tracking-wider text-muted-foreground mb-3"
+              >
+                Further reading
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <ExternalReference
+                  href="https://platform.openai.com/docs/guides/prompt-engineering"
+                  title="OpenAI — Prompt engineering guide"
+                  description="Official patterns and best practices from OpenAI."
+                />
+                <ExternalReference
+                  href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview"
+                  title="Anthropic — Prompt engineering with Claude"
+                  description="Official Claude prompting techniques and examples."
+                />
+              </div>
+            </section>
+
             {/* Share */}
             <section className="mt-12 rounded-2xl border border-border bg-card/60 backdrop-blur p-5">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
