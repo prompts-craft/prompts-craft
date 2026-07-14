@@ -544,14 +544,19 @@ function BlogPostPage() {
             {post.featured_image ? (
               <img
                 src={post.featured_image}
-                alt={post.title}
+                alt={post.description ? `${post.title} — ${post.description.slice(0, 120)}` : `${post.title} — PromptCraft blog cover`}
                 loading="eager"
+                decoding="async"
+                fetchPriority="high"
+                width={1200}
+                height={630}
                 className="mt-10 w-full max-h-[28rem] object-cover rounded-2xl border border-border"
               />
             ) : (
               <div
                 className="mt-10 h-56 sm:h-72 rounded-2xl bg-gradient-to-br from-indigo-500/30 via-purple-500/20 to-pink-500/30"
-                aria-hidden
+                role="presentation"
+                aria-hidden="true"
               />
             )}
 
