@@ -189,6 +189,36 @@ export function Layout({ children }: { children: ReactNode }) {
                   {c.name}
                 </Link>
               ))}
+              <div className="h-px bg-border my-2" />
+              {userEmail ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    handleSignOut();
+                  }}
+                  className="text-left px-3 py-2 rounded-md hover:bg-muted/60 inline-flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" /> Sign out ({userEmail})
+                </button>
+              ) : (
+                <>
+                  <Link
+                    to="/auth"
+                    onClick={() => setOpen(false)}
+                    className="px-3 py-2 rounded-md hover:bg-muted/60 inline-flex items-center gap-2"
+                  >
+                    <LogIn className="w-4 h-4" /> Sign in
+                  </Link>
+                  <Link
+                    to="/auth"
+                    onClick={() => setOpen(false)}
+                    className="px-3 py-2 rounded-md bg-primary text-primary-foreground font-medium"
+                  >
+                    Sign up
+                  </Link>
+                </>
+              )}
             </nav>
           </div>
         )}
