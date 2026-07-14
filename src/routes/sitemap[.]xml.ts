@@ -3,6 +3,7 @@ import type {} from "@tanstack/react-start";
 import { categories } from "@/data/prompts";
 import { blogPosts } from "@/data/blog-posts";
 import { fetchAllPrompts } from "@/lib/prompts-api";
+import { fetchPublishedBlogs } from "@/lib/blogs-api";
 
 const BASE_URL = "https://prompts-craft.lovable.app";
 
@@ -20,15 +21,36 @@ export const Route = createFileRoute("/sitemap.xml")({
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/about", changefreq: "monthly", priority: "0.5" },
-          { path: "/blog", changefreq: "weekly", priority: "0.6" },
+          { path: "/blog", changefreq: "daily", priority: "0.8" },
+          { path: "/auth", changefreq: "yearly", priority: "0.2" },
         ];
 
         for (const c of categories) {
           entries.push({ path: `/categories/${c.slug}`, changefreq: "weekly", priority: "0.8" });
         }
 
+        // Static / seed blog posts (kept for backwards compatibility)
+        const seenBlogSlugs = new Set<string>();
         for (const b of blogPosts) {
-          entries.push({ path: `/blog/${b.slug}`, changefreq: "monthly", priority: "0.6" });
+          seenBlogSlugs.add(b.slug);
+          entries.push({ path: `/blog/${b.slug}`, changefreq: "monthly", priority: "0.7" });
+        }
+
+        // Published DB blogs — auto-include with lastmod for freshness signals
+        try {
+          const blogs = await fetchPublishedBlogs();
+          for (const b of blogs) {
+            if (seenBlogSlugs.has(b.slug)) continue;
+            seenBlogSlugs.add(b.slug);
+            entries.push({
+              path: `/blog/${b.slug}`,
+              lastmod: (b.updated_at ?? b.published_at ?? b.created_at)?.slice(0, 10),
+              changefreq: "monthly",
+              priority: "0.7",
+            });
+          }
+        } catch {
+          // Ignore fetch failures; keep static entries
         }
 
         try {

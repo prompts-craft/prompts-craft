@@ -27,6 +27,7 @@ import { Layout } from "@/components/Layout";
 import { RouteError } from "@/components/RouteError";
 import { BlogReviews } from "@/components/BlogReviews";
 import { fetchBlogBySlug, fetchBlogsBySlugs, fetchPublishedBlogs, type Blog } from "@/lib/blogs-api";
+import { InternalLink, ExternalReference } from "@/components/SeoLinks";
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
@@ -139,26 +140,81 @@ export const Route = createFileRoute("/blog/$slug")({
   head: ({ loaderData, params }) => {
     const p = loaderData?.post;
     const title = p ? p.meta_title || `${p.title} | PromptCraft Blog` : "Blog";
-    const desc = p ? p.meta_description || p.description || "" : "";
+    const desc = p
+      ? p.meta_description ||
+        p.description ||
+        (p.content ? stripHtml(p.content).slice(0, 155) : "")
+      : "";
     const url = `${SITE}/blog/${params.slug}`;
     const img = p?.featured_image ?? undefined;
+    const imgAlt = p ? `${p.title} — PromptCraft blog cover` : undefined;
+    const breadcrumbItems = p
+      ? [
+          { "@type": "ListItem", position: 1, name: "Home", item: SITE },
+          { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE}/blog` },
+          ...(p.category
+            ? [
+                {
+                  "@type": "ListItem",
+                  position: 3,
+                  name: p.category,
+                  item: `${SITE}/blog?category=${encodeURIComponent(p.category)}`,
+                },
+                { "@type": "ListItem", position: 4, name: p.title, item: url },
+              ]
+            : [{ "@type": "ListItem", position: 3, name: p.title, item: url }]),
+        ]
+      : [];
     return {
       meta: [
         { title },
         { name: "description", content: desc },
+        { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
+        { name: "googlebot", content: "index, follow, max-image-preview:large, max-snippet:-1" },
+        { name: "author", content: "PromptCraft Team" },
+        ...(p?.tags?.length ? [{ name: "keywords", content: p.tags.join(", ") }] : []),
+        { property: "og:site_name", content: "PromptCraft" },
         { property: "og:title", content: p?.meta_title || p?.title || "" },
         { property: "og:description", content: desc },
         { property: "og:type", content: "article" },
         { property: "og:url", content: url },
-        ...(img ? [{ property: "og:image", content: img }] : []),
+        { property: "og:locale", content: "en_US" },
+        ...(img
+          ? [
+              { property: "og:image", content: img },
+              { property: "og:image:alt", content: imgAlt ?? "" },
+              { property: "og:image:width", content: "1200" },
+              { property: "og:image:height", content: "630" },
+            ]
+          : []),
         { property: "article:published_time", content: p?.published_at ?? p?.created_at ?? "" },
+        { property: "article:modified_time", content: p?.updated_at ?? "" },
+        { property: "article:author", content: "PromptCraft Team" },
         ...(p?.category ? [{ property: "article:section", content: p.category }] : []),
+        ...((p?.tags ?? []).map((t) => ({ property: "article:tag", content: t }))),
         { name: "twitter:card", content: img ? "summary_large_image" : "summary" },
         { name: "twitter:title", content: p?.title ?? "" },
         { name: "twitter:description", content: desc },
-        ...(img ? [{ name: "twitter:image", content: img }] : []),
+        ...(img
+          ? [
+              { name: "twitter:image", content: img },
+              { name: "twitter:image:alt", content: imgAlt ?? "" },
+            ]
+          : []),
       ],
-      links: [{ rel: "canonical", href: url }],
+      links: [
+        { rel: "canonical", href: url },
+        ...(img
+          ? [
+              {
+                rel: "preload",
+                as: "image" as const,
+                href: img,
+                fetchpriority: "high",
+              } as unknown as { rel: string; href: string },
+            ]
+          : []),
+      ],
       scripts: p
         ? [
             {
@@ -168,18 +224,30 @@ export const Route = createFileRoute("/blog/$slug")({
                 "@type": "BlogPosting",
                 headline: p.title,
                 description: desc,
-                image: img,
+                image: img
+                  ? [{ "@type": "ImageObject", url: img, width: 1200, height: 630 }]
+                  : undefined,
                 datePublished: p.published_at ?? p.created_at,
                 dateModified: p.updated_at,
-                mainEntityOfPage: url,
+                mainEntityOfPage: { "@type": "WebPage", "@id": url },
                 url,
+                inLanguage: "en-US",
                 articleSection: p.category ?? undefined,
                 keywords: p.tags.join(", "),
-                author: { "@type": "Organization", name: "PromptCraft" },
+                wordCount: stripHtml(p.content).split(/\s+/).filter(Boolean).length,
+                author: {
+                  "@type": "Organization",
+                  name: "PromptCraft Team",
+                  url: SITE,
+                },
                 publisher: {
                   "@type": "Organization",
                   name: "PromptCraft",
-                  logo: { "@type": "ImageObject", url: `${SITE}/favicon.svg` },
+                  url: SITE,
+                  logo: {
+                    "@type": "ImageObject",
+                    url: `${SITE}/favicon.svg`,
+                  },
                 },
               }),
             },
@@ -188,11 +256,7 @@ export const Route = createFileRoute("/blog/$slug")({
               children: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "BreadcrumbList",
-                itemListElement: [
-                  { "@type": "ListItem", position: 1, name: "Home", item: SITE },
-                  { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE}/blog` },
-                  { "@type": "ListItem", position: 3, name: p.title, item: url },
-                ],
+                itemListElement: breadcrumbItems,
               }),
             },
             {
@@ -397,15 +461,42 @@ function BlogPostPage() {
           aria-label="Breadcrumb"
           className="text-sm text-muted-foreground mb-6 max-w-3xl"
         >
-          <Link to="/" className="hover:text-foreground">
-            Home
-          </Link>
-          <span className="mx-1.5">/</span>
-          <Link to="/blog" className="hover:text-foreground">
-            Blog
-          </Link>
-          <span className="mx-1.5">/</span>
-          <span className="text-foreground line-clamp-1 inline align-bottom">{post.title}</span>
+          <ol className="flex flex-wrap items-center gap-x-1.5" itemScope itemType="https://schema.org/BreadcrumbList">
+            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+              <Link to="/" className="hover:text-foreground" itemProp="item">
+                <span itemProp="name">Home</span>
+              </Link>
+              <meta itemProp="position" content="1" />
+            </li>
+            <span aria-hidden>/</span>
+            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+              <Link to="/blog" className="hover:text-foreground" itemProp="item">
+                <span itemProp="name">Blog</span>
+              </Link>
+              <meta itemProp="position" content="2" />
+            </li>
+            {post.category && (
+              <>
+                <span aria-hidden>/</span>
+                <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+                  <Link to="/blog" className="hover:text-foreground" itemProp="item">
+                    <span itemProp="name">{post.category}</span>
+                  </Link>
+                  <meta itemProp="position" content="3" />
+                </li>
+              </>
+            )}
+            <span aria-hidden>/</span>
+            <li
+              itemProp="itemListElement"
+              itemScope
+              itemType="https://schema.org/ListItem"
+              className="text-foreground line-clamp-1 inline align-bottom min-w-0"
+            >
+              <span itemProp="name">{post.title}</span>
+              <meta itemProp="position" content={post.category ? "4" : "3"} />
+            </li>
+          </ol>
         </nav>
 
         <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-12">
@@ -454,14 +545,19 @@ function BlogPostPage() {
             {post.featured_image ? (
               <img
                 src={post.featured_image}
-                alt={post.title}
+                alt={post.description ? `${post.title} — ${post.description.slice(0, 120)}` : `${post.title} — PromptCraft blog cover`}
                 loading="eager"
+                decoding="async"
+                fetchPriority="high"
+                width={1200}
+                height={630}
                 className="mt-10 w-full max-h-[28rem] object-cover rounded-2xl border border-border"
               />
             ) : (
               <div
                 className="mt-10 h-56 sm:h-72 rounded-2xl bg-gradient-to-br from-indigo-500/30 via-purple-500/20 to-pink-500/30"
-                aria-hidden
+                role="presentation"
+                aria-hidden="true"
               />
             )}
 
@@ -562,6 +658,51 @@ function BlogPostPage() {
                 ))}
               </div>
             )}
+
+            {/* Explore more on PromptCraft (internal linking) */}
+            <section className="mt-12" aria-labelledby="explore-more-heading">
+              <h2
+                id="explore-more-heading"
+                className="text-sm uppercase tracking-wider text-muted-foreground mb-3"
+              >
+                Explore more on PromptCraft
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <InternalLink
+                  to="/blog"
+                  title="Browse all AI prompt guides"
+                  description="Fresh tutorials on ChatGPT, Claude, Gemini and more."
+                />
+                <InternalLink
+                  to="/categories/$slug"
+                  params={{ slug: "teachers" }}
+                  title="Ready-to-use prompt library"
+                  description="Copy-and-paste prompts organized by role and use case."
+                />
+              </div>
+            </section>
+
+            {/* Further reading (external references) */}
+            <section className="mt-8" aria-labelledby="further-reading-heading">
+              <h2
+                id="further-reading-heading"
+                className="text-sm uppercase tracking-wider text-muted-foreground mb-3"
+              >
+                Further reading
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <ExternalReference
+                  href="https://platform.openai.com/docs/guides/prompt-engineering"
+                  title="OpenAI — Prompt engineering guide"
+                  description="Official patterns and best practices from OpenAI."
+                />
+                <ExternalReference
+                  href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview"
+                  title="Anthropic — Prompt engineering with Claude"
+                  description="Official Claude prompting techniques and examples."
+                />
+              </div>
+            </section>
 
             {/* Share */}
             <section className="mt-12 rounded-2xl border border-border bg-card/60 backdrop-blur p-5">
@@ -702,12 +843,19 @@ function BlogPostPage() {
                         {r.featured_image ? (
                           <img
                             src={r.featured_image}
-                            alt={r.title}
+                            alt={`${r.title} — related PromptCraft article cover`}
                             loading="lazy"
+                            decoding="async"
+                            width={480}
+                            height={200}
                             className="w-full h-full object-cover group-hover:scale-[1.02] transition"
                           />
                         ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-purple-500/15 to-pink-500/20" />
+                          <div
+                            className="w-full h-full bg-gradient-to-br from-indigo-500/20 via-purple-500/15 to-pink-500/20"
+                            role="presentation"
+                            aria-hidden="true"
+                          />
                         )}
                       </div>
                       <div className="p-4">
