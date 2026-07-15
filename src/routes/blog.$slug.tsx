@@ -324,7 +324,7 @@ function placeholderViews(id: string): number {
 }
 
 function BlogPostPage() {
-  const { post, related, prev, next } = Route.useLoaderData();
+  const { post, related, prev, next, articleCount } = Route.useLoaderData();
 
   const { html: enrichedHtml, sections } = useMemo(() => {
     const clean = DOMPurify.sanitize(post.content, {
@@ -337,17 +337,23 @@ function BlogPostPage() {
   const minutes = useMemo(() => readingTime(post.content), [post.content]);
   const faqs = useMemo(() => buildFaqs(post), [post]);
   const views = useMemo(() => placeholderViews(post.id), [post.id]);
+  const published = formatDate(post.published_at ?? post.created_at);
   const updated = new Date(post.updated_at).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
+  const isRecentlyUpdated =
+    Date.now() - new Date(post.updated_at).getTime() < 1000 * 60 * 60 * 24 * 90;
   const shareUrl = `${SITE}/blog/${post.slug}`;
   const shareText = encodeURIComponent(post.title);
 
   const [activeId, setActiveId] = useState<string>(sections[0]?.id ?? "");
   const [tocOpen, setTocOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [subscribeEmail, setSubscribeEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+  const [comment, setComment] = useState("");
   const articleRef = useRef<HTMLDivElement | null>(null);
 
   // Scroll-spy for TOC
