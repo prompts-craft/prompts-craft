@@ -39,7 +39,6 @@ import { BlogReviews } from "@/components/BlogReviews";
 import { fetchBlogBySlug, fetchBlogsBySlugs, fetchPublishedBlogs, type Blog } from "@/lib/blogs-api";
 import { InternalLink, ExternalReference } from "@/components/SeoLinks";
 import { SocialLinks } from "@/components/SocialLinks";
-import { supabase } from "@/integrations/supabase/client";
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
