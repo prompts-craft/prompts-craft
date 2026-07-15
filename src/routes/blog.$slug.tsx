@@ -353,7 +353,6 @@ function BlogPostPage() {
   const [copied, setCopied] = useState(false);
   const [subscribeEmail, setSubscribeEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
-  const [comment, setComment] = useState("");
   const articleRef = useRef<HTMLDivElement | null>(null);
 
   // Scroll-spy for TOC
