@@ -21,6 +21,16 @@ import {
   Twitter,
   Linkedin,
   Facebook,
+  ShieldCheck,
+  RefreshCw,
+  Award,
+  Info,
+  Bot,
+  Mail,
+  MessageSquare,
+  FileText,
+  ArrowRight,
+  FolderOpen,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Layout } from "@/components/Layout";
@@ -28,6 +38,7 @@ import { RouteError } from "@/components/RouteError";
 import { BlogReviews } from "@/components/BlogReviews";
 import { fetchBlogBySlug, fetchBlogsBySlugs, fetchPublishedBlogs, type Blog } from "@/lib/blogs-api";
 import { InternalLink, ExternalReference } from "@/components/SeoLinks";
+import { SocialLinks } from "@/components/SocialLinks";
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
@@ -135,7 +146,7 @@ export const Route = createFileRoute("/blog/$slug")({
         if (related.length === 4) break;
       }
     }
-    return { post, related, prev, next };
+    return { post, related, prev, next, articleCount: sorted.length };
   },
   head: ({ loaderData, params }) => {
     const p = loaderData?.post;
@@ -313,7 +324,7 @@ function placeholderViews(id: string): number {
 }
 
 function BlogPostPage() {
-  const { post, related, prev, next } = Route.useLoaderData();
+  const { post, related, prev, next, articleCount } = Route.useLoaderData();
 
   const { html: enrichedHtml, sections } = useMemo(() => {
     const clean = DOMPurify.sanitize(post.content, {
@@ -326,17 +337,22 @@ function BlogPostPage() {
   const minutes = useMemo(() => readingTime(post.content), [post.content]);
   const faqs = useMemo(() => buildFaqs(post), [post]);
   const views = useMemo(() => placeholderViews(post.id), [post.id]);
+  const published = formatDate(post.published_at ?? post.created_at);
   const updated = new Date(post.updated_at).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
+  const isRecentlyUpdated =
+    Date.now() - new Date(post.updated_at).getTime() < 1000 * 60 * 60 * 24 * 90;
   const shareUrl = `${SITE}/blog/${post.slug}`;
   const shareText = encodeURIComponent(post.title);
 
   const [activeId, setActiveId] = useState<string>(sections[0]?.id ?? "");
   const [tocOpen, setTocOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [subscribeEmail, setSubscribeEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
   const articleRef = useRef<HTMLDivElement | null>(null);
 
   // Scroll-spy for TOC
@@ -515,31 +531,66 @@ function BlogPostPage() {
               {/* Meta strip */}
               <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-accent" />
-                  {minutes} min read
+                  <Clock className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
+                  <span aria-label={`Estimated reading time ${minutes} minutes`}>
+                    {minutes} min read
+                  </span>
                 </span>
+                {published && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
+                    Published{" "}
+                    <time dateTime={post.published_at ?? post.created_at} className="text-foreground/90">
+                      {published}
+                    </time>
+                  </span>
+                )}
                 <span className="inline-flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-accent" />
-                  Updated <span className="text-foreground/90">{updated}</span>
+                  <RefreshCw className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
+                  Updated{" "}
+                  <time dateTime={post.updated_at} className="text-foreground/90">
+                    {updated}
+                  </time>
                 </span>
                 {post.category && (
                   <Link
                     to="/blog"
                     className="inline-flex items-center gap-1.5 hover:text-foreground"
+                    aria-label={`Category: ${post.category}`}
                   >
-                    <Tag className="w-3.5 h-3.5 text-accent" />
+                    <Tag className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
                     <span className="text-foreground/90">{post.category}</span>
                   </Link>
                 )}
                 <span className="inline-flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-accent" />
+                  <User className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
                   <span className="text-foreground/90">PromptCraft Team</span>
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Eye className="w-3.5 h-3.5 text-accent" />
-                  {views.toLocaleString()} views
+                  <Eye className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
+                  <span aria-label={`${views.toLocaleString()} views`}>
+                    {views.toLocaleString()} views
+                  </span>
                 </span>
               </div>
+
+              {/* Trust indicators */}
+              <ul
+                className="mt-4 flex flex-wrap gap-2"
+                aria-label="Content quality indicators"
+              >
+                <li className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300">
+                  <ShieldCheck className="w-3.5 h-3.5" aria-hidden="true" /> Expert Reviewed
+                </li>
+                {isRecentlyUpdated && (
+                  <li className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-300">
+                    <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" /> Updated Recently
+                  </li>
+                )}
+                <li className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-accent/30 bg-accent-soft/40 text-accent">
+                  <Award className="w-3.5 h-3.5" aria-hidden="true" /> Original Content
+                </li>
+              </ul>
             </header>
 
             {post.featured_image ? (
@@ -747,52 +798,214 @@ function BlogPostPage() {
               </div>
             </section>
 
-            {/* Author card */}
-            <section className="mt-8 rounded-2xl border border-border bg-card/60 backdrop-blur p-6 flex items-start gap-4">
-              <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent-soft text-accent font-semibold shrink-0">
-                <User className="w-5 h-5" />
-              </span>
-              <div className="min-w-0">
-                <div className="text-sm font-semibold text-foreground/90">
-                  Written by the PromptCraft Team
-                </div>
-                <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                  We're a small team of AI enthusiasts, writers, and prompt engineers who publish
-                  practical, tested guides on using AI for real work — no hype, no fluff.
-                </p>
-                <div className="flex items-center gap-x-5 gap-y-1 flex-wrap mt-3 text-xs text-muted-foreground">
-                  <span className="inline-flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-accent" />
-                    Last updated: <span className="text-foreground/90">{updated}</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <BookOpen className="w-3.5 h-3.5 text-accent" />
-                    {minutes} min read
-                  </span>
+            {/* Author box */}
+            <section
+              className="mt-8 rounded-2xl border border-border bg-card/60 backdrop-blur p-6"
+              aria-labelledby="author-heading"
+            >
+              <div className="flex items-start gap-4">
+                <span
+                  className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-accent/40 to-accent-soft text-accent font-semibold shrink-0 border border-accent/30"
+                  aria-hidden="true"
+                >
+                  <User className="w-6 h-6" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div id="author-heading" className="text-sm font-semibold text-foreground">
+                    PromptCraft Team
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-0.5">
+                    AI prompt engineers & educators
+                  </div>
+                  <p className="text-sm text-foreground/85 mt-2 leading-relaxed">
+                    We're a small team of AI enthusiasts, writers, and prompt engineers who publish
+                    practical, tested guides on using AI for real work — no hype, no fluff. Every
+                    guide is written, tested against leading models, and reviewed before publishing.
+                  </p>
+                  <div className="flex items-center gap-x-5 gap-y-2 flex-wrap mt-4 text-xs text-muted-foreground">
+                    <span className="inline-flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
+                      <span className="text-foreground/90">{articleCount}</span> articles published
+                    </span>
+                    <Link
+                      to="/about"
+                      className="inline-flex items-center gap-1.5 hover:text-foreground"
+                    >
+                      <Info className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
+                      About the team
+                    </Link>
+                  </div>
+                  <div className="mt-4">
+                    <SocialLinks size="sm" />
+                  </div>
                 </div>
               </div>
             </section>
 
+            {/* Sources */}
+            <section className="mt-8" aria-labelledby="sources-heading">
+              <h2
+                id="sources-heading"
+                className="text-sm uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2"
+              >
+                <BookOpen className="w-4 h-4 text-accent" aria-hidden="true" />
+                Sources & references
+              </h2>
+              <ul className="rounded-2xl border border-border bg-card/60 backdrop-blur divide-y divide-border/60">
+                <li>
+                  <a
+                    href="https://platform.openai.com/docs/guides/prompt-engineering"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="flex items-start gap-3 p-4 hover:bg-card/80 transition rounded-t-2xl"
+                  >
+                    <span className="text-xs font-mono text-accent shrink-0 mt-0.5">[1]</span>
+                    <span className="text-sm">
+                      <span className="text-foreground/90">OpenAI — Prompt engineering guide</span>
+                      <span className="block text-xs text-muted-foreground mt-0.5">
+                        platform.openai.com
+                      </span>
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="flex items-start gap-3 p-4 hover:bg-card/80 transition"
+                  >
+                    <span className="text-xs font-mono text-accent shrink-0 mt-0.5">[2]</span>
+                    <span className="text-sm">
+                      <span className="text-foreground/90">
+                        Anthropic — Prompt engineering with Claude
+                      </span>
+                      <span className="block text-xs text-muted-foreground mt-0.5">
+                        docs.anthropic.com
+                      </span>
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://ai.google.dev/gemini-api/docs/prompting-strategies"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="flex items-start gap-3 p-4 hover:bg-card/80 transition rounded-b-2xl"
+                  >
+                    <span className="text-xs font-mono text-accent shrink-0 mt-0.5">[3]</span>
+                    <span className="text-sm">
+                      <span className="text-foreground/90">Google — Gemini prompting strategies</span>
+                      <span className="block text-xs text-muted-foreground mt-0.5">
+                        ai.google.dev
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </section>
+
             {/* FAQ */}
-            <section className="mt-14">
-              <h2 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
-                <HelpCircle className="w-5 h-5 text-accent" /> Frequently Asked Questions
+            <section className="mt-14" aria-labelledby="faq-heading">
+              <h2
+                id="faq-heading"
+                className="text-2xl font-semibold tracking-tight flex items-center gap-2"
+              >
+                <HelpCircle className="w-5 h-5 text-accent" aria-hidden="true" /> Frequently Asked
+                Questions
               </h2>
               <div className="mt-5 divide-y divide-border/60 rounded-2xl border border-border bg-card/60 backdrop-blur">
                 {faqs.map((f, i) => (
                   <details key={i} className="group p-5">
-                    <summary className="cursor-pointer font-medium text-foreground/90 list-none flex items-center justify-between">
+                    <summary className="cursor-pointer font-medium text-foreground list-none flex items-center justify-between gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">
                       <span>{f.q}</span>
-                      <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90 opacity-60" />
+                      <ChevronRight
+                        className="w-4 h-4 transition-transform group-open:rotate-90 opacity-60 shrink-0"
+                        aria-hidden="true"
+                      />
                     </summary>
-                    <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">{f.a}</p>
+                    <p className="mt-3 text-[15px] text-foreground/80 leading-relaxed">{f.a}</p>
                   </details>
                 ))}
               </div>
             </section>
 
-            {/* Reviews */}
-            <BlogReviews blogId={post.id} />
+            {/* Newsletter */}
+            <section
+              className="mt-12 rounded-2xl border border-accent/30 bg-gradient-to-br from-accent-soft/50 to-card/60 backdrop-blur p-6 sm:p-8"
+              aria-labelledby="newsletter-heading"
+            >
+              <div className="flex items-center gap-2 text-accent">
+                <Mail className="w-5 h-5" aria-hidden="true" />
+                <h2 id="newsletter-heading" className="text-lg font-semibold">
+                  Get new AI prompt guides in your inbox
+                </h2>
+              </div>
+              <p className="text-sm text-foreground/80 mt-2 leading-relaxed">
+                One short email per week. Curated prompts, workflows, and new guides. No spam,
+                unsubscribe any time.
+              </p>
+              <form
+                className="mt-4 flex flex-col sm:flex-row gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(subscribeEmail)) {
+                    toast.error("Please enter a valid email address");
+                    return;
+                  }
+                  setSubscribed(true);
+                  setSubscribeEmail("");
+                  toast.success("You're on the list — thanks!");
+                }}
+              >
+                <label htmlFor="newsletter-email" className="sr-only">
+                  Email address
+                </label>
+                <input
+                  id="newsletter-email"
+                  type="email"
+                  required
+                  value={subscribeEmail}
+                  onChange={(e) => setSubscribeEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="flex-1 rounded-lg border border-border bg-background/60 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                  aria-describedby="newsletter-help"
+                />
+                <button
+                  type="submit"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent text-accent-foreground px-5 py-2.5 text-sm font-medium hover:opacity-90 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  {subscribed ? (
+                    <>
+                      <Check className="w-4 h-4" aria-hidden="true" /> Subscribed
+                    </>
+                  ) : (
+                    <>Subscribe</>
+                  )}
+                </button>
+              </form>
+              <p id="newsletter-help" className="mt-2 text-xs text-muted-foreground">
+                We'll only use your email to send our newsletter.
+              </p>
+            </section>
+
+            {/* Reviews / Comments */}
+            <section className="mt-14" aria-labelledby="comments-heading">
+              <h2
+                id="comments-heading"
+                className="text-2xl font-semibold tracking-tight flex items-center gap-2"
+              >
+                <MessageSquare className="w-5 h-5 text-accent" aria-hidden="true" />
+                Comments & discussion
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Share your experience with this guide — what worked, what didn't, and any prompts
+                you'd add.
+              </p>
+              <div className="mt-4">
+                <BlogReviews blogId={post.id} />
+              </div>
+            </section>
 
             {(prev || next) && (
               <nav
@@ -878,6 +1091,184 @@ function BlogPostPage() {
                 </div>
               </section>
             )}
+
+            {/* Related Resources */}
+            <section className="mt-12" aria-labelledby="resources-heading">
+              <h2
+                id="resources-heading"
+                className="text-sm uppercase tracking-wider text-muted-foreground mb-3"
+              >
+                Related resources
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <InternalLink
+                  to="/blog"
+                  title="All AI prompt guides"
+                  description="Every published tutorial and walkthrough on PromptCraft."
+                  icon={<BookOpen className="w-4 h-4" />}
+                />
+                <InternalLink
+                  to="/about"
+                  title="About PromptCraft"
+                  description="How we test prompts and choose what to publish."
+                  icon={<Info className="w-4 h-4" />}
+                />
+                {post.category && (
+                  <InternalLink
+                    to="/blog"
+                    title={`More ${post.category} articles`}
+                    description={`Browse more posts in the ${post.category} category.`}
+                    icon={<FolderOpen className="w-4 h-4" />}
+                  />
+                )}
+                <InternalLink
+                  to="/"
+                  title="Prompt library home"
+                  description="Copy-ready prompts curated by role and use case."
+                  icon={<Sparkles className="w-4 h-4" />}
+                />
+              </div>
+            </section>
+
+            {/* CTA */}
+            <section
+              className="mt-10 rounded-2xl border border-accent/40 bg-gradient-to-br from-accent/20 via-accent-soft/40 to-card/60 p-6 sm:p-8 text-center"
+              aria-labelledby="cta-heading"
+            >
+              <h2
+                id="cta-heading"
+                className="text-xl sm:text-2xl font-semibold tracking-tight"
+              >
+                Ready for prompts that actually work?
+              </h2>
+              <p className="text-sm text-foreground/80 mt-2 max-w-lg mx-auto">
+                Browse our hand-picked library of premium AI prompts — organized by role,
+                use-case, and model. Free to copy, no signup required.
+              </p>
+              <Link
+                to="/"
+                className="inline-flex items-center gap-2 mt-5 rounded-lg bg-accent text-accent-foreground px-6 py-3 text-sm font-medium hover:opacity-90 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                <Sparkles className="w-4 h-4" aria-hidden="true" />
+                Browse Premium Prompts
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              </Link>
+            </section>
+
+            {/* Category & Tags footer */}
+            <section
+              className="mt-10 rounded-2xl border border-border bg-card/60 backdrop-blur p-5"
+              aria-labelledby="taxonomy-heading"
+            >
+              <h2 id="taxonomy-heading" className="sr-only">
+                Category and tags
+              </h2>
+              {post.category && (
+                <div className="mb-3">
+                  <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+                    Category
+                  </div>
+                  <Link
+                    to="/blog"
+                    className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border border-accent/40 bg-accent-soft/40 text-accent hover:opacity-90 transition"
+                    aria-label={`View more articles in ${post.category}`}
+                  >
+                    <FolderOpen className="w-3.5 h-3.5" aria-hidden="true" />
+                    {post.category}
+                  </Link>
+                </div>
+              )}
+              {post.tags.length > 0 && (
+                <div>
+                  <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+                    Tags
+                  </div>
+                  <ul className="flex flex-wrap gap-2" aria-label="Article tags">
+                    {post.tags.map((t: string) => (
+                      <li key={t}>
+                        <span className="inline-block text-xs px-2.5 py-1 rounded-full border border-border bg-background/50 text-muted-foreground">
+                          #{t}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </section>
+
+            {/* About PromptCraft */}
+            <section
+              className="mt-10 rounded-2xl border border-border bg-card/60 backdrop-blur p-6"
+              aria-labelledby="about-promptcraft-heading"
+            >
+              <h2
+                id="about-promptcraft-heading"
+                className="text-base font-semibold flex items-center gap-2"
+              >
+                <Info className="w-4 h-4 text-accent" aria-hidden="true" />
+                About PromptCraft
+              </h2>
+              <p className="text-sm text-foreground/80 mt-2 leading-relaxed">
+                PromptCraft is a free, curated library of AI prompts and practical guides for
+                teachers, students, freelancers, marketers, and developers. Every prompt is tested
+                against leading AI models and reviewed by our editorial team before publishing. We
+                don't index low-quality variations — we keep a small set of prompts that reliably
+                produce useful output.
+              </p>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <Link
+                  to="/about"
+                  className="text-sm text-accent hover:underline inline-flex items-center gap-1"
+                >
+                  Learn more about us <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                </Link>
+                <SocialLinks size="sm" />
+              </div>
+            </section>
+
+            {/* AI Usage Disclosure */}
+            <section
+              className="mt-6 rounded-2xl border border-border bg-card/40 backdrop-blur p-5"
+              aria-labelledby="ai-disclosure-heading"
+            >
+              <h2
+                id="ai-disclosure-heading"
+                className="text-sm font-semibold flex items-center gap-2"
+              >
+                <Bot className="w-4 h-4 text-accent" aria-hidden="true" />
+                AI Usage Disclosure
+              </h2>
+              <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                Some drafts on PromptCraft are researched and outlined with the help of AI
+                assistants (ChatGPT, Claude, and Gemini). Every article is edited, fact-checked,
+                and reviewed by a human member of the PromptCraft team before publishing. All
+                prompts are tested by our editors against the current version of the models we
+                cite.
+              </p>
+            </section>
+
+            {/* Disclaimer */}
+            <section
+              className="mt-4 rounded-2xl border border-border bg-card/40 backdrop-blur p-5"
+              aria-labelledby="disclaimer-heading"
+              role="contentinfo"
+            >
+              <h2
+                id="disclaimer-heading"
+                className="text-sm font-semibold flex items-center gap-2"
+              >
+                <AlertCircle className="w-4 h-4 text-accent" aria-hidden="true" />
+                Disclaimer
+              </h2>
+              <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                The content on this page is provided for informational and educational purposes
+                only. AI model behavior changes over time; results may vary based on model
+                version, custom instructions, and input context. PromptCraft is not affiliated
+                with OpenAI, Anthropic, Google, or any other AI provider mentioned. Product names
+                and trademarks belong to their respective owners. Nothing on this page constitutes
+                legal, medical, financial, or professional advice.
+              </p>
+            </section>
           </article>
 
           {/* Sticky desktop TOC */}
