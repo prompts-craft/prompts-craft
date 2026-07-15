@@ -799,52 +799,214 @@ function BlogPostPage() {
               </div>
             </section>
 
-            {/* Author card */}
-            <section className="mt-8 rounded-2xl border border-border bg-card/60 backdrop-blur p-6 flex items-start gap-4">
-              <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent-soft text-accent font-semibold shrink-0">
-                <User className="w-5 h-5" />
-              </span>
-              <div className="min-w-0">
-                <div className="text-sm font-semibold text-foreground/90">
-                  Written by the PromptCraft Team
-                </div>
-                <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                  We're a small team of AI enthusiasts, writers, and prompt engineers who publish
-                  practical, tested guides on using AI for real work — no hype, no fluff.
-                </p>
-                <div className="flex items-center gap-x-5 gap-y-1 flex-wrap mt-3 text-xs text-muted-foreground">
-                  <span className="inline-flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-accent" />
-                    Last updated: <span className="text-foreground/90">{updated}</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <BookOpen className="w-3.5 h-3.5 text-accent" />
-                    {minutes} min read
-                  </span>
+            {/* Author box */}
+            <section
+              className="mt-8 rounded-2xl border border-border bg-card/60 backdrop-blur p-6"
+              aria-labelledby="author-heading"
+            >
+              <div className="flex items-start gap-4">
+                <span
+                  className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-accent/40 to-accent-soft text-accent font-semibold shrink-0 border border-accent/30"
+                  aria-hidden="true"
+                >
+                  <User className="w-6 h-6" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div id="author-heading" className="text-sm font-semibold text-foreground">
+                    PromptCraft Team
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-0.5">
+                    AI prompt engineers & educators
+                  </div>
+                  <p className="text-sm text-foreground/85 mt-2 leading-relaxed">
+                    We're a small team of AI enthusiasts, writers, and prompt engineers who publish
+                    practical, tested guides on using AI for real work — no hype, no fluff. Every
+                    guide is written, tested against leading models, and reviewed before publishing.
+                  </p>
+                  <div className="flex items-center gap-x-5 gap-y-2 flex-wrap mt-4 text-xs text-muted-foreground">
+                    <span className="inline-flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
+                      <span className="text-foreground/90">{articleCount}</span> articles published
+                    </span>
+                    <Link
+                      to="/about"
+                      className="inline-flex items-center gap-1.5 hover:text-foreground"
+                    >
+                      <Info className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
+                      About the team
+                    </Link>
+                  </div>
+                  <div className="mt-4">
+                    <SocialLinks size="sm" />
+                  </div>
                 </div>
               </div>
             </section>
 
+            {/* Sources */}
+            <section className="mt-8" aria-labelledby="sources-heading">
+              <h2
+                id="sources-heading"
+                className="text-sm uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2"
+              >
+                <BookOpen className="w-4 h-4 text-accent" aria-hidden="true" />
+                Sources & references
+              </h2>
+              <ul className="rounded-2xl border border-border bg-card/60 backdrop-blur divide-y divide-border/60">
+                <li>
+                  <a
+                    href="https://platform.openai.com/docs/guides/prompt-engineering"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="flex items-start gap-3 p-4 hover:bg-card/80 transition rounded-t-2xl"
+                  >
+                    <span className="text-xs font-mono text-accent shrink-0 mt-0.5">[1]</span>
+                    <span className="text-sm">
+                      <span className="text-foreground/90">OpenAI — Prompt engineering guide</span>
+                      <span className="block text-xs text-muted-foreground mt-0.5">
+                        platform.openai.com
+                      </span>
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="flex items-start gap-3 p-4 hover:bg-card/80 transition"
+                  >
+                    <span className="text-xs font-mono text-accent shrink-0 mt-0.5">[2]</span>
+                    <span className="text-sm">
+                      <span className="text-foreground/90">
+                        Anthropic — Prompt engineering with Claude
+                      </span>
+                      <span className="block text-xs text-muted-foreground mt-0.5">
+                        docs.anthropic.com
+                      </span>
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://ai.google.dev/gemini-api/docs/prompting-strategies"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="flex items-start gap-3 p-4 hover:bg-card/80 transition rounded-b-2xl"
+                  >
+                    <span className="text-xs font-mono text-accent shrink-0 mt-0.5">[3]</span>
+                    <span className="text-sm">
+                      <span className="text-foreground/90">Google — Gemini prompting strategies</span>
+                      <span className="block text-xs text-muted-foreground mt-0.5">
+                        ai.google.dev
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </section>
+
             {/* FAQ */}
-            <section className="mt-14">
-              <h2 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
-                <HelpCircle className="w-5 h-5 text-accent" /> Frequently Asked Questions
+            <section className="mt-14" aria-labelledby="faq-heading">
+              <h2
+                id="faq-heading"
+                className="text-2xl font-semibold tracking-tight flex items-center gap-2"
+              >
+                <HelpCircle className="w-5 h-5 text-accent" aria-hidden="true" /> Frequently Asked
+                Questions
               </h2>
               <div className="mt-5 divide-y divide-border/60 rounded-2xl border border-border bg-card/60 backdrop-blur">
                 {faqs.map((f, i) => (
                   <details key={i} className="group p-5">
-                    <summary className="cursor-pointer font-medium text-foreground/90 list-none flex items-center justify-between">
+                    <summary className="cursor-pointer font-medium text-foreground list-none flex items-center justify-between gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">
                       <span>{f.q}</span>
-                      <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90 opacity-60" />
+                      <ChevronRight
+                        className="w-4 h-4 transition-transform group-open:rotate-90 opacity-60 shrink-0"
+                        aria-hidden="true"
+                      />
                     </summary>
-                    <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">{f.a}</p>
+                    <p className="mt-3 text-[15px] text-foreground/80 leading-relaxed">{f.a}</p>
                   </details>
                 ))}
               </div>
             </section>
 
-            {/* Reviews */}
-            <BlogReviews blogId={post.id} />
+            {/* Newsletter */}
+            <section
+              className="mt-12 rounded-2xl border border-accent/30 bg-gradient-to-br from-accent-soft/50 to-card/60 backdrop-blur p-6 sm:p-8"
+              aria-labelledby="newsletter-heading"
+            >
+              <div className="flex items-center gap-2 text-accent">
+                <Mail className="w-5 h-5" aria-hidden="true" />
+                <h2 id="newsletter-heading" className="text-lg font-semibold">
+                  Get new AI prompt guides in your inbox
+                </h2>
+              </div>
+              <p className="text-sm text-foreground/80 mt-2 leading-relaxed">
+                One short email per week. Curated prompts, workflows, and new guides. No spam,
+                unsubscribe any time.
+              </p>
+              <form
+                className="mt-4 flex flex-col sm:flex-row gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(subscribeEmail)) {
+                    toast.error("Please enter a valid email address");
+                    return;
+                  }
+                  setSubscribed(true);
+                  setSubscribeEmail("");
+                  toast.success("You're on the list — thanks!");
+                }}
+              >
+                <label htmlFor="newsletter-email" className="sr-only">
+                  Email address
+                </label>
+                <input
+                  id="newsletter-email"
+                  type="email"
+                  required
+                  value={subscribeEmail}
+                  onChange={(e) => setSubscribeEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="flex-1 rounded-lg border border-border bg-background/60 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                  aria-describedby="newsletter-help"
+                />
+                <button
+                  type="submit"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-accent text-accent-foreground px-5 py-2.5 text-sm font-medium hover:opacity-90 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  {subscribed ? (
+                    <>
+                      <Check className="w-4 h-4" aria-hidden="true" /> Subscribed
+                    </>
+                  ) : (
+                    <>Subscribe</>
+                  )}
+                </button>
+              </form>
+              <p id="newsletter-help" className="mt-2 text-xs text-muted-foreground">
+                We'll only use your email to send our newsletter.
+              </p>
+            </section>
+
+            {/* Reviews / Comments */}
+            <section className="mt-14" aria-labelledby="comments-heading">
+              <h2
+                id="comments-heading"
+                className="text-2xl font-semibold tracking-tight flex items-center gap-2"
+              >
+                <MessageSquare className="w-5 h-5 text-accent" aria-hidden="true" />
+                Comments & discussion
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Share your experience with this guide — what worked, what didn't, and any prompts
+                you'd add.
+              </p>
+              <div className="mt-4">
+                <BlogReviews blogId={post.id} />
+              </div>
+            </section>
 
             {(prev || next) && (
               <nav
