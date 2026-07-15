@@ -1091,6 +1091,184 @@ function BlogPostPage() {
                 </div>
               </section>
             )}
+
+            {/* Related Resources */}
+            <section className="mt-12" aria-labelledby="resources-heading">
+              <h2
+                id="resources-heading"
+                className="text-sm uppercase tracking-wider text-muted-foreground mb-3"
+              >
+                Related resources
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <InternalLink
+                  to="/blog"
+                  title="All AI prompt guides"
+                  description="Every published tutorial and walkthrough on PromptCraft."
+                  icon={<BookOpen className="w-4 h-4" />}
+                />
+                <InternalLink
+                  to="/about"
+                  title="About PromptCraft"
+                  description="How we test prompts and choose what to publish."
+                  icon={<Info className="w-4 h-4" />}
+                />
+                {post.category && (
+                  <InternalLink
+                    to="/blog"
+                    title={`More ${post.category} articles`}
+                    description={`Browse more posts in the ${post.category} category.`}
+                    icon={<FolderOpen className="w-4 h-4" />}
+                  />
+                )}
+                <InternalLink
+                  to="/"
+                  title="Prompt library home"
+                  description="Copy-ready prompts curated by role and use case."
+                  icon={<Sparkles className="w-4 h-4" />}
+                />
+              </div>
+            </section>
+
+            {/* CTA */}
+            <section
+              className="mt-10 rounded-2xl border border-accent/40 bg-gradient-to-br from-accent/20 via-accent-soft/40 to-card/60 p-6 sm:p-8 text-center"
+              aria-labelledby="cta-heading"
+            >
+              <h2
+                id="cta-heading"
+                className="text-xl sm:text-2xl font-semibold tracking-tight"
+              >
+                Ready for prompts that actually work?
+              </h2>
+              <p className="text-sm text-foreground/80 mt-2 max-w-lg mx-auto">
+                Browse our hand-picked library of premium AI prompts — organized by role,
+                use-case, and model. Free to copy, no signup required.
+              </p>
+              <Link
+                to="/"
+                className="inline-flex items-center gap-2 mt-5 rounded-lg bg-accent text-accent-foreground px-6 py-3 text-sm font-medium hover:opacity-90 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                <Sparkles className="w-4 h-4" aria-hidden="true" />
+                Browse Premium Prompts
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              </Link>
+            </section>
+
+            {/* Category & Tags footer */}
+            <section
+              className="mt-10 rounded-2xl border border-border bg-card/60 backdrop-blur p-5"
+              aria-labelledby="taxonomy-heading"
+            >
+              <h2 id="taxonomy-heading" className="sr-only">
+                Category and tags
+              </h2>
+              {post.category && (
+                <div className="mb-3">
+                  <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+                    Category
+                  </div>
+                  <Link
+                    to="/blog"
+                    className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border border-accent/40 bg-accent-soft/40 text-accent hover:opacity-90 transition"
+                    aria-label={`View more articles in ${post.category}`}
+                  >
+                    <FolderOpen className="w-3.5 h-3.5" aria-hidden="true" />
+                    {post.category}
+                  </Link>
+                </div>
+              )}
+              {post.tags.length > 0 && (
+                <div>
+                  <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+                    Tags
+                  </div>
+                  <ul className="flex flex-wrap gap-2" aria-label="Article tags">
+                    {post.tags.map((t: string) => (
+                      <li key={t}>
+                        <span className="inline-block text-xs px-2.5 py-1 rounded-full border border-border bg-background/50 text-muted-foreground">
+                          #{t}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </section>
+
+            {/* About PromptCraft */}
+            <section
+              className="mt-10 rounded-2xl border border-border bg-card/60 backdrop-blur p-6"
+              aria-labelledby="about-promptcraft-heading"
+            >
+              <h2
+                id="about-promptcraft-heading"
+                className="text-base font-semibold flex items-center gap-2"
+              >
+                <Info className="w-4 h-4 text-accent" aria-hidden="true" />
+                About PromptCraft
+              </h2>
+              <p className="text-sm text-foreground/80 mt-2 leading-relaxed">
+                PromptCraft is a free, curated library of AI prompts and practical guides for
+                teachers, students, freelancers, marketers, and developers. Every prompt is tested
+                against leading AI models and reviewed by our editorial team before publishing. We
+                don't index low-quality variations — we keep a small set of prompts that reliably
+                produce useful output.
+              </p>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <Link
+                  to="/about"
+                  className="text-sm text-accent hover:underline inline-flex items-center gap-1"
+                >
+                  Learn more about us <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                </Link>
+                <SocialLinks size="sm" />
+              </div>
+            </section>
+
+            {/* AI Usage Disclosure */}
+            <section
+              className="mt-6 rounded-2xl border border-border bg-card/40 backdrop-blur p-5"
+              aria-labelledby="ai-disclosure-heading"
+            >
+              <h2
+                id="ai-disclosure-heading"
+                className="text-sm font-semibold flex items-center gap-2"
+              >
+                <Bot className="w-4 h-4 text-accent" aria-hidden="true" />
+                AI Usage Disclosure
+              </h2>
+              <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                Some drafts on PromptCraft are researched and outlined with the help of AI
+                assistants (ChatGPT, Claude, and Gemini). Every article is edited, fact-checked,
+                and reviewed by a human member of the PromptCraft team before publishing. All
+                prompts are tested by our editors against the current version of the models we
+                cite.
+              </p>
+            </section>
+
+            {/* Disclaimer */}
+            <section
+              className="mt-4 rounded-2xl border border-border bg-card/40 backdrop-blur p-5"
+              aria-labelledby="disclaimer-heading"
+              role="contentinfo"
+            >
+              <h2
+                id="disclaimer-heading"
+                className="text-sm font-semibold flex items-center gap-2"
+              >
+                <AlertCircle className="w-4 h-4 text-accent" aria-hidden="true" />
+                Disclaimer
+              </h2>
+              <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                The content on this page is provided for informational and educational purposes
+                only. AI model behavior changes over time; results may vary based on model
+                version, custom instructions, and input context. PromptCraft is not affiliated
+                with OpenAI, Anthropic, Google, or any other AI provider mentioned. Product names
+                and trademarks belong to their respective owners. Nothing on this page constitutes
+                legal, medical, financial, or professional advice.
+              </p>
+            </section>
           </article>
 
           {/* Sticky desktop TOC */}
