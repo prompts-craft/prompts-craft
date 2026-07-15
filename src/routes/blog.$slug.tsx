@@ -135,7 +135,7 @@ export const Route = createFileRoute("/blog/$slug")({
         if (related.length === 4) break;
       }
     }
-    return { post, related, prev, next };
+    return { post, related, prev, next, articleCount: sorted.length };
   },
   head: ({ loaderData, params }) => {
     const p = loaderData?.post;
