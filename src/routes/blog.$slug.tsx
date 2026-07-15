@@ -532,31 +532,66 @@ function BlogPostPage() {
               {/* Meta strip */}
               <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-accent" />
-                  {minutes} min read
+                  <Clock className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
+                  <span aria-label={`Estimated reading time ${minutes} minutes`}>
+                    {minutes} min read
+                  </span>
                 </span>
+                {published && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
+                    Published{" "}
+                    <time dateTime={post.published_at ?? post.created_at} className="text-foreground/90">
+                      {published}
+                    </time>
+                  </span>
+                )}
                 <span className="inline-flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-accent" />
-                  Updated <span className="text-foreground/90">{updated}</span>
+                  <RefreshCw className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
+                  Updated{" "}
+                  <time dateTime={post.updated_at} className="text-foreground/90">
+                    {updated}
+                  </time>
                 </span>
                 {post.category && (
                   <Link
                     to="/blog"
                     className="inline-flex items-center gap-1.5 hover:text-foreground"
+                    aria-label={`Category: ${post.category}`}
                   >
-                    <Tag className="w-3.5 h-3.5 text-accent" />
+                    <Tag className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
                     <span className="text-foreground/90">{post.category}</span>
                   </Link>
                 )}
                 <span className="inline-flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-accent" />
+                  <User className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
                   <span className="text-foreground/90">PromptCraft Team</span>
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Eye className="w-3.5 h-3.5 text-accent" />
-                  {views.toLocaleString()} views
+                  <Eye className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
+                  <span aria-label={`${views.toLocaleString()} views`}>
+                    {views.toLocaleString()} views
+                  </span>
                 </span>
               </div>
+
+              {/* Trust indicators */}
+              <ul
+                className="mt-4 flex flex-wrap gap-2"
+                aria-label="Content quality indicators"
+              >
+                <li className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300">
+                  <ShieldCheck className="w-3.5 h-3.5" aria-hidden="true" /> Expert Reviewed
+                </li>
+                {isRecentlyUpdated && (
+                  <li className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-300">
+                    <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" /> Updated Recently
+                  </li>
+                )}
+                <li className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-accent/30 bg-accent-soft/40 text-accent">
+                  <Award className="w-3.5 h-3.5" aria-hidden="true" /> Original Content
+                </li>
+              </ul>
             </header>
 
             {post.featured_image ? (
