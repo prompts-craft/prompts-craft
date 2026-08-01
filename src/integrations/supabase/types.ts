@@ -87,7 +87,6 @@ export type Database = {
           created_at: string
           id: string
           rating: number
-          reviewer_hash: string | null
           updated_at: string
           user_id: string
         }
@@ -97,7 +96,6 @@ export type Database = {
           created_at?: string
           id?: string
           rating: number
-          reviewer_hash?: string | null
           updated_at?: string
           user_id: string
         }
@@ -107,7 +105,6 @@ export type Database = {
           created_at?: string
           id?: string
           rating?: number
-          reviewer_hash?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -277,7 +274,6 @@ export type Database = {
           id: string
           prompt_id: string
           rating: number
-          reviewer_hash: string | null
           updated_at: string
           user_id: string
         }
@@ -287,7 +283,6 @@ export type Database = {
           id?: string
           prompt_id: string
           rating: number
-          reviewer_hash?: string | null
           updated_at?: string
           user_id: string
         }
@@ -297,7 +292,6 @@ export type Database = {
           id?: string
           prompt_id?: string
           rating?: number
-          reviewer_hash?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -396,6 +390,8 @@ export type Database = {
         Args: { prompt_slug: string }
         Returns: number
       }
+      my_blog_review_id: { Args: { _blog_id: string }; Returns: string }
+      my_prompt_review_id: { Args: { _prompt_id: string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user" | "super_admin"

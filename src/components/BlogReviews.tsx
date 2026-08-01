@@ -3,11 +3,9 @@ import { MessageSquare, Trash2, LogIn } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { StarRating } from "@/components/StarRating";
-import { reviewerHashFor } from "@/lib/md5";
 
 type Review = {
   id: string;
-  reviewer_hash: string;
   rating: number;
   comment: string;
   created_at: string;
@@ -22,14 +20,30 @@ export function BlogReviews({ blogId }: { blogId: string }) {
   const [user, setUser] = useState<SessionUser>(null);
   const [authOpen, setAuthOpen] = useState(false);
 
-  const myHash = useMemo(() => (user ? reviewerHashFor(user.id) : null), [user]);
+  const [myReviewId, setMyReviewId] = useState<string | null>(null);
   const existingMine = useMemo(
-    () => (myHash ? reviews.find((r) => r.reviewer_hash === myHash) ?? null : null),
-    [reviews, myHash],
+    () => (myReviewId ? reviews.find((r) => r.id === myReviewId) ?? null : null),
+    [reviews, myReviewId],
   );
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!user) {
+      setMyReviewId(null);
+      return;
+    }
+    supabase
+      .rpc("my_blog_review_id", { _blog_id: blogId })
+      .then(({ data }) => {
+        if (!cancelled) setMyReviewId((data as string | null) ?? null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, blogId, reviews]);
 
   useEffect(() => {
     if (existingMine) {
@@ -42,7 +56,7 @@ export function BlogReviews({ blogId }: { blogId: string }) {
     setLoading(true);
     const { data, error } = await supabase
       .from("blog_reviews")
-      .select("id, reviewer_hash, rating, comment, created_at, updated_at")
+      .select("id, rating, comment, created_at, updated_at")
       .eq("blog_id", blogId)
       .order("created_at", { ascending: false });
     if (error) console.error(error);
@@ -191,8 +205,8 @@ export function BlogReviews({ blogId }: { blogId: string }) {
           </div>
         )}
         {reviews.map((r) => {
-          const isMine = myHash === r.reviewer_hash;
-          const shortId = r.reviewer_hash.slice(0, 6);
+          const isMine = myReviewId === r.id;
+          const shortId = r.id.replace(/-/g, "").slice(0, 6);
           const initial = shortId.charAt(0).toUpperCase();
           const nameLabel = `User ${shortId}`;
           const date = new Date(r.created_at).toLocaleDateString("en-US", {
