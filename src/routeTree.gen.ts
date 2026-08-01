@@ -20,6 +20,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PromptsSlugRouteImport } from './routes/prompts.$slug'
 import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AdminSitemapRouteImport } from './routes/admin.sitemap'
 import { Route as AdminRequestsRouteImport } from './routes/admin.requests'
 import { Route as AdminPromptsRouteImport } from './routes/admin.prompts'
 import { Route as AdminImportRouteImport } from './routes/admin.import'
@@ -86,6 +87,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BlogRoute,
 } as any)
+const AdminSitemapRoute = AdminSitemapRouteImport.update({
+  id: '/sitemap',
+  path: '/sitemap',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminRequestsRoute = AdminRequestsRouteImport.update({
   id: '/requests',
   path: '/requests',
@@ -150,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/admin/import': typeof AdminImportRoute
   '/admin/prompts': typeof AdminPromptsRouteWithChildren
   '/admin/requests': typeof AdminRequestsRoute
+  '/admin/sitemap': typeof AdminSitemapRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/prompts/$slug': typeof PromptsSlugRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByTo {
   '/admin/import': typeof AdminImportRoute
   '/admin/prompts': typeof AdminPromptsRouteWithChildren
   '/admin/requests': typeof AdminRequestsRoute
+  '/admin/sitemap': typeof AdminSitemapRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/prompts/$slug': typeof PromptsSlugRoute
@@ -195,6 +203,7 @@ export interface FileRoutesById {
   '/admin/import': typeof AdminImportRoute
   '/admin/prompts': typeof AdminPromptsRouteWithChildren
   '/admin/requests': typeof AdminRequestsRoute
+  '/admin/sitemap': typeof AdminSitemapRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/prompts/$slug': typeof PromptsSlugRoute
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/admin/import'
     | '/admin/prompts'
     | '/admin/requests'
+    | '/admin/sitemap'
     | '/blog/$slug'
     | '/categories/$slug'
     | '/prompts/$slug'
@@ -241,6 +251,7 @@ export interface FileRouteTypes {
     | '/admin/import'
     | '/admin/prompts'
     | '/admin/requests'
+    | '/admin/sitemap'
     | '/blog/$slug'
     | '/categories/$slug'
     | '/prompts/$slug'
@@ -264,6 +275,7 @@ export interface FileRouteTypes {
     | '/admin/import'
     | '/admin/prompts'
     | '/admin/requests'
+    | '/admin/sitemap'
     | '/blog/$slug'
     | '/categories/$slug'
     | '/prompts/$slug'
@@ -364,6 +376,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
+    }
+    '/admin/sitemap': {
+      id: '/admin/sitemap'
+      path: '/sitemap'
+      fullPath: '/admin/sitemap'
+      preLoaderRoute: typeof AdminSitemapRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/requests': {
       id: '/admin/requests'
@@ -473,6 +492,7 @@ interface AdminRouteChildren {
   AdminImportRoute: typeof AdminImportRoute
   AdminPromptsRoute: typeof AdminPromptsRouteWithChildren
   AdminRequestsRoute: typeof AdminRequestsRoute
+  AdminSitemapRoute: typeof AdminSitemapRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -483,6 +503,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminImportRoute: AdminImportRoute,
   AdminPromptsRoute: AdminPromptsRouteWithChildren,
   AdminRequestsRoute: AdminRequestsRoute,
+  AdminSitemapRoute: AdminSitemapRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
