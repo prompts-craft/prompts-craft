@@ -31,7 +31,7 @@ export const Route = createFileRoute("/prompts/$slug")({
   head: ({ loaderData, params }) => {
     const p = loaderData?.prompt;
     if (!p) {
-      return { meta: [{ title: "Prompt" }] };
+      return { meta: [{ title: "AI Prompt | PromptCraft" }] };
     }
     const title = `${p.title} — Free AI Prompt | PromptCraft`;
     const desc =
