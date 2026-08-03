@@ -174,7 +174,9 @@ function BlogCard({ blog, featured = false }: { blog: Blog; featured?: boolean }
             {blog.description}
           </p>
         )}
-        <span className="inline-block mt-4 text-sm font-medium text-accent">Read more →</span>
+        <span className="inline-block mt-4 text-sm font-medium text-accent">
+          Read the full guide: {blog.title} →
+        </span>
       </div>
     </Link>
   );
