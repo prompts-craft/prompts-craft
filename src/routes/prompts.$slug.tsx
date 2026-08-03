@@ -48,7 +48,7 @@ export const Route = createFileRoute("/prompts/$slug")({
         { title },
         { name: "description", content: desc },
         { name: "keywords", content: keywords },
-        { property: "og:title", content: p.title },
+        { property: "og:title", content: `${p.title} — AI Prompt | PromptCraft` },
         { property: "og:description", content: desc },
         { property: "og:type", content: "article" },
         { property: "og:url", content: url },
