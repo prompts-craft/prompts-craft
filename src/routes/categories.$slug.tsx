@@ -93,7 +93,7 @@ function CategoryPage() {
           <span className="inline-flex w-12 h-12 items-center justify-center rounded-2xl bg-accent-soft text-accent">
             <CategoryIcon slug={category.slug} className="w-6 h-6" />
           </span>
-          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-gradient">{category.name}</h1>
+          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-gradient">{category.name} AI Prompts</h1>
         </div>
         <p className="text-muted-foreground mt-3 max-w-2xl leading-relaxed">{category.description}</p>
       </section>
@@ -136,6 +136,8 @@ function CategoryPage() {
           </div>
           <span className="text-xs text-muted-foreground">{prompts.length} prompts</span>
         </div>
+
+        <h2 className="text-xl font-semibold tracking-tight mb-4">All {category.name} AI Prompts</h2>
 
         {prompts.length === 0 ? (
           <div className="rounded-xl border border-dashed border-border bg-card/40 p-10 text-center text-sm text-muted-foreground">

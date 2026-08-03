@@ -26,7 +26,8 @@ export const Route = createFileRoute("/blog/")({
       { property: "og:title", content: "Blog — AI Prompt Guides | PromptCraft" },
       {
         property: "og:description",
-        content: "Practical AI prompt guides for real work.",
+        content:
+          "In-depth AI prompt guides and tutorials for teachers, students, freelancers, marketers, and developers — copy-ready prompts and workflows you can use today.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: `${SITE}/blog` },
@@ -174,7 +175,9 @@ function BlogCard({ blog, featured = false }: { blog: Blog; featured?: boolean }
             {blog.description}
           </p>
         )}
-        <span className="inline-block mt-4 text-sm font-medium text-accent">Read more →</span>
+        <span className="inline-block mt-4 text-sm font-medium text-accent">
+          Read the full guide: {blog.title} →
+        </span>
       </div>
     </Link>
   );

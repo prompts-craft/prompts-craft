@@ -31,7 +31,7 @@ export const Route = createFileRoute("/prompts/$slug")({
   head: ({ loaderData, params }) => {
     const p = loaderData?.prompt;
     if (!p) {
-      return { meta: [{ title: "Prompt" }] };
+      return { meta: [{ title: "AI Prompt | PromptCraft" }] };
     }
     const title = `${p.title} — Free AI Prompt | PromptCraft`;
     const desc =
@@ -48,13 +48,13 @@ export const Route = createFileRoute("/prompts/$slug")({
         { title },
         { name: "description", content: desc },
         { name: "keywords", content: keywords },
-        { property: "og:title", content: p.title },
+        { property: "og:title", content: `${p.title} — AI Prompt | PromptCraft` },
         { property: "og:description", content: desc },
         { property: "og:type", content: "article" },
         { property: "og:url", content: url },
         { property: "og:image", content: image },
         { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: p.title },
+        { name: "twitter:title", content: `${p.title} — AI Prompt | PromptCraft` },
         { name: "twitter:description", content: desc },
         { name: "twitter:image", content: image },
       ],

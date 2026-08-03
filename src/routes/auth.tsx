@@ -8,7 +8,7 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Sign in — PromptCraft" },
-      { name: "description", content: "Sign in or create an account on PromptCraft." },
+      { name: "description", content: "Sign in or create a free PromptCraft account to save your favourite AI prompts, leave reviews, and get the most out of the prompt library." },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
