@@ -54,7 +54,7 @@ export const Route = createFileRoute("/prompts/$slug")({
         { property: "og:url", content: url },
         { property: "og:image", content: image },
         { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: p.title },
+        { name: "twitter:title", content: `${p.title} — AI Prompt | PromptCraft` },
         { name: "twitter:description", content: desc },
         { name: "twitter:image", content: image },
       ],
