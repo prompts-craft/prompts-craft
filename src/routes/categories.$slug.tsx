@@ -137,6 +137,8 @@ function CategoryPage() {
           <span className="text-xs text-muted-foreground">{prompts.length} prompts</span>
         </div>
 
+        <h2 className="text-xl font-semibold tracking-tight mb-4">All {category.name} AI Prompts</h2>
+
         {prompts.length === 0 ? (
           <div className="rounded-xl border border-dashed border-border bg-card/40 p-10 text-center text-sm text-muted-foreground">
             No prompts in this category yet.
