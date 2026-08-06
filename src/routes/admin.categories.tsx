@@ -161,6 +161,17 @@ function AdminCategoriesPage() {
               />
             </label>
           </div>
+          <label className="block text-xs text-muted-foreground max-w-xs">
+            Show on page
+            <select
+              value={mediaType}
+              onChange={(e) => setMediaType(e.target.value as "image" | "video")}
+              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+            >
+              <option value="image">Image prompts (home page)</option>
+              <option value="video">Video prompts (/video)</option>
+            </select>
+          </label>
           <div className="flex gap-2">
             <button
               type="submit"
