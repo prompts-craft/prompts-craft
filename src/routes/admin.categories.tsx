@@ -194,12 +194,23 @@ function AdminCategoriesPage() {
                 <div className="text-xs text-muted-foreground truncate font-mono">{c.slug}</div>
               </div>
             </div>
-            <button
-              onClick={() => remove(c.id)}
-              className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-destructive/10 hover:text-destructive hover:border-destructive/40"
-            >
-              <Trash2 className="w-3.5 h-3.5" /> Delete
-            </button>
+            <div className="flex items-center gap-2 shrink-0">
+              <select
+                value={c.media_type}
+                onChange={(e) => setPage(c.id, e.target.value)}
+                className="rounded-md border border-border bg-background px-2 py-1.5 text-xs text-foreground"
+                aria-label={`Page for ${c.name}`}
+              >
+                <option value="image">Image page</option>
+                <option value="video">Video page</option>
+              </select>
+              <button
+                onClick={() => remove(c.id)}
+                className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-destructive/10 hover:text-destructive hover:border-destructive/40"
+              >
+                <Trash2 className="w-3.5 h-3.5" /> Delete
+              </button>
+            </div>
           </div>
         ))}
       </div>
