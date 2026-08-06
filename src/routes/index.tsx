@@ -152,7 +152,7 @@ function Index() {
 
       {/* Categories */}
       <section className="max-w-6xl mx-auto px-6 py-20">
-        <div className="flex items-end justify-between mb-8">
+        <div className="flex items-end justify-between gap-4 flex-wrap mb-8">
           <div>
             <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2">
               Browse by profession
@@ -161,9 +161,10 @@ function Index() {
               Built for the way you work
             </h2>
           </div>
+          <MediaTabs active="image" />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-          {categories.map((c) => (
+          {imageCats.map((c) => (
             <Link
               key={c.slug}
               to="/categories/$slug"
