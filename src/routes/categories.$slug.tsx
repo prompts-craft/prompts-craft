@@ -79,6 +79,8 @@ const SORTS: { key: SortKey; label: string }[] = [
 
 function CategoryPage() {
   const { category, prompts } = Route.useLoaderData();
+  const { data: allCats = [] } = useCategories();
+  const siblings = allCats.filter((c) => c.media_type === category.media_type);
   const { sort } = Route.useSearch();
   const navigate = useNavigate();
 
