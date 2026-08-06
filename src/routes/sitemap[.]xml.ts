@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { categories } from "@/data/prompts";
+import { fetchCategories } from "@/lib/categories-api";
 import { blogPosts } from "@/data/blog-posts";
 import { fetchAllPrompts } from "@/lib/prompts-api";
 import { fetchPublishedBlogs } from "@/lib/blogs-api";
@@ -25,6 +25,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/auth", changefreq: "yearly", priority: "0.2" },
         ];
 
+        const categories = await fetchCategories().catch(() => []);
         for (const c of categories) {
           entries.push({ path: `/categories/${c.slug}`, changefreq: "weekly", priority: "0.8" });
         }

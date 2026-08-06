@@ -7,12 +7,13 @@ import { useTheme } from "@/hooks/use-theme";
 import { SocialLinks } from "@/components/SocialLinks";
 import { supabase } from "@/integrations/supabase/client";
 
-import { categories } from "@/data/prompts";
+import { useCategories } from "@/lib/categories-api";
 
 export function Layout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const { theme, toggle, mounted } = useTheme();
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const { data: categories = [] } = useCategories();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserEmail(data.user?.email ?? null));

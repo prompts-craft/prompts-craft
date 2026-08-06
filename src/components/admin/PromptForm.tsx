@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { categories } from "@/data/prompts";
+import { useCategories } from "@/lib/categories-api";
 import { slugify } from "@/lib/admin-auth";
 import { ImageUploadField } from "./ImageUploadField";
 
@@ -19,7 +19,7 @@ export type PromptFormValues = {
 export const emptyPromptForm: PromptFormValues = {
   title: "",
   slug: "",
-  category: categories[0]?.slug ?? "",
+  category: "",
   description: "",
   prompt: "",
   example: "",
