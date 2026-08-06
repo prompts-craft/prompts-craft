@@ -33,6 +33,7 @@ function AdminPromptsList() {
   const deletePrompt = useServerFn(deleteAdminPrompt);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("all");
+  const { data: categories = [] } = useCategories();
   const [toDelete, setToDelete] = useState<{ id: string; title: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());

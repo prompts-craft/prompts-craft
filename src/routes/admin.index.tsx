@@ -22,6 +22,7 @@ function AdminDashboard() {
     },
   });
 
+  const { data: categories = [] } = useCategories();
   const prompts = data ?? [];
   const total = prompts.length;
   const trending = prompts.filter((p) => p.trending).length;

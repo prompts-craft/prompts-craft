@@ -42,6 +42,7 @@ export function PromptForm({
 }) {
   const [values, setValues] = useState<PromptFormValues>(initial);
   const [slugTouched, setSlugTouched] = useState(initial.slug.length > 0);
+  const { data: categories = [] } = useCategories();
 
   useEffect(() => {
     setValues(initial);
@@ -91,6 +92,7 @@ export function PromptForm({
             onChange={(e) => update("category", e.target.value)}
             className="input"
           >
+            {!values.category && <option value="">Select a category…</option>}
             {categories.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.name}
