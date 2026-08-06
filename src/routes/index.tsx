@@ -6,15 +6,16 @@ import { Layout } from "@/components/Layout";
 import { CopyButton } from "@/components/CopyButton";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { RouteError } from "@/components/RouteError";
-import { categories } from "@/data/prompts";
+import { useCategories, fetchCategories, type CategoryRow } from "@/lib/categories-api";
+import { MediaTabs } from "@/components/MediaTabs";
 import { fetchAllPrompts, type Prompt } from "@/lib/prompts-api";
 import { promptThumb } from "@/lib/default-thumb";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const prompts = await fetchAllPrompts();
-    return { prompts };
+    const [prompts, cats] = await Promise.all([fetchAllPrompts(), fetchCategories()]);
+    return { prompts, cats };
   },
   head: () => ({
     meta: [
@@ -35,8 +36,10 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const loaderData = Route.useLoaderData() as { prompts: Prompt[] };
+  const loaderData = Route.useLoaderData() as { prompts: Prompt[]; cats: CategoryRow[] };
   const initial: Prompt[] = loaderData.prompts;
+  const { data: allCats = [] } = useCategories(loaderData.cats);
+  const imageCats = allCats.filter((c) => c.media_type !== "video");
   const [q, setQ] = useState("");
   const navigate = useNavigate();
 
@@ -149,7 +152,7 @@ function Index() {
 
       {/* Categories */}
       <section className="max-w-6xl mx-auto px-6 py-20">
-        <div className="flex items-end justify-between mb-8">
+        <div className="flex items-end justify-between gap-4 flex-wrap mb-8">
           <div>
             <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2">
               Browse by profession
@@ -158,9 +161,10 @@ function Index() {
               Built for the way you work
             </h2>
           </div>
+          <MediaTabs active="image" />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-          {categories.map((c) => (
+          {imageCats.map((c) => (
             <Link
               key={c.slug}
               to="/categories/$slug"
@@ -258,7 +262,8 @@ function SectionHeader({
 }
 
 export function PromptCard({ prompt: p }: { prompt: Prompt }) {
-  const cat = categories.find((c) => c.slug === p.category);
+  const { data: cats = [] } = useCategories();
+  const cat = cats.find((c) => c.slug === p.category);
   return (
     <Link
       to="/prompts/$slug"

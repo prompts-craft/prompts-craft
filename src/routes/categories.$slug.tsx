@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-ro
 import { Layout } from "@/components/Layout";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { RouteError } from "@/components/RouteError";
-import { categories, getCategory } from "@/data/prompts";
+import { fetchCategoryBySlug, useCategories } from "@/lib/categories-api";
 import { fetchPromptsByCategory, type Prompt, type SortKey } from "@/lib/prompts-api";
 import { PromptCard } from "@/routes/index";
 import { z } from "zod";
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/categories/$slug")({
   validateSearch: (s) => sortSchema.parse(s),
   loaderDeps: ({ search }) => ({ sort: search.sort }),
   loader: async ({ params, deps }) => {
-    const category = getCategory(params.slug);
+    const category = await fetchCategoryBySlug(params.slug);
     if (!category) throw notFound();
     const prompts = await fetchPromptsByCategory(params.slug, deps.sort as SortKey);
     return { category, prompts };
@@ -79,6 +79,8 @@ const SORTS: { key: SortKey; label: string }[] = [
 
 function CategoryPage() {
   const { category, prompts } = Route.useLoaderData();
+  const { data: allCats = [] } = useCategories();
+  const siblings = allCats.filter((c) => c.media_type === category.media_type);
   const { sort } = Route.useSearch();
   const navigate = useNavigate();
 
@@ -100,7 +102,7 @@ function CategoryPage() {
 
       <section className="max-w-6xl mx-auto px-6 py-8">
         <div className="flex flex-wrap gap-2 mb-6">
-          {categories.map((c) => (
+          {siblings.map((c) => (
             <Link
               key={c.slug}
               to="/categories/$slug"

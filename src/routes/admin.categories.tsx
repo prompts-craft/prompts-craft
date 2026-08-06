@@ -23,6 +23,7 @@ type CategoryRow = {
   description: string;
   emoji: string;
   sort_order: number;
+  media_type: string;
 };
 
 function AdminCategoriesPage() {
@@ -32,7 +33,7 @@ function AdminCategoriesPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("categories")
-        .select("id, slug, name, description, emoji, sort_order")
+        .select("id, slug, name, description, emoji, sort_order, media_type")
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return (data ?? []) as CategoryRow[];
@@ -45,11 +46,12 @@ function AdminCategoriesPage() {
   const [slugTouched, setSlugTouched] = useState(false);
   const [emoji, setEmoji] = useState("✨");
   const [description, setDescription] = useState("");
+  const [mediaType, setMediaType] = useState<"image" | "video">("image");
   const [saving, setSaving] = useState(false);
 
   function reset() {
     setName(""); setSlug(""); setSlugTouched(false);
-    setEmoji("✨"); setDescription("");
+    setEmoji("✨"); setDescription(""); setMediaType("image");
   }
 
   async function submit(e: FormEvent) {
@@ -63,12 +65,14 @@ function AdminCategoriesPage() {
         emoji: emoji.trim() || "✨",
         description: description.trim(),
         sort_order: nextOrder,
+        media_type: mediaType,
       });
       if (error) throw error;
       toast.success("Category added");
       reset();
       setOpen(false);
       qc.invalidateQueries({ queryKey: ["admin", "categories"] });
+      qc.invalidateQueries({ queryKey: ["categories", "public"] });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to add category");
     } finally {
@@ -76,12 +80,22 @@ function AdminCategoriesPage() {
     }
   }
 
+  async function setPage(id: string, media_type: string) {
+    const { error } = await supabase.from("categories").update({ media_type }).eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success(`Moved to ${media_type} page`);
+    qc.invalidateQueries({ queryKey: ["admin", "categories"] });
+    qc.invalidateQueries({ queryKey: ["categories", "public"] });
+  }
+
+
   async function remove(id: string) {
     if (!confirm("Delete this category?")) return;
     const { error } = await supabase.from("categories").delete().eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Category deleted");
     qc.invalidateQueries({ queryKey: ["admin", "categories"] });
+    qc.invalidateQueries({ queryKey: ["categories", "public"] });
   }
 
   return (
@@ -148,6 +162,17 @@ function AdminCategoriesPage() {
               />
             </label>
           </div>
+          <label className="block text-xs text-muted-foreground max-w-xs">
+            Show on page
+            <select
+              value={mediaType}
+              onChange={(e) => setMediaType(e.target.value as "image" | "video")}
+              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+            >
+              <option value="image">Image prompts (home page)</option>
+              <option value="video">Video prompts (/video)</option>
+            </select>
+          </label>
           <div className="flex gap-2">
             <button
               type="submit"
@@ -181,12 +206,23 @@ function AdminCategoriesPage() {
                 <div className="text-xs text-muted-foreground truncate font-mono">{c.slug}</div>
               </div>
             </div>
-            <button
-              onClick={() => remove(c.id)}
-              className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-destructive/10 hover:text-destructive hover:border-destructive/40"
-            >
-              <Trash2 className="w-3.5 h-3.5" /> Delete
-            </button>
+            <div className="flex items-center gap-2 shrink-0">
+              <select
+                value={c.media_type}
+                onChange={(e) => setPage(c.id, e.target.value)}
+                className="rounded-md border border-border bg-background px-2 py-1.5 text-xs text-foreground"
+                aria-label={`Page for ${c.name}`}
+              >
+                <option value="image">Image page</option>
+                <option value="video">Video page</option>
+              </select>
+              <button
+                onClick={() => remove(c.id)}
+                className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-destructive/10 hover:text-destructive hover:border-destructive/40"
+              >
+                <Trash2 className="w-3.5 h-3.5" /> Delete
+              </button>
+            </div>
           </div>
         ))}
       </div>

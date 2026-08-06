@@ -178,6 +178,7 @@ export type Database = {
           description: string
           emoji: string
           id: string
+          media_type: string
           name: string
           slug: string
           sort_order: number
@@ -188,6 +189,7 @@ export type Database = {
           description?: string
           emoji?: string
           id?: string
+          media_type?: string
           name: string
           slug: string
           sort_order?: number
@@ -198,6 +200,7 @@ export type Database = {
           description?: string
           emoji?: string
           id?: string
+          media_type?: string
           name?: string
           slug?: string
           sort_order?: number

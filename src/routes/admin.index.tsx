@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FileText, Layers, TrendingUp, Plus } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
-import { categories } from "@/data/prompts";
+import { useCategories } from "@/lib/categories-api";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
@@ -22,6 +22,7 @@ function AdminDashboard() {
     },
   });
 
+  const { data: categories = [] } = useCategories();
   const prompts = data ?? [];
   const total = prompts.length;
   const trending = prompts.filter((p) => p.trending).length;

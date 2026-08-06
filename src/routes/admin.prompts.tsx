@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { Plus, Search, Trash2, Pencil, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { categories } from "@/data/prompts";
+import { useCategories } from "@/lib/categories-api";
 import { deleteAdminPrompt } from "@/lib/admin-prompts.functions";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -33,6 +33,7 @@ function AdminPromptsList() {
   const deletePrompt = useServerFn(deleteAdminPrompt);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("all");
+  const { data: categories = [] } = useCategories();
   const [toDelete, setToDelete] = useState<{ id: string; title: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
