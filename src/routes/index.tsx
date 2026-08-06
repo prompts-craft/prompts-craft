@@ -6,15 +6,16 @@ import { Layout } from "@/components/Layout";
 import { CopyButton } from "@/components/CopyButton";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { RouteError } from "@/components/RouteError";
-import { categories } from "@/data/prompts";
+import { useCategories, fetchCategories, type CategoryRow } from "@/lib/categories-api";
+import { MediaTabs } from "@/components/MediaTabs";
 import { fetchAllPrompts, type Prompt } from "@/lib/prompts-api";
 import { promptThumb } from "@/lib/default-thumb";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const prompts = await fetchAllPrompts();
-    return { prompts };
+    const [prompts, cats] = await Promise.all([fetchAllPrompts(), fetchCategories()]);
+    return { prompts, cats };
   },
   head: () => ({
     meta: [
