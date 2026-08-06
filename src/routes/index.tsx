@@ -262,7 +262,8 @@ function SectionHeader({
 }
 
 export function PromptCard({ prompt: p }: { prompt: Prompt }) {
-  const cat = categories.find((c) => c.slug === p.category);
+  const { data: cats = [] } = useCategories();
+  const cat = cats.find((c) => c.slug === p.category);
   return (
     <Link
       to="/prompts/$slug"
