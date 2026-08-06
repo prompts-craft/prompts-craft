@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-ro
 import { Layout } from "@/components/Layout";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { RouteError } from "@/components/RouteError";
-import { categories, getCategory } from "@/data/prompts";
+import { fetchCategoryBySlug, useCategories } from "@/lib/categories-api";
 import { fetchPromptsByCategory, type Prompt, type SortKey } from "@/lib/prompts-api";
 import { PromptCard } from "@/routes/index";
 import { z } from "zod";
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/categories/$slug")({
   validateSearch: (s) => sortSchema.parse(s),
   loaderDeps: ({ search }) => ({ sort: search.sort }),
   loader: async ({ params, deps }) => {
-    const category = getCategory(params.slug);
+    const category = await fetchCategoryBySlug(params.slug);
     if (!category) throw notFound();
     const prompts = await fetchPromptsByCategory(params.slug, deps.sort as SortKey);
     return { category, prompts };
