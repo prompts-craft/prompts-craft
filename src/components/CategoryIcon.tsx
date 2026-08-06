@@ -8,6 +8,8 @@ import {
   ImageUp,
   Scissors,
   Palette,
+  Youtube,
+  Video,
   type LucideIcon,
 } from "lucide-react";
 
@@ -20,7 +22,11 @@ const MAP: Record<string, LucideIcon> = {
   upscaling: ImageUp,
   "background-removal": Scissors,
   "creative-images": Palette,
+  "creative-image": Palette,
+  "youtube-thumbnail": Youtube,
+  video: Video,
 };
+
 
 export function CategoryIcon({
   slug,
