@@ -36,8 +36,10 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const loaderData = Route.useLoaderData() as { prompts: Prompt[] };
+  const loaderData = Route.useLoaderData() as { prompts: Prompt[]; cats: CategoryRow[] };
   const initial: Prompt[] = loaderData.prompts;
+  const { data: allCats = [] } = useCategories(loaderData.cats);
+  const imageCats = allCats.filter((c) => c.media_type !== "video");
   const [q, setQ] = useState("");
   const navigate = useNavigate();
 
