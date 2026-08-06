@@ -102,7 +102,7 @@ function CategoryPage() {
 
       <section className="max-w-6xl mx-auto px-6 py-8">
         <div className="flex flex-wrap gap-2 mb-6">
-          {categories.map((c) => (
+          {siblings.map((c) => (
             <Link
               key={c.slug}
               to="/categories/$slug"
