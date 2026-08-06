@@ -95,6 +95,7 @@ function AdminCategoriesPage() {
     if (error) return toast.error(error.message);
     toast.success("Category deleted");
     qc.invalidateQueries({ queryKey: ["admin", "categories"] });
+    qc.invalidateQueries({ queryKey: ["categories", "public"] });
   }
 
   return (
