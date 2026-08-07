@@ -1,6 +1,8 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { CategoryIcon } from "@/components/CategoryIcon";
+import { ThumbnailSuggester } from "@/components/ThumbnailSuggester";
+
 import { RouteError } from "@/components/RouteError";
 import { fetchCategoryBySlug, useCategories } from "@/lib/categories-api";
 import { fetchPromptsByCategory, type Prompt, type SortKey } from "@/lib/prompts-api";
