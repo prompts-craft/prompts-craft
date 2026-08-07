@@ -102,6 +102,13 @@ function CategoryPage() {
         <p className="text-muted-foreground mt-3 max-w-2xl leading-relaxed">{category.description}</p>
       </section>
 
+      {category.slug === "youtube-thumbnail" && (
+        <section className="max-w-6xl mx-auto px-6 pt-2">
+          <ThumbnailSuggester prompts={prompts} />
+        </section>
+      )}
+
+
       <section className="max-w-6xl mx-auto px-6 py-8">
         <div className="flex flex-wrap gap-2 mb-6">
           {siblings.map((c) => (
