@@ -62,10 +62,44 @@ function Index() {
   }, [q, prompts]);
 
   const searching = q.trim().length > 0;
-  const trending = prompts.filter((p) => p.trending);
-  const latest = [...prompts]
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    .slice(0, 4);
+  const byNewest = useMemo(
+    () =>
+      [...prompts].sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      ),
+    [prompts],
+  );
+
+  // Fill a list with fallback prompts so every new prompt surfaces on the home page.
+  const fill = (base: Prompt[], pool: Prompt[], n: number) => {
+    const out = [...base];
+    for (const p of pool) {
+      if (out.length >= n) break;
+      if (!out.some((x) => x.slug === p.slug)) out.push(p);
+    }
+    return out.slice(0, n);
+  };
+
+  const spotlight = useMemo(
+    () =>
+      byNewest.filter(
+        (p) => p.category === "youtube-thumbnail" || p.category === "creative-images" || p.category === "creative-image",
+      ),
+    [byNewest],
+  );
+
+  const featured = fill(
+    byNewest.filter((p) => p.featured),
+    [...spotlight, ...byNewest],
+    12,
+  );
+  const trending = fill(
+    byNewest.filter((p) => p.trending),
+    [...byNewest].sort((a, b) => b.copy_count - a.copy_count),
+    12,
+  );
+  const latest = byNewest.slice(0, 12);
+
 
   return (
     <Layout>
