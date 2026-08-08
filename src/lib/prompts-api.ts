@@ -13,6 +13,7 @@ export type Prompt = {
   copy_count: number;
   created_at: string;
   image_url: string | null;
+  featured?: boolean;
 };
 
 export type SortKey = "latest" | "trending" | "most-copied";
