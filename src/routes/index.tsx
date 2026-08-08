@@ -151,7 +151,7 @@ function Index() {
       </section>
 
       {/* Categories */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
+      <section className="max-w-[1500px] mx-auto px-6 py-20">
         <div className="flex items-end justify-between gap-4 flex-wrap mb-8">
           <div>
             <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2">
@@ -190,7 +190,7 @@ function Index() {
       </section>
 
       {/* Trending */}
-      <section className="max-w-6xl mx-auto px-6 py-14">
+      <section className="max-w-[1500px] mx-auto px-6 py-14">
         <SectionHeader
           icon={<TrendingUp className="w-4 h-4" />}
           eyebrow="Trending"
@@ -202,7 +202,7 @@ function Index() {
         ) : trending.length === 0 ? (
           <EmptyState message="No trending prompts yet." />
         ) : (
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
+          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
             {trending.map((p) => (
               <PromptCard key={p.slug} prompt={p} />
             ))}
@@ -211,7 +211,7 @@ function Index() {
       </section>
 
       {/* Latest */}
-      <section className="max-w-6xl mx-auto px-6 py-14">
+      <section className="max-w-[1500px] mx-auto px-6 py-14">
         <SectionHeader
           icon={<Clock className="w-4 h-4" />}
           eyebrow="Latest"

@@ -88,7 +88,7 @@ function CategoryPage() {
 
   return (
     <Layout>
-      <section className="relative max-w-6xl mx-auto px-6 pt-20 pb-8">
+      <section className="relative max-w-[1500px] mx-auto px-6 pt-20 pb-8">
         <div aria-hidden className="absolute inset-x-0 -top-10 h-72 bg-hero-glow pointer-events-none -z-10" />
         <div className="text-xs text-muted-foreground mb-3">
           <Link to="/" className="hover:text-foreground">Home</Link> · Categories
@@ -103,13 +103,13 @@ function CategoryPage() {
       </section>
 
       {category.slug === "youtube-thumbnail" && (
-        <section className="max-w-6xl mx-auto px-6 pt-2">
+        <section className="max-w-[1500px] mx-auto px-6 pt-2">
           <ThumbnailSuggester prompts={prompts} />
         </section>
       )}
 
 
-      <section className="max-w-6xl mx-auto px-6 py-8">
+      <section className="max-w-[1500px] mx-auto px-6 py-8">
         <div className="flex flex-wrap gap-2 mb-6">
           {siblings.map((c) => (
             <Link
@@ -155,7 +155,7 @@ function CategoryPage() {
             No prompts in this category yet.
           </div>
         ) : (
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
+          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
             {prompts.map((p: Prompt) => (
               <PromptCard key={p.slug} prompt={p} />
             ))}
