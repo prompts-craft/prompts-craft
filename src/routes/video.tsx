@@ -65,7 +65,7 @@ function VideoPage() {
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-6 py-16">
+      <section className="max-w-[1500px] mx-auto px-6 py-16">
         <div className="flex items-end justify-between gap-4 flex-wrap mb-8">
           <div>
             <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2">

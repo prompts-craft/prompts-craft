@@ -62,10 +62,44 @@ function Index() {
   }, [q, prompts]);
 
   const searching = q.trim().length > 0;
-  const trending = prompts.filter((p) => p.trending);
-  const latest = [...prompts]
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    .slice(0, 4);
+  const byNewest = useMemo(
+    () =>
+      [...prompts].sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      ),
+    [prompts],
+  );
+
+  // Fill a list with fallback prompts so every new prompt surfaces on the home page.
+  const fill = (base: Prompt[], pool: Prompt[], n: number) => {
+    const out = [...base];
+    for (const p of pool) {
+      if (out.length >= n) break;
+      if (!out.some((x) => x.slug === p.slug)) out.push(p);
+    }
+    return out.slice(0, n);
+  };
+
+  const spotlight = useMemo(
+    () =>
+      byNewest.filter(
+        (p) => p.category === "youtube-thumbnail" || p.category === "creative-images" || p.category === "creative-image",
+      ),
+    [byNewest],
+  );
+
+  const featured = fill(
+    byNewest.filter((p) => p.featured),
+    [...spotlight, ...byNewest],
+    12,
+  );
+  const trending = fill(
+    byNewest.filter((p) => p.trending),
+    [...byNewest].sort((a, b) => b.copy_count - a.copy_count),
+    12,
+  );
+  const latest = byNewest.slice(0, 12);
+
 
   return (
     <Layout>
@@ -151,7 +185,7 @@ function Index() {
       </section>
 
       {/* Categories */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
+      <section className="max-w-[1500px] mx-auto px-6 py-20">
         <div className="flex items-end justify-between gap-4 flex-wrap mb-8">
           <div>
             <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2">
@@ -189,8 +223,29 @@ function Index() {
         </div>
       </section>
 
+      {/* Featured */}
+      <section className="max-w-[1500px] mx-auto px-6 py-14">
+        <SectionHeader
+          icon={<Sparkles className="w-4 h-4" />}
+          eyebrow="Featured"
+          title="YouTube thumbnails & creative picks"
+          subtitle="A mixed selection of thumbnail and creative image prompts."
+        />
+        {isLoading && featured.length === 0 ? (
+          <CardSkeletonGrid />
+        ) : featured.length === 0 ? (
+          <EmptyState message="No featured prompts yet." />
+        ) : (
+          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
+            {featured.map((p) => (
+              <PromptCard key={p.slug} prompt={p} />
+            ))}
+          </div>
+        )}
+      </section>
+
       {/* Trending */}
-      <section className="max-w-6xl mx-auto px-6 py-14">
+      <section className="max-w-[1500px] mx-auto px-6 py-14">
         <SectionHeader
           icon={<TrendingUp className="w-4 h-4" />}
           eyebrow="Trending"
@@ -202,7 +257,7 @@ function Index() {
         ) : trending.length === 0 ? (
           <EmptyState message="No trending prompts yet." />
         ) : (
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
+          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
             {trending.map((p) => (
               <PromptCard key={p.slug} prompt={p} />
             ))}
@@ -211,7 +266,7 @@ function Index() {
       </section>
 
       {/* Latest */}
-      <section className="max-w-6xl mx-auto px-6 py-14">
+      <section className="max-w-[1500px] mx-auto px-6 py-14">
         <SectionHeader
           icon={<Clock className="w-4 h-4" />}
           eyebrow="Latest"
@@ -223,13 +278,14 @@ function Index() {
         ) : latest.length === 0 ? (
           <EmptyState message="No prompts yet — check back soon." />
         ) : (
-          <div className="columns-1 md:columns-2 gap-4 [column-fill:_balance]">
+          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
             {latest.map((p) => (
               <PromptCard key={p.slug} prompt={p} />
             ))}
           </div>
         )}
       </section>
+
     </Layout>
   );
 }
