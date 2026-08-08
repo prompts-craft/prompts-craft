@@ -38,6 +38,7 @@ export function Layout({ children }: { children: ReactNode }) {
       </a>
 
       <header className="sticky top-0 z-40 border-b border-border/60 glass-strong">
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
         <div className="max-w-[1500px] mx-auto px-5 sm:px-6 h-16 flex items-center justify-between gap-4">
           <Link
             to="/"
@@ -45,43 +46,55 @@ export function Layout({ children }: { children: ReactNode }) {
             aria-label="PromptCraft — Home"
           >
             <span className="relative inline-flex items-center justify-center">
-              <span aria-hidden className="absolute inset-0 rounded-xl bg-gradient-accent opacity-40 blur-md group-hover:opacity-70 transition" />
-              <img src={logoSymbol} alt="" className="relative w-9 h-9 rounded-xl ring-1 ring-border bg-card/60" />
+              <span aria-hidden className="absolute inset-0 rounded-xl bg-gradient-accent opacity-40 blur-md group-hover:opacity-90 group-hover:blur-lg transition-all duration-500" />
+              <img
+                src={logoSymbol}
+                alt=""
+                className="relative w-9 h-9 rounded-xl ring-1 ring-border bg-card/60 transition-transform duration-500 group-hover:rotate-6 group-hover:scale-105"
+              />
             </span>
-            <span style={{ fontFamily: "var(--font-display)" }} className="text-lg tracking-wide text-gradient">PromptCraft</span>
+            <span
+              style={{ fontFamily: "var(--font-display)" }}
+              className="text-lg tracking-wide text-gradient transition-all duration-300 group-hover:tracking-[0.12em]"
+            >
+              PromptCraft
+            </span>
           </Link>
 
-          <div className="hidden sm:flex items-center gap-1.5 ml-2">
+          <div className="hidden lg:flex items-center gap-1.5 ml-2">
             <SocialLinks size="sm" />
           </div>
 
-
           <nav
-            className="hidden sm:flex items-center gap-7 text-sm text-muted-foreground"
+            className="hidden sm:flex items-center gap-1 text-sm text-muted-foreground"
             aria-label="Primary"
           >
-            <Link
-              to="/categories/$slug"
-              params={{ slug: "teachers" }}
-              search={{ sort: "latest" as const }}
-              className="hover:text-foreground transition-colors"
-            >
-              Browse
-            </Link>
-            <Link
-              to="/blog"
-              className="hover:text-foreground transition-colors"
-              activeProps={{ className: "text-foreground" }}
-            >
-              Blog
-            </Link>
-            <Link
-              to="/about"
-              className="hover:text-foreground transition-colors"
-              activeProps={{ className: "text-foreground" }}
-            >
-              About
-            </Link>
+            {[
+              { label: "Browse", to: "/categories/$slug" as const },
+              { label: "Blog", to: "/blog" as const },
+              { label: "About", to: "/about" as const },
+            ].map((item) =>
+              item.label === "Browse" ? (
+                <Link
+                  key={item.label}
+                  to="/categories/$slug"
+                  params={{ slug: "teachers" }}
+                  search={{ sort: "latest" as const }}
+                  className="relative px-3 py-2 rounded-lg transition-colors duration-300 hover:text-foreground after:absolute after:left-3 after:right-3 after:-bottom-0.5 after:h-px after:origin-right after:scale-x-0 after:bg-gradient-accent after:transition-transform after:duration-300 hover:after:origin-left hover:after:scale-x-100"
+                >
+                  Browse
+                </Link>
+              ) : (
+                <Link
+                  key={item.label}
+                  to={item.to}
+                  className="relative px-3 py-2 rounded-lg transition-colors duration-300 hover:text-foreground after:absolute after:left-3 after:right-3 after:-bottom-0.5 after:h-px after:origin-right after:scale-x-0 after:bg-gradient-accent after:transition-transform after:duration-300 hover:after:origin-left hover:after:scale-x-100"
+                  activeProps={{ className: "text-foreground" }}
+                >
+                  {item.label}
+                </Link>
+              ),
+            )}
           </nav>
 
           <div className="hidden sm:flex items-center gap-2">
@@ -89,17 +102,27 @@ export function Layout({ children }: { children: ReactNode }) {
               type="button"
               onClick={toggle}
               aria-label="Toggle theme"
-              className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-card/60 text-foreground hover:border-accent/50 hover:bg-card transition"
+              title="Toggle theme"
+              className="group inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-card/60 text-foreground transition-all duration-300 hover:border-accent/60 hover:bg-card hover:shadow-[0_0_18px_-4px_hsl(var(--accent)/0.8)]"
             >
-              {mounted ? theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" /> : <span className="w-4 h-4" />}
+              {mounted ? (
+                theme === "dark" ? (
+                  <Sun className="w-4 h-4 transition-transform duration-500 group-hover:rotate-90" />
+                ) : (
+                  <Moon className="w-4 h-4 transition-transform duration-500 group-hover:-rotate-12" />
+                )
+              ) : (
+                <span className="w-4 h-4" />
+              )}
             </button>
             <Link
               to="/categories/$slug"
               params={{ slug: "teachers" }}
               search={{ sort: "trending" as const }}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/60 px-3.5 py-1.5 text-sm font-medium text-foreground hover:border-accent/50 hover:bg-card transition"
+              className="relative overflow-hidden inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/60 px-3.5 py-1.5 text-sm font-medium text-foreground transition-all duration-300 hover:border-accent/60 hover:bg-card hover:-translate-y-0.5"
             >
-              Explore prompts
+              <span className="relative z-10">Explore prompts</span>
+              <span aria-hidden className="absolute inset-0 -translate-x-full bg-gradient-accent opacity-20 transition-transform duration-500 hover:translate-x-0" />
             </Link>
             {userEmail ? (
               <div className="flex items-center gap-2 pl-1">
@@ -113,7 +136,7 @@ export function Layout({ children }: { children: ReactNode }) {
                 <button
                   type="button"
                   onClick={handleSignOut}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/60 px-3 py-1.5 text-sm font-medium text-foreground hover:border-accent/50 hover:bg-card transition"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/60 px-3 py-1.5 text-sm font-medium text-foreground transition-all duration-300 hover:border-destructive/60 hover:text-destructive hover:-translate-y-0.5"
                 >
                   <LogOut className="w-4 h-4" /> Sign out
                 </button>
@@ -122,19 +145,20 @@ export function Layout({ children }: { children: ReactNode }) {
               <>
                 <Link
                   to="/auth"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/60 px-3 py-1.5 text-sm font-medium text-foreground hover:border-accent/50 hover:bg-card transition"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/60 px-3 py-1.5 text-sm font-medium text-foreground transition-all duration-300 hover:border-accent/60 hover:bg-card hover:-translate-y-0.5"
                 >
                   <LogIn className="w-4 h-4" /> Sign in
                 </Link>
                 <Link
                   to="/auth"
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 py-1.5 text-sm font-medium hover:bg-primary/90 transition"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 py-1.5 text-sm font-medium transition-all duration-300 hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-8px_hsl(var(--primary))]"
                 >
                   Sign up
                 </Link>
               </>
             )}
           </div>
+
 
           <div className="flex sm:hidden items-center gap-2">
             <button
