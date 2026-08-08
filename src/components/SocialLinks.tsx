@@ -1,3 +1,5 @@
+import type { ReactElement } from "react";
+
 export function InstagramIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -72,7 +74,7 @@ export function TikTokIcon({ className }: { className?: string }) {
 type Social = {
   href: string;
   label: string;
-  icon: (p: { className?: string }) => React.ReactElement;
+  icon: (p: { className?: string }) => ReactElement;
   /** hover text + border + glow color */
   hover: string;
 };
