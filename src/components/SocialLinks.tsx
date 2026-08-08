@@ -72,7 +72,7 @@ export function TikTokIcon({ className }: { className?: string }) {
 type Social = {
   href: string;
   label: string;
-  icon: (p: { className?: string }) => JSX.Element;
+  icon: (p: { className?: string }) => React.ReactElement;
   /** hover text + border + glow color */
   hover: string;
 };
