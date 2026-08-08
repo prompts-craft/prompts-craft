@@ -223,6 +223,27 @@ function Index() {
         </div>
       </section>
 
+      {/* Featured */}
+      <section className="max-w-[1500px] mx-auto px-6 py-14">
+        <SectionHeader
+          icon={<Sparkles className="w-4 h-4" />}
+          eyebrow="Featured"
+          title="YouTube thumbnails & creative picks"
+          subtitle="A mixed selection of thumbnail and creative image prompts."
+        />
+        {isLoading && featured.length === 0 ? (
+          <CardSkeletonGrid />
+        ) : featured.length === 0 ? (
+          <EmptyState message="No featured prompts yet." />
+        ) : (
+          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
+            {featured.map((p) => (
+              <PromptCard key={p.slug} prompt={p} />
+            ))}
+          </div>
+        )}
+      </section>
+
       {/* Trending */}
       <section className="max-w-[1500px] mx-auto px-6 py-14">
         <SectionHeader
@@ -257,13 +278,14 @@ function Index() {
         ) : latest.length === 0 ? (
           <EmptyState message="No prompts yet — check back soon." />
         ) : (
-          <div className="columns-1 md:columns-2 gap-4 [column-fill:_balance]">
+          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
             {latest.map((p) => (
               <PromptCard key={p.slug} prompt={p} />
             ))}
           </div>
         )}
       </section>
+
     </Layout>
   );
 }
