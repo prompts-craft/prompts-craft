@@ -12,7 +12,7 @@ export const Route = createFileRoute("/admin/import")({
 });
 
 const REQUIRED = ["title", "prompt", "category"] as const;
-const OPTIONAL = ["slug", "description", "example", "tags", "image_url"] as const;
+const OPTIONAL = ["type", "slug", "description", "example", "tags", "image_url"] as const;
 
 type Row = Record<string, unknown>;
 
