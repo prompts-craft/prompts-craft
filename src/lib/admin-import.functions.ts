@@ -13,7 +13,9 @@ const rowSchema = z.object({
   example: z.string().trim().max(10000).optional().nullable(),
   tags: z.array(z.string().trim().min(1).max(60)).max(30).optional().nullable(),
   image_url: z.string().trim().max(1000).optional().nullable(),
+  media_type: z.enum(["image", "video"]).optional().nullable(),
 });
+
 
 const inputSchema = z.object({ rows: z.array(rowSchema).min(1).max(500) });
 
