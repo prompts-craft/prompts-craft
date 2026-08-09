@@ -40,15 +40,17 @@ export const createAdminPrompt = createServerFn({ method: "POST" })
   .inputValidator((input) => promptPayloadSchema.parse(input))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
+    // Re-uploading the same prompt (same slug) replaces the previous one.
     const { data: row, error } = await context.supabase
       .from("prompts")
-      .insert(data)
+      .upsert(data, { onConflict: "slug" })
       .select("id")
       .single();
 
     if (error) throw new Error(error.message);
     return { id: row.id };
   });
+
 
 export const updateAdminPrompt = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
