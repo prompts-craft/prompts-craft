@@ -119,8 +119,11 @@ function ImportPage() {
           ))}
         </div>
         <p className="text-xs text-muted-foreground mt-3">
-          <code>tags</code> can be a comma-separated string. <code>slug</code> is auto-generated from the title if missing.
+          <code>tags</code> can be a comma-separated string. <code>slug</code> is auto-generated from the title if missing.{" "}
+          <code>type</code> accepts <code>image</code> or <code>video</code> (defaults to image) — video rows land on the Video page.
+          Re-uploading a prompt with the same slug replaces the previous version.
         </p>
+
       </div>
 
       <label className="block rounded-xl border-2 border-dashed border-border bg-card/30 p-8 text-center cursor-pointer hover:bg-card/50 transition">
