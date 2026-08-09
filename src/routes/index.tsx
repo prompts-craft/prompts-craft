@@ -67,11 +67,14 @@ function Index() {
   const searching = q.trim().length > 0;
   const byNewest = useMemo(
     () =>
-      [...prompts].sort(
-        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-      ),
+      prompts
+        .filter((p) => p.media_type !== "video")
+        .sort(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        ),
     [prompts],
   );
+
 
   // Fill a list with fallback prompts so every new prompt surfaces on the home page.
   const fill = (base: Prompt[], pool: Prompt[], n: number) => {
