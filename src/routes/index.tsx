@@ -8,6 +8,9 @@ import { CategoryIcon } from "@/components/CategoryIcon";
 import { RouteError } from "@/components/RouteError";
 import { useCategories, fetchCategories, type CategoryRow } from "@/lib/categories-api";
 import { MediaTabs } from "@/components/MediaTabs";
+import { PromptShowcase } from "@/components/PromptShowcase";
+import { CategoryBar } from "@/components/CategoryBar";
+
 import { fetchAllPrompts, type Prompt } from "@/lib/prompts-api";
 import { promptThumb } from "@/lib/default-thumb";
 import { Skeleton } from "@/components/ui/skeleton";
