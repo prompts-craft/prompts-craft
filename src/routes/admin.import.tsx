@@ -79,7 +79,12 @@ function ImportPage() {
           example: r.example ? String(r.example) : null,
           tags,
           image_url: r.image_url ? String(r.image_url) : null,
+          media_type:
+            String(r.type ?? "").trim().toLowerCase() === "video"
+              ? ("video" as const)
+              : ("image" as const),
         };
+
       });
       const res = await runImport({ data: { rows } });
       setResult(res);
