@@ -14,6 +14,8 @@ export type PromptFormValues = {
   image_url: string;
   trending: boolean;
   featured: boolean;
+  showcase: boolean;
+  media_type: "image" | "video";
 };
 
 export const emptyPromptForm: PromptFormValues = {
@@ -27,7 +29,10 @@ export const emptyPromptForm: PromptFormValues = {
   image_url: "",
   trending: false,
   featured: false,
+  showcase: false,
+  media_type: "image",
 };
+
 
 export function PromptForm({
   initial,
