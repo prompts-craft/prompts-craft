@@ -65,7 +65,12 @@ function EditPromptPage() {
     image_url: data.image_url ?? "",
     trending: data.trending,
     featured: (data as { featured?: boolean }).featured ?? false,
+    showcase: (data as { showcase?: boolean }).showcase ?? false,
+    media_type: ((data as { media_type?: string }).media_type === "video"
+      ? "video"
+      : "image") as "image" | "video",
   };
+
 
   async function handleSubmit(values: PromptFormValues) {
     setSubmitting(true);
