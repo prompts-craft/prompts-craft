@@ -152,6 +152,19 @@ export function PromptForm({
         </Field>
       </div>
 
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Type" hint="Video prompts appear on the /video page.">
+          <select
+            value={values.media_type}
+            onChange={(e) => update("media_type", e.target.value as "image" | "video")}
+            className="input"
+          >
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+          </select>
+        </Field>
+      </div>
+
       <div className="flex flex-wrap gap-4 pt-2">
         <Toggle
           label="Trending"
@@ -163,7 +176,13 @@ export function PromptForm({
           checked={values.featured}
           onChange={(v) => update("featured", v)}
         />
+        <Toggle
+          label="Showcase"
+          checked={values.showcase}
+          onChange={(v) => update("showcase", v)}
+        />
       </div>
+
 
       <div className="pt-3">
         <button
