@@ -18,7 +18,10 @@ const promptPayloadSchema = z.object({
   image_url: z.string().trim().max(1000).nullable(),
   trending: z.boolean(),
   featured: z.boolean(),
+  showcase: z.boolean().default(false),
+  media_type: z.enum(["image", "video"]).default("image"),
 });
+
 
 async function assertAdmin(supabase: SupabaseClient<Database>, userId: string) {
   const { data, error } = await supabase
