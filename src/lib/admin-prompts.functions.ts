@@ -18,7 +18,10 @@ const promptPayloadSchema = z.object({
   image_url: z.string().trim().max(1000).nullable(),
   trending: z.boolean(),
   featured: z.boolean(),
+  showcase: z.boolean().default(false),
+  media_type: z.enum(["image", "video"]).default("image"),
 });
+
 
 async function assertAdmin(supabase: SupabaseClient<Database>, userId: string) {
   const { data, error } = await supabase
@@ -37,15 +40,17 @@ export const createAdminPrompt = createServerFn({ method: "POST" })
   .inputValidator((input) => promptPayloadSchema.parse(input))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
+    // Re-uploading the same prompt (same slug) replaces the previous one.
     const { data: row, error } = await context.supabase
       .from("prompts")
-      .insert(data)
+      .upsert(data, { onConflict: "slug" })
       .select("id")
       .single();
 
     if (error) throw new Error(error.message);
     return { id: row.id };
   });
+
 
 export const updateAdminPrompt = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

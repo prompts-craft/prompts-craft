@@ -318,7 +318,9 @@ export type Database = {
           featured: boolean
           id: string
           image_url: string | null
+          media_type: string
           prompt: string
+          showcase: boolean
           slug: string
           tags: string[]
           title: string
@@ -333,7 +335,9 @@ export type Database = {
           featured?: boolean
           id?: string
           image_url?: string | null
+          media_type?: string
           prompt: string
+          showcase?: boolean
           slug: string
           tags?: string[]
           title: string
@@ -348,7 +352,9 @@ export type Database = {
           featured?: boolean
           id?: string
           image_url?: string | null
+          media_type?: string
           prompt?: string
+          showcase?: boolean
           slug?: string
           tags?: string[]
           title?: string

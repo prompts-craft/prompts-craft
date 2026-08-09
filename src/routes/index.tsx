@@ -8,6 +8,9 @@ import { CategoryIcon } from "@/components/CategoryIcon";
 import { RouteError } from "@/components/RouteError";
 import { useCategories, fetchCategories, type CategoryRow } from "@/lib/categories-api";
 import { MediaTabs } from "@/components/MediaTabs";
+import { PromptShowcase } from "@/components/PromptShowcase";
+import { CategoryBar } from "@/components/CategoryBar";
+
 import { fetchAllPrompts, type Prompt } from "@/lib/prompts-api";
 import { promptThumb } from "@/lib/default-thumb";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -64,11 +67,14 @@ function Index() {
   const searching = q.trim().length > 0;
   const byNewest = useMemo(
     () =>
-      [...prompts].sort(
-        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-      ),
+      prompts
+        .filter((p) => p.media_type !== "video")
+        .sort(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        ),
     [prompts],
   );
+
 
   // Fill a list with fallback prompts so every new prompt surfaces on the home page.
   const fill = (base: Prompt[], pool: Prompt[], n: number) => {
@@ -100,26 +106,28 @@ function Index() {
   );
   const latest = byNewest.slice(0, 12);
 
+  const showcase = useMemo(
+    () => byNewest.filter((p) => p.showcase && p.media_type !== "video").slice(0, 8),
+    [byNewest],
+  );
 
   return (
     <Layout>
+      <PromptShowcase prompts={showcase} />
+
       {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div aria-hidden className="absolute inset-0 grid-pattern pointer-events-none" />
-        <div aria-hidden className="absolute inset-x-0 -top-20 h-[560px] bg-hero-glow pointer-events-none" />
-        <div aria-hidden className="glow-orb w-[420px] h-[420px] left-[-120px] top-24 bg-[oklch(0.7_0.2_300)]" />
-        <div aria-hidden className="glow-orb w-[360px] h-[360px] right-[-100px] top-10 bg-[oklch(0.78_0.14_220)]" />
-        <div className="relative max-w-3xl mx-auto px-6 pt-24 sm:pt-32 pb-20 text-center">
-          <div className="inline-flex items-center gap-2 text-xs text-muted-foreground border border-border/80 bg-card/50 backdrop-blur rounded-full pl-2 pr-3 py-1 mb-8 shadow-glow-soft">
+      <section className="relative">
+        <div className="relative max-w-3xl mx-auto px-6 pt-16 sm:pt-20 pb-14 text-center">
+          <div className="inline-flex items-center gap-2 text-xs text-muted-foreground border border-border/80 bg-card/50 backdrop-blur rounded-full pl-2 pr-3 py-1 mb-8">
             <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-medium text-accent bg-accent-soft px-2 py-0.5 rounded-full">
               <Sparkles className="w-3 h-3" /> New
             </span>
             <span>{prompts.length} prompts · no signup required</span>
           </div>
-          <h1 className="text-5xl sm:text-7xl font-semibold tracking-tight leading-[1.02] text-gradient">
+          <h1 className="text-5xl sm:text-7xl font-semibold tracking-tight leading-[1.02]">
             Craft Better Prompts.
             <br />
-            <span className="text-gradient-accent">Get Better Results.</span>
+            <span className="text-accent">Get Better Results.</span>
           </h1>
           <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
             A curated library of high-leverage AI prompts for the work you actually ship.
@@ -184,44 +192,14 @@ function Index() {
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="max-w-[1500px] mx-auto px-6 py-20">
-        <div className="flex items-end justify-between gap-4 flex-wrap mb-8">
-          <div>
-            <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2">
-              Browse by profession
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
-              Built for the way you work
-            </h2>
-          </div>
+      {/* Categories (collapsed by default) */}
+      <section className="max-w-[1500px] mx-auto px-6 pt-4 pb-6">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <CategoryBar categories={imageCats} />
           <MediaTabs active="image" />
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-          {imageCats.map((c) => (
-            <Link
-              key={c.slug}
-              to="/categories/$slug"
-              params={{ slug: c.slug }}
-              search={{ sort: "latest" as const }}
-              className="group prompt-glow gradient-border relative rounded-2xl border border-border bg-card/60 backdrop-blur p-5 hover:bg-card transition-all duration-200 hover:-translate-y-0.5 overflow-hidden"
-            >
-              <div
-                aria-hidden
-                className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent opacity-0 group-hover:opacity-100 transition"
-              />
-              <div className="inline-flex w-10 h-10 items-center justify-center rounded-xl bg-gradient-accent text-primary-foreground mb-4 group-hover:scale-105 transition-transform shadow-glow-soft">
-                <CategoryIcon slug={c.slug} className="w-5 h-5" />
-              </div>
-              <div className="font-medium">{c.name}</div>
-              <div className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
-                {c.description}
-              </div>
-              <ArrowUpRight className="absolute top-4 right-4 w-4 h-4 text-muted-foreground/40 group-hover:text-accent transition" />
-            </Link>
-          ))}
-        </div>
       </section>
+
 
       {/* Featured */}
       <section className="max-w-[1500px] mx-auto px-6 py-14">

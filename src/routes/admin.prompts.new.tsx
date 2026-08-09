@@ -36,6 +36,9 @@ function NewPromptPage() {
           image_url: values.image_url.trim() || null,
           trending: values.trending,
           featured: values.featured,
+          showcase: values.showcase,
+          media_type: values.media_type,
+
         },
       });
       toast.success("Prompt created");
