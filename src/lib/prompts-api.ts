@@ -14,7 +14,10 @@ export type Prompt = {
   created_at: string;
   image_url: string | null;
   featured?: boolean;
+  showcase?: boolean;
+  media_type?: "image" | "video";
 };
+
 
 export type SortKey = "latest" | "trending" | "most-copied";
 
