@@ -56,22 +56,20 @@ export const bulkImportPrompts = createServerFn({ method: "POST" })
 
     const createdCategories: string[] = [];
 
-    // Existing prompt slugs
-    const { data: existing } = await supabase.from("prompts").select("slug");
-    const usedSlugs = new Set((existing ?? []).map((p) => p.slug));
-
-    const inserts: Database["public"]["Tables"]["prompts"]["Insert"][] = [];
+    // Latest row wins when the same slug is uploaded twice.
+    const bySlugInsert = new Map<string, Database["public"]["Tables"]["prompts"]["Insert"]>();
     const errors: { row: number; error: string }[] = [];
 
     for (let i = 0; i < data.rows.length; i++) {
       const r = data.rows[i];
       try {
+        const mediaType = r.media_type ?? "image";
         let catSlug = byName.get(r.category.toLowerCase()) ?? (bySlug.has(r.category) ? r.category : null);
         if (!catSlug) {
           const newSlug = slugify(r.category);
           const { error: insCatErr } = await supabase
             .from("categories")
-            .insert({ slug: newSlug, name: r.category, description: "", emoji: "✨", sort_order: 0 });
+            .insert({ slug: newSlug, name: r.category, description: "", emoji: "✨", sort_order: 0, media_type: mediaType });
           if (insCatErr && !insCatErr.message.includes("duplicate")) throw new Error(`category: ${insCatErr.message}`);
           bySlug.set(newSlug, r.category);
           byName.set(r.category.toLowerCase(), newSlug);
@@ -79,37 +77,33 @@ export const bulkImportPrompts = createServerFn({ method: "POST" })
           createdCategories.push(r.category);
         }
 
-        let slug = r.slug?.trim() ? slugify(r.slug) : slugify(r.title);
-        let candidate = slug;
-        let n = 1;
-        while (usedSlugs.has(candidate)) {
-          n++;
-          candidate = `${slug}-${n}`;
-        }
-        usedSlugs.add(candidate);
+        const slug = r.slug?.trim() ? slugify(r.slug) : slugify(r.title);
 
-        inserts.push({
+        bySlugInsert.set(slug, {
           title: r.title,
-          slug: candidate,
+          slug,
           category: catSlug,
           prompt: r.prompt,
           description: r.description ?? null,
           example: r.example ?? null,
           tags: r.tags ?? [],
           image_url: r.image_url ?? null,
+          media_type: mediaType,
         });
       } catch (e) {
         errors.push({ row: i + 2, error: e instanceof Error ? e.message : "Unknown error" });
       }
     }
 
+    const inserts = Array.from(bySlugInsert.values());
     let inserted = 0;
     if (inserts.length) {
       const { error: insErr, count } = await supabase
         .from("prompts")
-        .insert(inserts, { count: "exact" });
+        .upsert(inserts, { onConflict: "slug", count: "exact" });
       if (insErr) throw new Error(insErr.message);
       inserted = count ?? inserts.length;
+
     }
 
     return {
