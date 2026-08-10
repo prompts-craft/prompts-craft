@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/
 
-Sitemap: https://prompts-craft.lovable.app/sitemap.xml
+Sitemap: https://promptscraft.org/sitemap.xml
