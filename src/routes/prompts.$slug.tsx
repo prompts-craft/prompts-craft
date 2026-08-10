@@ -19,7 +19,7 @@ import {
 import { PromptReviews } from "@/components/PromptReviews";
 import { PromptAIRatings } from "@/components/PromptAIRatings";
 
-const SITE_URL = "https://prompts-craft.lovable.app";
+const SITE_URL = "https://promptscraft.org";
 
 export const Route = createFileRoute("/prompts/$slug")({
   loader: async ({ params }) => {

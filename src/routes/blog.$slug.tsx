@@ -114,7 +114,7 @@ function buildFaqs(post: Blog): { q: string; a: string }[] {
   ];
 }
 
-const SITE = "https://prompts-craft.lovable.app";
+const SITE = "https://promptscraft.org";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params }) => {

@@ -106,7 +106,7 @@ User lands → searches or clicks category → opens prompt → copies instantly
 
 This project was built with [Lovable](https://lovable.dev).
 
-**Live app**: https://prompts-craft.lovable.app
+**Live app**: https://promptscraft.org
 
 ## Build with Lovable
 
