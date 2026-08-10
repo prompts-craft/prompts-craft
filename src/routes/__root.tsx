@@ -8,6 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 
+import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
