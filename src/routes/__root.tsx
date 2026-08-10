@@ -149,6 +149,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useSmoothScroll();
 
   return (
     <QueryClientProvider client={queryClient}>
