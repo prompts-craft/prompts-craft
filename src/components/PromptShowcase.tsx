@@ -57,14 +57,14 @@ export function PromptShowcase({ prompts }: { prompts: Prompt[] }) {
                     controls
                     playsInline
                     muted
-                    className="max-h-full w-auto max-w-full object-contain"
+                    className="h-full w-full object-contain"
                   />
                 ) : (
                   <img
                     src={src}
                     alt={item.title}
                     loading={active ? "eager" : "lazy"}
-                    className="max-h-full w-auto max-w-full object-contain"
+                    className="h-full w-full object-contain"
                   />
                 )}
               </div>
