@@ -33,13 +33,13 @@ export function PromptShowcase({ prompts }: { prompts: Prompt[] }) {
   const go = (d: number) => setI((v) => (v + d + count) % count);
 
   return (
-    <section className="max-w-[1500px] mx-auto px-6 pt-8">
+    <section className="max-w-[1500px] mx-auto px-4 sm:px-6 pt-6 sm:pt-8">
       <div
         className="relative rounded-3xl border border-border bg-card/60 backdrop-blur overflow-hidden"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
-        <div className="relative flex items-center justify-center bg-muted/30 min-h-[280px] max-h-[70vh]">
+        <div className="relative flex items-center justify-center bg-muted/30 min-h-[220px] h-[46vw] max-h-[480px]">
           {items.map((item, idx) => {
             const src = promptThumb(item.image_url);
             const active = idx === index;
@@ -57,14 +57,14 @@ export function PromptShowcase({ prompts }: { prompts: Prompt[] }) {
                     controls
                     playsInline
                     muted
-                    className="max-h-[70vh] w-auto max-w-full object-contain"
+                    className="max-h-full w-auto max-w-full object-contain"
                   />
                 ) : (
                   <img
                     src={src}
                     alt={item.title}
                     loading={active ? "eager" : "lazy"}
-                    className="max-h-[70vh] w-auto max-w-full object-contain"
+                    className="max-h-full w-auto max-w-full object-contain"
                   />
                 )}
               </div>
