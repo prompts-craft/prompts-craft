@@ -200,17 +200,16 @@ function Index() {
         </div>
       </section>
 
-      {/* Categories (collapsed by default) */}
-      <section className="max-w-[1500px] mx-auto px-6 pt-4 pb-6">
-        <div className="flex items-center justify-between gap-4 flex-wrap">
+      {/* Popular categories (collapsed by default) */}
+      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 pt-4 pb-6">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
           <CategoryBar categories={imageCats} />
           <MediaTabs active="image" />
         </div>
       </section>
 
-
       {/* Featured */}
-      <section className="max-w-[1500px] mx-auto px-6 py-14">
+      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
         <SectionHeader
           icon={<Sparkles className="w-4 h-4" />}
           eyebrow="Featured"
@@ -222,16 +221,12 @@ function Index() {
         ) : featured.length === 0 ? (
           <EmptyState message="No featured prompts yet." />
         ) : (
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
-            {featured.map((p) => (
-              <PromptCard key={p.slug} prompt={p} />
-            ))}
-          </div>
+          <PromptGrid prompts={featured} />
         )}
       </section>
 
       {/* Trending */}
-      <section className="max-w-[1500px] mx-auto px-6 py-14">
+      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
         <SectionHeader
           icon={<TrendingUp className="w-4 h-4" />}
           eyebrow="Trending"
@@ -243,16 +238,12 @@ function Index() {
         ) : trending.length === 0 ? (
           <EmptyState message="No trending prompts yet." />
         ) : (
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
-            {trending.map((p) => (
-              <PromptCard key={p.slug} prompt={p} />
-            ))}
-          </div>
+          <PromptGrid prompts={trending} />
         )}
       </section>
 
       {/* Latest */}
-      <section className="max-w-[1500px] mx-auto px-6 py-14">
+      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
         <SectionHeader
           icon={<Clock className="w-4 h-4" />}
           eyebrow="Latest"
@@ -264,15 +255,48 @@ function Index() {
         ) : latest.length === 0 ? (
           <EmptyState message="No prompts yet — check back soon." />
         ) : (
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
-            {latest.map((p) => (
-              <PromptCard key={p.slug} prompt={p} />
-            ))}
-          </div>
+          <PromptGrid prompts={latest} />
         )}
       </section>
 
+      {/* CTA */}
+      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 pb-16 sm:pb-20">
+        <div className="rounded-2xl border border-border bg-card/60 px-5 py-10 sm:px-12 sm:py-14 text-center">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+            Find the prompt that ships your next project
+          </h2>
+          <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
+            Browse the full library by category, or explore video prompts. Free, no signup, one click to copy.
+          </p>
+          <div className="mt-7 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+            <Link
+              to="/categories/$slug"
+              params={{ slug: imageCats[0]?.slug ?? "teachers" }}
+              search={{ sort: "latest" as const }}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors duration-200 hover:bg-primary/90"
+            >
+              Browse all prompts <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/video"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium transition-colors duration-200 hover:border-accent/50"
+            >
+              Explore video prompts <ArrowUpRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
     </Layout>
+  );
+}
+
+export function PromptGrid({ prompts }: { prompts: Prompt[] }) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+      {prompts.map((p) => (
+        <PromptCard key={p.slug} prompt={p} />
+      ))}
+    </div>
   );
 }
 
