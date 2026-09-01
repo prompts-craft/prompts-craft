@@ -125,36 +125,36 @@ function Index() {
 
       {/* Hero */}
       <section className="relative">
-        <div className="relative max-w-3xl mx-auto px-6 pt-16 sm:pt-20 pb-14 text-center">
-          <div className="inline-flex items-center gap-2 text-xs text-muted-foreground border border-border/80 bg-card/50 backdrop-blur rounded-full pl-2 pr-3 py-1 mb-8">
-            <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-medium text-accent bg-accent-soft px-2 py-0.5 rounded-full">
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-12 sm:pt-20 pb-10 sm:pb-14 text-center">
+          <div className="inline-flex max-w-full items-center gap-2 text-xs text-muted-foreground border border-border/80 bg-card/50 backdrop-blur rounded-full pl-2 pr-3 py-1 mb-6 sm:mb-8">
+            <span className="inline-flex shrink-0 items-center gap-1 text-[10px] uppercase tracking-wider font-medium text-accent bg-accent-soft px-2 py-0.5 rounded-full">
               <Sparkles className="w-3 h-3" /> New
             </span>
-            <span>{prompts.length} prompts · no signup required</span>
+            <span className="truncate">{prompts.length} prompts · no signup required</span>
           </div>
-          <h1 className="text-5xl sm:text-7xl font-semibold tracking-tight leading-[1.02]">
+          <h1 className="text-[2rem] leading-tight sm:text-5xl lg:text-7xl font-semibold tracking-tight sm:leading-[1.02]">
             Craft Better Prompts.
             <br />
             <span className="text-accent">Get Better Results.</span>
           </h1>
-          <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
+          <p className="mt-4 sm:mt-6 text-base sm:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
             A curated library of high-leverage AI prompts for the work you actually ship.
             Find one, copy it, move on.
           </p>
 
-          <div className="mt-12 relative">
+          <div className="mt-8 sm:mt-12 relative">
             <div
               className={`relative rounded-2xl transition-shadow ${
                 searching ? "shadow-glow" : "shadow-elevated"
               }`}
             >
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+              <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
               <input
                 type="search"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Search by title, category, or tag…"
-                className="w-full h-16 pl-14 pr-20 rounded-2xl bg-card/80 backdrop-blur border border-border focus:border-accent/60 focus:outline-none transition text-base placeholder:text-muted-foreground/70"
+                placeholder="Search prompts…"
+                className="w-full h-14 sm:h-16 pl-12 sm:pl-14 pr-5 sm:pr-20 rounded-2xl bg-card/80 backdrop-blur border border-border focus:border-accent/60 focus:outline-none transition text-base placeholder:text-muted-foreground/70"
                 aria-label="Search prompts"
               />
               <kbd className="hidden sm:inline-flex absolute right-5 top-1/2 -translate-y-1/2 items-center gap-1 text-[10px] font-mono text-muted-foreground border border-border bg-background/70 rounded-md px-1.5 py-0.5">
