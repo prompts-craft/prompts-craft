@@ -39,7 +39,7 @@ export function PromptShowcase({ prompts }: { prompts: Prompt[] }) {
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
-        <div className="relative flex items-center justify-center bg-muted/30 min-h-[220px] h-[46vw] max-h-[480px]">
+        <div className="relative flex items-center justify-center bg-muted/30 overflow-hidden min-h-[220px] h-[46vw] max-h-[480px]">
           {items.map((item, idx) => {
             const src = promptThumb(item.image_url);
             const active = idx === index;
@@ -47,7 +47,7 @@ export function PromptShowcase({ prompts }: { prompts: Prompt[] }) {
               <div
                 key={item.slug}
                 aria-hidden={!active}
-                className={`${active ? "relative" : "absolute inset-0"} flex items-center justify-center transition-all duration-700 ease-out ${
+                className={`absolute inset-0 flex items-center justify-center transition-all duration-700 ease-out ${
                   active ? "opacity-100 scale-100" : "opacity-0 scale-[1.03] pointer-events-none"
                 }`}
               >
