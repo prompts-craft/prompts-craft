@@ -97,14 +97,22 @@ function Index() {
   const featured = fill(
     byNewest.filter((p) => p.featured),
     [...spotlight, ...byNewest],
-    12,
+    8,
   );
+  const featuredSlugs = new Set(featured.map((p) => p.slug));
   const trending = fill(
-    byNewest.filter((p) => p.trending),
-    [...byNewest].sort((a, b) => b.copy_count - a.copy_count),
-    12,
+    byNewest.filter((p) => p.trending && !featuredSlugs.has(p.slug)),
+    [...byNewest]
+      .filter((p) => !featuredSlugs.has(p.slug))
+      .sort((a, b) => b.copy_count - a.copy_count),
+    8,
   );
-  const latest = byNewest.slice(0, 12);
+  const usedSlugs = new Set([...featuredSlugs, ...trending.map((p) => p.slug)]);
+  const latest = fill(
+    byNewest.filter((p) => !usedSlugs.has(p.slug)),
+    byNewest,
+    8,
+  );
 
   const showcase = useMemo(
     () => byNewest.filter((p) => p.showcase && p.media_type !== "video").slice(0, 8),
@@ -117,36 +125,36 @@ function Index() {
 
       {/* Hero */}
       <section className="relative">
-        <div className="relative max-w-3xl mx-auto px-6 pt-16 sm:pt-20 pb-14 text-center">
-          <div className="inline-flex items-center gap-2 text-xs text-muted-foreground border border-border/80 bg-card/50 backdrop-blur rounded-full pl-2 pr-3 py-1 mb-8">
-            <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider font-medium text-accent bg-accent-soft px-2 py-0.5 rounded-full">
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-12 sm:pt-20 pb-10 sm:pb-14 text-center">
+          <div className="inline-flex max-w-full items-center gap-2 text-xs text-muted-foreground border border-border/80 bg-card/50 backdrop-blur rounded-full pl-2 pr-3 py-1 mb-6 sm:mb-8">
+            <span className="inline-flex shrink-0 items-center gap-1 text-[10px] uppercase tracking-wider font-medium text-accent bg-accent-soft px-2 py-0.5 rounded-full">
               <Sparkles className="w-3 h-3" /> New
             </span>
-            <span>{prompts.length} prompts · no signup required</span>
+            <span className="truncate">{prompts.length} prompts · no signup required</span>
           </div>
-          <h1 className="text-5xl sm:text-7xl font-semibold tracking-tight leading-[1.02]">
+          <h1 className="text-[2rem] leading-tight sm:text-5xl lg:text-7xl font-semibold tracking-tight sm:leading-[1.02]">
             Craft Better Prompts.
             <br />
             <span className="text-accent">Get Better Results.</span>
           </h1>
-          <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
+          <p className="mt-4 sm:mt-6 text-base sm:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
             A curated library of high-leverage AI prompts for the work you actually ship.
             Find one, copy it, move on.
           </p>
 
-          <div className="mt-12 relative">
+          <div className="mt-8 sm:mt-12 relative">
             <div
               className={`relative rounded-2xl transition-shadow ${
                 searching ? "shadow-glow" : "shadow-elevated"
               }`}
             >
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+              <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
               <input
                 type="search"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Search by title, category, or tag…"
-                className="w-full h-16 pl-14 pr-20 rounded-2xl bg-card/80 backdrop-blur border border-border focus:border-accent/60 focus:outline-none transition text-base placeholder:text-muted-foreground/70"
+                placeholder="Search prompts…"
+                className="w-full h-14 sm:h-16 pl-12 sm:pl-14 pr-5 sm:pr-20 rounded-2xl bg-card/80 backdrop-blur border border-border focus:border-accent/60 focus:outline-none transition text-base placeholder:text-muted-foreground/70"
                 aria-label="Search prompts"
               />
               <kbd className="hidden sm:inline-flex absolute right-5 top-1/2 -translate-y-1/2 items-center gap-1 text-[10px] font-mono text-muted-foreground border border-border bg-background/70 rounded-md px-1.5 py-0.5">
@@ -192,17 +200,16 @@ function Index() {
         </div>
       </section>
 
-      {/* Categories (collapsed by default) */}
-      <section className="max-w-[1500px] mx-auto px-6 pt-4 pb-6">
-        <div className="flex items-center justify-between gap-4 flex-wrap">
+      {/* Popular categories (collapsed by default) */}
+      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 pt-4 pb-6">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
           <CategoryBar categories={imageCats} />
           <MediaTabs active="image" />
         </div>
       </section>
 
-
       {/* Featured */}
-      <section className="max-w-[1500px] mx-auto px-6 py-14">
+      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
         <SectionHeader
           icon={<Sparkles className="w-4 h-4" />}
           eyebrow="Featured"
@@ -214,16 +221,12 @@ function Index() {
         ) : featured.length === 0 ? (
           <EmptyState message="No featured prompts yet." />
         ) : (
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
-            {featured.map((p) => (
-              <PromptCard key={p.slug} prompt={p} />
-            ))}
-          </div>
+          <PromptGrid prompts={featured} />
         )}
       </section>
 
       {/* Trending */}
-      <section className="max-w-[1500px] mx-auto px-6 py-14">
+      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
         <SectionHeader
           icon={<TrendingUp className="w-4 h-4" />}
           eyebrow="Trending"
@@ -235,16 +238,12 @@ function Index() {
         ) : trending.length === 0 ? (
           <EmptyState message="No trending prompts yet." />
         ) : (
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
-            {trending.map((p) => (
-              <PromptCard key={p.slug} prompt={p} />
-            ))}
-          </div>
+          <PromptGrid prompts={trending} />
         )}
       </section>
 
       {/* Latest */}
-      <section className="max-w-[1500px] mx-auto px-6 py-14">
+      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
         <SectionHeader
           icon={<Clock className="w-4 h-4" />}
           eyebrow="Latest"
@@ -256,15 +255,48 @@ function Index() {
         ) : latest.length === 0 ? (
           <EmptyState message="No prompts yet — check back soon." />
         ) : (
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
-            {latest.map((p) => (
-              <PromptCard key={p.slug} prompt={p} />
-            ))}
-          </div>
+          <PromptGrid prompts={latest} />
         )}
       </section>
 
+      {/* CTA */}
+      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 pb-16 sm:pb-20">
+        <div className="rounded-2xl border border-border bg-card/60 px-5 py-10 sm:px-12 sm:py-14 text-center">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+            Find the prompt that ships your next project
+          </h2>
+          <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
+            Browse the full library by category, or explore video prompts. Free, no signup, one click to copy.
+          </p>
+          <div className="mt-7 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+            <Link
+              to="/categories/$slug"
+              params={{ slug: imageCats[0]?.slug ?? "teachers" }}
+              search={{ sort: "latest" as const }}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors duration-200 hover:bg-primary/90"
+            >
+              Browse all prompts <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/video"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium transition-colors duration-200 hover:border-accent/50"
+            >
+              Explore video prompts <ArrowUpRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
     </Layout>
+  );
+}
+
+export function PromptGrid({ prompts }: { prompts: Prompt[] }) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+      {prompts.map((p) => (
+        <PromptCard key={p.slug} prompt={p} />
+      ))}
+    </div>
   );
 }
 
@@ -302,63 +334,50 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
     <Link
       to="/prompts/$slug"
       params={{ slug: p.slug }}
-      className="group prompt-glow gradient-border relative mb-4 break-inside-avoid flex flex-col rounded-2xl border border-border bg-card/60 backdrop-blur hover:bg-card transition-all duration-200 hover:-translate-y-0.5 overflow-hidden"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card/60 backdrop-blur transition-all duration-200 hover:border-accent/50 hover:bg-card hover:-translate-y-0.5 hover:shadow-elevated"
     >
-      <div
-        aria-hidden
-        className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent opacity-0 group-hover:opacity-100 transition"
-      />
-      <div className="w-full overflow-hidden border-b border-border/60 bg-muted/40">
+      <div className="relative w-full overflow-hidden border-b border-border/60 bg-muted/40 aspect-[16/10]">
         <img
           src={promptThumb(p.image_url)}
           alt={`Result of: ${p.title}`}
           loading="lazy"
-          className="w-full h-auto block group-hover:scale-[1.02] transition-transform duration-300"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.04]"
         />
       </div>
-      <div className="flex flex-col p-5">
-      <div className="flex items-center gap-2 mb-3">
-        <span className="inline-flex items-center gap-1.5 text-xs px-2 py-1 rounded-md bg-accent-soft text-accent font-medium">
-          <CategoryIcon slug={p.category} className="w-3.5 h-3.5" />
-          {cat?.name ?? p.category}
-        </span>
-        {p.copy_count > 0 && (
-          <span className="text-xs text-muted-foreground">{p.copy_count} copies</span>
+
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="inline-flex min-w-0 items-center gap-1.5 rounded-md bg-accent-soft px-2 py-1 text-xs font-medium text-accent">
+            <CategoryIcon slug={p.category} className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">{cat?.name ?? p.category}</span>
+          </span>
+          {p.copy_count > 0 && (
+            <span className="shrink-0 text-xs text-muted-foreground">{p.copy_count} copies</span>
+          )}
+        </div>
+
+        <h3 className="mt-3 line-clamp-2 text-base font-medium leading-snug text-foreground/95 transition-colors group-hover:text-foreground">
+          {p.title}
+        </h3>
+        {p.description && (
+          <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+            {p.description}
+          </p>
         )}
-      </div>
-      <div className="font-medium leading-snug text-foreground/95 group-hover:text-foreground transition-colors">
-        {p.title}
-      </div>
-      {p.description && (
-        <div className="text-sm text-muted-foreground mt-1.5 line-clamp-2 leading-relaxed">
-          {p.description}
+
+        <div className="mt-auto flex items-center gap-2 pt-4">
+          <span className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors duration-200 group-hover:bg-primary/90">
+            View Prompt <ArrowRight className="w-3.5 h-3.5" />
+          </span>
+          <CopyButton
+            text={p.prompt}
+            slug={p.slug}
+            label="Copy"
+            size="sm"
+            variant="ghost"
+            stopPropagation
+          />
         </div>
-      )}
-      {p.tags.length > 0 && (
-        <div className="flex gap-1.5 mt-3 flex-wrap">
-          {p.tags.slice(0, 4).map((t) => (
-            <span
-              key={t}
-              className="text-[11px] px-2 py-0.5 rounded-md border border-border/60 text-muted-foreground"
-            >
-              #{t}
-            </span>
-          ))}
-        </div>
-      )}
-      <div className="mt-5 pt-4 border-t border-border/60 flex items-center justify-between gap-2">
-        <span className="text-xs text-muted-foreground inline-flex items-center gap-1 group-hover:text-foreground transition">
-          Open prompt <ArrowRight className="w-3 h-3" />
-        </span>
-        <CopyButton
-          text={p.prompt}
-          slug={p.slug}
-          label="Copy"
-          size="sm"
-          variant="ghost"
-          stopPropagation
-        />
-      </div>
       </div>
     </Link>
   );
@@ -366,9 +385,9 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
 
 function CardSkeletonGrid({ n = 6 }: { n?: number }) {
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
       {Array.from({ length: n }).map((_, i) => (
-        <Skeleton key={i} className="h-44 rounded-2xl" />
+        <Skeleton key={i} className="h-72 rounded-2xl" />
       ))}
     </div>
   );

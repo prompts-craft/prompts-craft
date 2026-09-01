@@ -70,7 +70,7 @@ function VideoPage() {
       <PromptShowcase prompts={showcase} />
 
       <section className="relative">
-        <div className="relative max-w-3xl mx-auto px-6 pt-16 sm:pt-20 pb-10 text-center">
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-16 sm:pt-20 pb-10 text-center">
           <h1 className="text-5xl sm:text-7xl font-semibold tracking-tight leading-[1.02]">
             AI Video Prompts.
             <br />
@@ -82,14 +82,14 @@ function VideoPage() {
         </div>
       </section>
 
-      <section className="max-w-[1500px] mx-auto px-6 pt-2 pb-6">
+      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 pt-2 pb-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <CategoryBar categories={videoCats} />
           <MediaTabs active="video" />
         </div>
       </section>
 
-      <section className="max-w-[1500px] mx-auto px-6 pb-16">
+      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 pb-16">
         {videoPrompts.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-border bg-card/40 p-14 text-center">
             <span className="inline-flex w-12 h-12 items-center justify-center rounded-2xl bg-accent-soft text-accent mb-4">
@@ -108,7 +108,7 @@ function VideoPage() {
             </Link>
           </div>
         ) : (
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
             {videoPrompts.map((p) => (
               <PromptCard key={p.slug} prompt={p} />
             ))}
