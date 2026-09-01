@@ -97,14 +97,22 @@ function Index() {
   const featured = fill(
     byNewest.filter((p) => p.featured),
     [...spotlight, ...byNewest],
-    12,
+    8,
   );
+  const featuredSlugs = new Set(featured.map((p) => p.slug));
   const trending = fill(
-    byNewest.filter((p) => p.trending),
-    [...byNewest].sort((a, b) => b.copy_count - a.copy_count),
-    12,
+    byNewest.filter((p) => p.trending && !featuredSlugs.has(p.slug)),
+    [...byNewest]
+      .filter((p) => !featuredSlugs.has(p.slug))
+      .sort((a, b) => b.copy_count - a.copy_count),
+    8,
   );
-  const latest = byNewest.slice(0, 12);
+  const usedSlugs = new Set([...featuredSlugs, ...trending.map((p) => p.slug)]);
+  const latest = fill(
+    byNewest.filter((p) => !usedSlugs.has(p.slug)),
+    byNewest,
+    8,
+  );
 
   const showcase = useMemo(
     () => byNewest.filter((p) => p.showcase && p.media_type !== "video").slice(0, 8),
