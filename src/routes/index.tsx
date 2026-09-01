@@ -385,9 +385,9 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
 
 function CardSkeletonGrid({ n = 6 }: { n?: number }) {
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
       {Array.from({ length: n }).map((_, i) => (
-        <Skeleton key={i} className="h-44 rounded-2xl" />
+        <Skeleton key={i} className="h-72 rounded-2xl" />
       ))}
     </div>
   );
