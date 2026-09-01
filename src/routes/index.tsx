@@ -302,63 +302,50 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
     <Link
       to="/prompts/$slug"
       params={{ slug: p.slug }}
-      className="group prompt-glow gradient-border relative mb-4 break-inside-avoid flex flex-col rounded-2xl border border-border bg-card/60 backdrop-blur hover:bg-card transition-all duration-200 hover:-translate-y-0.5 overflow-hidden"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card/60 backdrop-blur transition-all duration-200 hover:border-accent/50 hover:bg-card hover:-translate-y-0.5 hover:shadow-elevated"
     >
-      <div
-        aria-hidden
-        className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent opacity-0 group-hover:opacity-100 transition"
-      />
-      <div className="w-full overflow-hidden border-b border-border/60 bg-muted/40">
+      <div className="relative w-full overflow-hidden border-b border-border/60 bg-muted/40 aspect-[16/10]">
         <img
           src={promptThumb(p.image_url)}
           alt={`Result of: ${p.title}`}
           loading="lazy"
-          className="w-full h-auto block group-hover:scale-[1.02] transition-transform duration-300"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.04]"
         />
       </div>
-      <div className="flex flex-col p-5">
-      <div className="flex items-center gap-2 mb-3">
-        <span className="inline-flex items-center gap-1.5 text-xs px-2 py-1 rounded-md bg-accent-soft text-accent font-medium">
-          <CategoryIcon slug={p.category} className="w-3.5 h-3.5" />
-          {cat?.name ?? p.category}
-        </span>
-        {p.copy_count > 0 && (
-          <span className="text-xs text-muted-foreground">{p.copy_count} copies</span>
+
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="inline-flex min-w-0 items-center gap-1.5 rounded-md bg-accent-soft px-2 py-1 text-xs font-medium text-accent">
+            <CategoryIcon slug={p.category} className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">{cat?.name ?? p.category}</span>
+          </span>
+          {p.copy_count > 0 && (
+            <span className="shrink-0 text-xs text-muted-foreground">{p.copy_count} copies</span>
+          )}
+        </div>
+
+        <h3 className="mt-3 line-clamp-2 text-base font-medium leading-snug text-foreground/95 transition-colors group-hover:text-foreground">
+          {p.title}
+        </h3>
+        {p.description && (
+          <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+            {p.description}
+          </p>
         )}
-      </div>
-      <div className="font-medium leading-snug text-foreground/95 group-hover:text-foreground transition-colors">
-        {p.title}
-      </div>
-      {p.description && (
-        <div className="text-sm text-muted-foreground mt-1.5 line-clamp-2 leading-relaxed">
-          {p.description}
+
+        <div className="mt-auto flex items-center gap-2 pt-4">
+          <span className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors duration-200 group-hover:bg-primary/90">
+            View Prompt <ArrowRight className="w-3.5 h-3.5" />
+          </span>
+          <CopyButton
+            text={p.prompt}
+            slug={p.slug}
+            label="Copy"
+            size="sm"
+            variant="ghost"
+            stopPropagation
+          />
         </div>
-      )}
-      {p.tags.length > 0 && (
-        <div className="flex gap-1.5 mt-3 flex-wrap">
-          {p.tags.slice(0, 4).map((t) => (
-            <span
-              key={t}
-              className="text-[11px] px-2 py-0.5 rounded-md border border-border/60 text-muted-foreground"
-            >
-              #{t}
-            </span>
-          ))}
-        </div>
-      )}
-      <div className="mt-5 pt-4 border-t border-border/60 flex items-center justify-between gap-2">
-        <span className="text-xs text-muted-foreground inline-flex items-center gap-1 group-hover:text-foreground transition">
-          Open prompt <ArrowRight className="w-3 h-3" />
-        </span>
-        <CopyButton
-          text={p.prompt}
-          slug={p.slug}
-          label="Copy"
-          size="sm"
-          variant="ghost"
-          stopPropagation
-        />
-      </div>
       </div>
     </Link>
   );
