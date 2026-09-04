@@ -200,12 +200,11 @@ function PromptPage() {
         <figure className="mt-10 rounded-2xl overflow-hidden border border-border bg-card/60 shadow-elevated">
           <img
             src={promptThumb(prompt.image_url)}
-            alt={`Example result for: ${prompt.title}`}
-            loading="lazy"
-            width={1024}
-            height={640}
-            className="w-full h-auto object-cover"
+            alt={`AI-generated example result for the prompt: ${prompt.title}`}
+            decoding="async"
+            className="w-full h-auto object-contain"
           />
+
           {prompt.image_url && (
             <figcaption className="px-5 py-2.5 text-xs text-muted-foreground border-t border-border/60 bg-background/40">
               Example result generated from this prompt.
