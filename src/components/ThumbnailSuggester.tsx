@@ -119,7 +119,7 @@ export function ThumbnailSuggester({ prompts }: { prompts: Prompt[] }) {
                         src={promptThumb(p.image_url)}
                         alt={`${p.title} thumbnail preview`}
                         loading="lazy"
-                        className="w-full h-auto object-cover"
+                        className="w-full h-auto object-contain"
                       />
                     </Link>
                     <div className="p-4 flex flex-col flex-1">
