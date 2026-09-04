@@ -350,14 +350,16 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
       params={{ slug: p.slug }}
       className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card/60 backdrop-blur transition-all duration-200 hover:border-accent/50 hover:bg-card hover:-translate-y-0.5 hover:shadow-elevated"
     >
-      <div className="relative w-full overflow-hidden border-b border-border/60 bg-muted/40 aspect-[16/10]">
+      <div className="relative w-full overflow-hidden border-b border-border/60 bg-muted/40">
         <img
           src={promptThumb(p.image_url)}
-          alt={`Result of: ${p.title}`}
+          alt={`AI-generated example result for the ${cat?.name ?? p.category} prompt: ${p.title}`}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.04]"
+          decoding="async"
+          className="w-full h-auto object-contain transition-transform duration-200 group-hover:scale-[1.03]"
         />
       </div>
+
 
       <div className="flex flex-1 flex-col p-4 sm:p-5">
         <div className="flex min-w-0 items-center gap-2">
