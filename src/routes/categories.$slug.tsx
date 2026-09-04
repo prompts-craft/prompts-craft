@@ -25,10 +25,11 @@ export const Route = createFileRoute("/categories/$slug")({
   head: ({ loaderData, params }) => {
     const name = loaderData?.category.name ?? "Category";
     const count = loaderData?.prompts.length ?? 0;
-    const title = `${name} AI Prompts | PromptCraft`;
-    const desc = `${count} curated AI prompts for ${name.toLowerCase()}. ${
+    const title = `${name} AI Prompts — Free Prompt Library | PromptCraft`;
+    const desc = `${count} curated ${name.toLowerCase()} AI prompts. ${
       loaderData?.category.description ?? ""
-    } Copy in one click — no signup required.`;
+    } Copy in one click — no signup required.`.replace(/\s+/g, " ").trim().slice(0, 160);
+    const url = `https://promptscraft.org/categories/${params.slug}`;
     return {
       meta: [
         { title },
@@ -37,12 +38,12 @@ export const Route = createFileRoute("/categories/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
         { property: "og:type", content: "website" },
-        { property: "og:url", content: `/categories/${params.slug}` },
+        { property: "og:url", content: url },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: title },
         { name: "twitter:description", content: desc },
       ],
-      links: [{ rel: "canonical", href: `/categories/${params.slug}` }],
+      links: [{ rel: "canonical", href: url }],
       scripts: [
         {
           type: "application/ld+json",
@@ -51,12 +52,24 @@ export const Route = createFileRoute("/categories/$slug")({
             "@type": "CollectionPage",
             name: title,
             description: desc,
-            url: `/categories/${params.slug}`,
+            url,
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://promptscraft.org" },
+              { "@type": "ListItem", position: 2, name: `${name} AI Prompts`, item: url },
+            ],
           }),
         },
       ],
     };
   },
+
   component: CategoryPage,
   errorComponent: ({ error, reset }) => (
     <Layout>
