@@ -142,11 +142,15 @@ function Index() {
             </span>
             <span className="truncate">{prompts.length} prompts · no signup required</span>
           </div>
-          <h1 className="text-[2rem] leading-tight sm:text-5xl lg:text-7xl font-semibold tracking-tight sm:leading-[1.02]">
-            Craft Better Prompts.
+          <h1 className="text-[2rem] leading-tight sm:text-5xl lg:text-6xl font-semibold tracking-tight sm:leading-[1.05]">
+            AI Prompts for Better AI Images,
             <br />
-            <span className="text-accent">Get Better Results.</span>
+            <span className="text-accent">Content &amp; Creative Work</span>
           </h1>
+          <p className="mt-4 text-lg sm:text-2xl font-medium text-foreground/80">
+            Craft Better Prompts. Get Better Results.
+          </p>
+
           <p className="mt-4 sm:mt-6 text-base sm:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
             A curated library of high-leverage AI prompts for the work you actually ship.
             Find one, copy it, move on.
