@@ -22,14 +22,24 @@ export const Route = createFileRoute("/")({
   },
   head: () => ({
     meta: [
-      { title: "PromptCraft — AI Prompts for Real Work" },
-      { name: "description", content: "Browse and copy AI prompts for teachers, students, freelancers, marketers, and developers. Free, fast, no signup." },
-      { property: "og:title", content: "PromptCraft — AI Prompts for Real Work" },
-      { property: "og:description", content: "Browse and copy AI prompts for teachers, students, freelancers, marketers, and developers." },
-      { property: "og:url", content: "/" },
+      { title: "AI Prompts for ChatGPT & AI Image Generators | PromptCraft" },
+      {
+        name: "description",
+        content:
+          "PromptCraft offers high-quality AI prompts for ChatGPT, AI image generation, creative work and productivity. Browse, copy and use them free — no signup.",
+      },
+      { property: "og:title", content: "AI Prompts for ChatGPT & AI Image Generators | PromptCraft" },
+      {
+        property: "og:description",
+        content:
+          "High-quality AI prompts for ChatGPT, AI image generation, creative work and productivity. Copy any prompt in one click — free, no signup.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://promptscraft.org/" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: "https://promptscraft.org/" }],
   }),
+
   errorComponent: ({ error, reset }) => (
     <Layout>
       <RouteError error={error} reset={reset} />
