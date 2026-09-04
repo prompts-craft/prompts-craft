@@ -33,12 +33,13 @@ export const Route = createFileRoute("/prompts/$slug")({
     if (!p) {
       return { meta: [{ title: "AI Prompt | PromptCraft" }] };
     }
-    const title = `${p.title} — Free AI Prompt | PromptCraft`;
-    const desc =
-      (p.description ?? `Copy the "${p.title}" AI prompt instantly.`).slice(0, 155) +
-      ` Free, one-click copy. Works with GPT-4o, Claude, Midjourney & more.`;
+    const kind = p.media_type === "video" ? "AI Video Prompt" : "AI Prompt";
+    const title = `${p.title} ${kind} | PromptCraft`;
+    const source = (p.description ?? p.prompt ?? "").replace(/\s+/g, " ").trim();
+    const desc = `${source.slice(0, 110)}${source.length > 110 ? "…" : ""} Copy this ${kind.toLowerCase()} free on PromptCraft.`.slice(0, 160);
     const url = `${SITE_URL}/prompts/${params.slug}`;
     const image = p.image_url ?? `${SITE_URL}/og-default.jpg`;
+
     const keywords = getSeoKeywords(p).join(", ");
     const faqs = getFaqs(p);
     const category = getCategory(p.category);
@@ -200,12 +201,11 @@ function PromptPage() {
         <figure className="mt-10 rounded-2xl overflow-hidden border border-border bg-card/60 shadow-elevated">
           <img
             src={promptThumb(prompt.image_url)}
-            alt={`Example result for: ${prompt.title}`}
-            loading="lazy"
-            width={1024}
-            height={640}
-            className="w-full h-auto object-cover"
+            alt={`AI-generated example result for the prompt: ${prompt.title}`}
+            decoding="async"
+            className="w-full h-auto object-contain"
           />
+
           {prompt.image_url && (
             <figcaption className="px-5 py-2.5 text-xs text-muted-foreground border-t border-border/60 bg-background/40">
               Example result generated from this prompt.

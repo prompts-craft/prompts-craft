@@ -22,14 +22,24 @@ export const Route = createFileRoute("/")({
   },
   head: () => ({
     meta: [
-      { title: "PromptCraft — AI Prompts for Real Work" },
-      { name: "description", content: "Browse and copy AI prompts for teachers, students, freelancers, marketers, and developers. Free, fast, no signup." },
-      { property: "og:title", content: "PromptCraft — AI Prompts for Real Work" },
-      { property: "og:description", content: "Browse and copy AI prompts for teachers, students, freelancers, marketers, and developers." },
-      { property: "og:url", content: "/" },
+      { title: "AI Prompts for ChatGPT & AI Image Generators | PromptCraft" },
+      {
+        name: "description",
+        content:
+          "PromptCraft offers high-quality AI prompts for ChatGPT, AI image generation, creative work and productivity. Browse, copy and use them free — no signup.",
+      },
+      { property: "og:title", content: "AI Prompts for ChatGPT & AI Image Generators | PromptCraft" },
+      {
+        property: "og:description",
+        content:
+          "High-quality AI prompts for ChatGPT, AI image generation, creative work and productivity. Copy any prompt in one click — free, no signup.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://promptscraft.org/" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: "https://promptscraft.org/" }],
   }),
+
   errorComponent: ({ error, reset }) => (
     <Layout>
       <RouteError error={error} reset={reset} />
@@ -132,11 +142,15 @@ function Index() {
             </span>
             <span className="truncate">{prompts.length} prompts · no signup required</span>
           </div>
-          <h1 className="text-[2rem] leading-tight sm:text-5xl lg:text-7xl font-semibold tracking-tight sm:leading-[1.02]">
-            Craft Better Prompts.
+          <h1 className="text-[2rem] leading-tight sm:text-5xl lg:text-6xl font-semibold tracking-tight sm:leading-[1.05]">
+            AI Prompts for Better AI Images,
             <br />
-            <span className="text-accent">Get Better Results.</span>
+            <span className="text-accent">Content &amp; Creative Work</span>
           </h1>
+          <p className="mt-4 text-lg sm:text-2xl font-medium text-foreground/80">
+            Craft Better Prompts. Get Better Results.
+          </p>
+
           <p className="mt-4 sm:mt-6 text-base sm:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
             A curated library of high-leverage AI prompts for the work you actually ship.
             Find one, copy it, move on.
@@ -336,14 +350,16 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
       params={{ slug: p.slug }}
       className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card/60 backdrop-blur transition-all duration-200 hover:border-accent/50 hover:bg-card hover:-translate-y-0.5 hover:shadow-elevated"
     >
-      <div className="relative w-full overflow-hidden border-b border-border/60 bg-muted/40 aspect-[16/10]">
+      <div className="relative w-full overflow-hidden border-b border-border/60 bg-muted/40">
         <img
           src={promptThumb(p.image_url)}
-          alt={`Result of: ${p.title}`}
+          alt={`AI-generated example result for the ${cat?.name ?? p.category} prompt: ${p.title}`}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.04]"
+          decoding="async"
+          className="w-full h-auto object-contain transition-transform duration-200 group-hover:scale-[1.03]"
         />
       </div>
+
 
       <div className="flex flex-1 flex-col p-4 sm:p-5">
         <div className="flex min-w-0 items-center gap-2">
