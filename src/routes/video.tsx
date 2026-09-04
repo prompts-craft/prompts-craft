@@ -30,9 +30,11 @@ export const Route = createFileRoute("/video")({
         content: "AI video prompts for Sora, Runway, Veo and other video models.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://promptscraft.org/video" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/video" }],
+    links: [{ rel: "canonical", href: "https://promptscraft.org/video" }],
+
   }),
   errorComponent: ({ error, reset }) => (
     <Layout>
