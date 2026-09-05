@@ -34,8 +34,18 @@ function categoryLabel(slug: string): string {
   return map[slug] ?? slug;
 }
 
+function hash(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+function pick<T>(arr: T[], seed: string, salt = ""): T {
+  return arr[hash(seed + salt) % arr.length]!;
+}
+
 export function getPromptDetails(p: Prompt): PromptDetails {
-  if (isImagePrompt(p)) {
+  if (isImagePrompt(p) || p.media_type === "image") {
     const ratio =
       p.category === "background-removal"
         ? "1:1 or source ratio"
@@ -43,7 +53,7 @@ export function getPromptDetails(p: Prompt): PromptDetails {
           ? "Match source (1:1, 3:2, 16:9)"
           : "1:1, 3:2, or 16:9";
     return {
-      bestModels: ["Midjourney v6", "Flux 1.1 Pro", "GPT-4o Image", "Stable Diffusion XL"],
+      bestModels: ["Nano Banana Pro (Gemini 3 Image)", "Midjourney v7", "Flux.2 Pro", "GPT Image 1.5"],
       aspectRatio: ratio,
       style:
         p.category === "creative-images"
@@ -56,8 +66,18 @@ export function getPromptDetails(p: Prompt): PromptDetails {
         p.tags.length > 4 ? "Advanced" : p.tags.length > 2 ? "Intermediate" : "Beginner",
     };
   }
+  if (p.media_type === "video") {
+    return {
+      bestModels: ["Veo 3.1", "Sora 2", "Runway Gen-4", "Kling 2.5"],
+      aspectRatio: "16:9 or 9:16",
+      style: "Cinematic motion",
+      quality: "1080p–4K, 5–10s clips",
+      difficulty:
+        p.prompt.length > 800 ? "Advanced" : p.prompt.length > 300 ? "Intermediate" : "Beginner",
+    };
+  }
   return {
-    bestModels: ["GPT-4o", "Claude 3.5 Sonnet", "Gemini 1.5 Pro", "Llama 3.1 70B"],
+    bestModels: ["GPT-5.2", "Claude Sonnet 4.5", "Gemini 3 Pro", "Grok 4.1"],
     aspectRatio: "N/A (text output)",
     style: "Professional, structured",
     quality: "Production-ready",
@@ -65,6 +85,7 @@ export function getPromptDetails(p: Prompt): PromptDetails {
       p.prompt.length > 800 ? "Advanced" : p.prompt.length > 300 ? "Intermediate" : "Beginner",
   };
 }
+
 
 export function getHowToUse(p: Prompt): string[] {
   const audience = categoryLabel(p.category);
