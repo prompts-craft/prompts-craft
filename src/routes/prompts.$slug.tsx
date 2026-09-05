@@ -331,21 +331,33 @@ function PromptPage() {
             <h2 className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-4">
               Related prompts
             </h2>
-            <div className="grid sm:grid-cols-2 gap-3">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {related.map((r: Prompt) => (
                 <Link
                   key={r.slug}
                   to="/prompts/$slug"
                   params={{ slug: r.slug }}
-                  className="group block rounded-2xl border border-border bg-card/60 backdrop-blur p-5 hover:border-accent/40 hover:bg-card hover:-translate-y-0.5 transition-all duration-200"
+                  className="group block rounded-2xl border border-border bg-card/60 backdrop-blur overflow-hidden hover:border-accent/40 hover:bg-card hover:-translate-y-0.5 transition-all duration-200"
                 >
-                  <div className="font-medium group-hover:text-foreground transition">{r.title}</div>
-                  <div className="text-sm text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
-                    {r.description}
+                  <div className="overflow-hidden bg-muted/30">
+                    <img
+                      src={promptThumb(r.image_url)}
+                      alt={`Example result for the ${r.title} AI prompt`}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.03]"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <div className="font-medium group-hover:text-foreground transition">{r.title}</div>
+                    <div className="text-sm text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
+                      {r.description}
+                    </div>
                   </div>
                 </Link>
               ))}
             </div>
+
           </section>
         )}
       </article>
