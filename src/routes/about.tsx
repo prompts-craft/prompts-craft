@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { SocialLinks } from "@/components/SocialLinks";
 import ceoPhoto from "@/assets/ali-ahmad-ceo.jpg.asset.json";
+import forgedLogo from "@/assets/forged-studio-logo.jpg.asset.json";
+
 
 export const Route = createFileRoute("/about")({
   component: AboutPage,
