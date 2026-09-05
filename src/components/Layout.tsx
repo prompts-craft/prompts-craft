@@ -3,6 +3,8 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Menu, X, Moon, Sun, LogIn, LogOut, User } from "lucide-react";
 import logoSymbol from "@/assets/logo-symbol.svg";
 import logoAsset from "@/assets/promptcraft-logo.png.asset.json";
+import forgedLogo from "@/assets/forged-studio-logo.jpg.asset.json";
+
 import { useTheme } from "@/hooks/use-theme";
 import { SocialLinks } from "@/components/SocialLinks";
 import { supabase } from "@/integrations/supabase/client";
