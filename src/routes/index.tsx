@@ -86,48 +86,34 @@ function Index() {
   );
 
 
-  // Fill a list with fallback prompts so every new prompt surfaces on the home page.
-  const fill = (base: Prompt[], pool: Prompt[], n: number) => {
-    const out = [...base];
-    for (const p of pool) {
-      if (out.length >= n) break;
-      if (!out.some((x) => x.slug === p.slug)) out.push(p);
-    }
-    return out.slice(0, n);
+  const [sort, setSort] = useState<"latest" | "trending" | "most-copied">("latest");
+  const [visible, setVisible] = useState(12);
+
+  const catRank = (slug: string) => {
+    const order = ["creative-images", "creative-image", "marketing", "youtube-thumbnail"];
+    const i = order.indexOf(slug);
+    return i === -1 ? order.length : i;
   };
 
-  const spotlight = useMemo(
-    () =>
-      byNewest.filter(
-        (p) => p.category === "youtube-thumbnail" || p.category === "creative-images" || p.category === "creative-image",
-      ),
-    [byNewest],
-  );
-
-  const featured = fill(
-    byNewest.filter((p) => p.featured),
-    [...spotlight, ...byNewest],
-    8,
-  );
-  const featuredSlugs = new Set(featured.map((p) => p.slug));
-  const trending = fill(
-    byNewest.filter((p) => p.trending && !featuredSlugs.has(p.slug)),
-    [...byNewest]
-      .filter((p) => !featuredSlugs.has(p.slug))
-      .sort((a, b) => b.copy_count - a.copy_count),
-    8,
-  );
-  const usedSlugs = new Set([...featuredSlugs, ...trending.map((p) => p.slug)]);
-  const latest = fill(
-    byNewest.filter((p) => !usedSlugs.has(p.slug)),
-    byNewest,
-    8,
-  );
+  const browse = useMemo(() => {
+    const arr = [...byNewest];
+    arr.sort((a, b) => {
+      const r = catRank(a.category) - catRank(b.category);
+      if (r !== 0) return r;
+      if (sort === "trending") {
+        return Number(b.trending) - Number(a.trending) || b.copy_count - a.copy_count;
+      }
+      if (sort === "most-copied") return b.copy_count - a.copy_count;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+    return arr;
+  }, [byNewest, sort]);
 
   const showcase = useMemo(
     () => byNewest.filter((p) => p.showcase && p.media_type !== "video").slice(0, 8),
     [byNewest],
   );
+
 
   return (
     <Layout>
