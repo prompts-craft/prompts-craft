@@ -68,12 +68,14 @@ function AdminLayout({ email, isSuperAdmin }: { email: string | null; isSuperAdm
         }`}
       >
         <div className="h-16 flex items-center px-5 border-b border-border/60">
-          <Link to="/admin" className="flex items-center gap-2 font-semibold tracking-tight">
-            <span className="inline-flex w-7 h-7 items-center justify-center rounded-lg bg-gradient-to-br from-accent to-accent/40">
-              <Sparkles className="w-4 h-4 text-accent-foreground" />
+          <Link to="/admin" className="flex items-center gap-2.5 font-semibold tracking-tight">
+            <img src={logoSymbol} alt="PromptCraft" className="w-8 h-8 rounded-lg ring-1 ring-border bg-card/60" />
+            <span className="flex flex-col leading-tight">
+              <span style={{ fontFamily: "var(--font-display)" }} className="text-sm text-gradient">PromptCraft</span>
+              <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Admin</span>
             </span>
-            <span>Admin</span>
           </Link>
+
         </div>
         <nav className="p-3 space-y-1 text-sm">
           {navItems.map((item) => {
