@@ -117,6 +117,24 @@ function AboutPage() {
           </p>
         </div>
 
+        <div className="mt-12 rounded-2xl border border-border bg-card/60 backdrop-blur p-6 flex flex-col sm:flex-row items-start gap-5">
+          <img
+            src={forgedLogo.url}
+            alt="Forged Studio logo"
+            loading="lazy"
+            className="w-16 h-16 rounded-xl ring-1 ring-border shrink-0"
+          />
+          <div>
+            <h2 className="text-xl font-semibold tracking-tight">A product of Forged Studio</h2>
+            <p className="mt-2 text-muted-foreground leading-relaxed">
+              Prompt Craft is a product of the company Forged Studio, whose CEO is Ali Ahmad — also the CEO of
+              Prompt Craft. Forged Studio builds practical digital products and AI tooling, and Prompt Craft is
+              its flagship platform for prompt engineering.
+            </p>
+          </div>
+        </div>
+
+
         <div className="mt-14">
           <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-4">Follow us</div>
           <SocialLinks size="lg" />
