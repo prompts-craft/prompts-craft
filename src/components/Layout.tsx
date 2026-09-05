@@ -335,7 +335,11 @@ export function Layout({ children }: { children: ReactNode }) {
         <div className="border-t border-border/60">
           <div className="max-w-[1500px] mx-auto px-5 sm:px-6 py-5 text-xs text-muted-foreground flex flex-col sm:flex-row gap-2 justify-between">
             <div>© {new Date().getFullYear()} PromptCraft. Craft better prompts.</div>
-            <div>Made for builders, teachers, and curious humans.</div>
+            <div className="flex items-center gap-2">
+              <img src={forgedLogo.url} alt="Forged Studio logo" loading="lazy" className="w-5 h-5 rounded" />
+              <span>A product of Forged Studio — CEO Ali Ahmad.</span>
+            </div>
+
           </div>
         </div>
       </footer>
