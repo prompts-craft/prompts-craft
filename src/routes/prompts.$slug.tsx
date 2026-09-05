@@ -198,47 +198,52 @@ function PromptPage() {
           </div>
         )}
 
-        <figure className="mt-10 rounded-2xl overflow-hidden border border-border bg-card/60 shadow-elevated">
-          <img
-            src={promptThumb(prompt.image_url)}
-            alt={`AI-generated example result for the prompt: ${prompt.title}`}
-            decoding="async"
-            className="w-full h-auto object-contain"
-          />
+        <div className="mt-10 grid lg:grid-cols-2 gap-6 lg:gap-8 items-start">
+          <figure className="rounded-2xl overflow-hidden border border-border bg-card/60 shadow-elevated">
+            <img
+              src={promptThumb(prompt.image_url)}
+              alt={`AI-generated example result for the prompt: ${prompt.title}`}
+              decoding="async"
+              className="w-full h-auto object-contain"
+            />
 
-          {prompt.image_url && (
-            <figcaption className="px-5 py-2.5 text-xs text-muted-foreground border-t border-border/60 bg-background/40">
-              Example result generated from this prompt.
-            </figcaption>
-          )}
-        </figure>
+            {prompt.image_url && (
+              <figcaption className="px-5 py-2.5 text-xs text-muted-foreground border-t border-border/60 bg-background/40">
+                Example result generated from this prompt.
+              </figcaption>
+            )}
+          </figure>
 
-        {/* Prompt box — main focus */}
-        <div className="relative mt-10 rounded-2xl p-px bg-gradient-to-br from-accent/40 via-border to-border shadow-elevated">
-          <div className="rounded-[15px] bg-card/90 backdrop-blur overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 border-b border-border/60 bg-background/40">
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
+          <div>
+            {/* Prompt box — main focus */}
+            <div className="relative rounded-2xl p-px bg-gradient-to-br from-accent/40 via-border to-border shadow-elevated">
+              <div className="rounded-[15px] bg-card/90 backdrop-blur overflow-hidden">
+                <div className="flex items-center justify-between px-5 py-3 border-b border-border/60 bg-background/40">
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
+                    </div>
+                    <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground ml-2">
+                      Prompt
+                    </span>
+                  </div>
+                  <div className="hidden sm:block">
+                    <CopyButton text={prompt.prompt} slug={prompt.slug} />
+                  </div>
                 </div>
-                <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground ml-2">
-                  Prompt
-                </span>
-              </div>
-              <div className="hidden sm:block">
-                <CopyButton text={prompt.prompt} slug={prompt.slug} />
+                <pre className="p-6 text-[15px] sm:text-base whitespace-pre-wrap font-sans leading-[1.75] tracking-[0.005em] text-foreground/90">{prompt.prompt}</pre>
+                <div className="px-5 py-3 border-t border-border/60 bg-background/40 sm:hidden">
+                  <CopyButton text={prompt.prompt} slug={prompt.slug} fullWidth />
+                </div>
               </div>
             </div>
-            <pre className="p-6 text-sm whitespace-pre-wrap font-mono leading-[1.7] text-foreground/90">{prompt.prompt}</pre>
-            <div className="px-5 py-3 border-t border-border/60 bg-background/40 sm:hidden">
-              <CopyButton text={prompt.prompt} slug={prompt.slug} fullWidth />
-            </div>
+
+            <OpenInAIButtons prompt={prompt.prompt} />
           </div>
         </div>
 
-        <OpenInAIButtons prompt={prompt.prompt} />
 
         {/* How to Use */}
         <section className="mt-14">
