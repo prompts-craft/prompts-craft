@@ -153,7 +153,7 @@ function PromptPage() {
 
   return (
     <Layout>
-      <article className="max-w-3xl mx-auto px-6 pt-14 pb-24">
+      <article className="w-full max-w-[1100px] mx-auto px-5 sm:px-8 lg:px-12 pt-14 pb-24">
         <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-6" aria-label="Breadcrumb">
           <Link to="/" className="hover:text-foreground transition">Home</Link>
           <ChevronRight className="w-3 h-3 opacity-60" />
