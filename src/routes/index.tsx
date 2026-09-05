@@ -86,48 +86,34 @@ function Index() {
   );
 
 
-  // Fill a list with fallback prompts so every new prompt surfaces on the home page.
-  const fill = (base: Prompt[], pool: Prompt[], n: number) => {
-    const out = [...base];
-    for (const p of pool) {
-      if (out.length >= n) break;
-      if (!out.some((x) => x.slug === p.slug)) out.push(p);
-    }
-    return out.slice(0, n);
+  const [sort, setSort] = useState<"latest" | "trending" | "most-copied">("latest");
+  const [visible, setVisible] = useState(12);
+
+  const catRank = (slug: string) => {
+    const order = ["creative-images", "creative-image", "marketing", "youtube-thumbnail"];
+    const i = order.indexOf(slug);
+    return i === -1 ? order.length : i;
   };
 
-  const spotlight = useMemo(
-    () =>
-      byNewest.filter(
-        (p) => p.category === "youtube-thumbnail" || p.category === "creative-images" || p.category === "creative-image",
-      ),
-    [byNewest],
-  );
-
-  const featured = fill(
-    byNewest.filter((p) => p.featured),
-    [...spotlight, ...byNewest],
-    8,
-  );
-  const featuredSlugs = new Set(featured.map((p) => p.slug));
-  const trending = fill(
-    byNewest.filter((p) => p.trending && !featuredSlugs.has(p.slug)),
-    [...byNewest]
-      .filter((p) => !featuredSlugs.has(p.slug))
-      .sort((a, b) => b.copy_count - a.copy_count),
-    8,
-  );
-  const usedSlugs = new Set([...featuredSlugs, ...trending.map((p) => p.slug)]);
-  const latest = fill(
-    byNewest.filter((p) => !usedSlugs.has(p.slug)),
-    byNewest,
-    8,
-  );
+  const browse = useMemo(() => {
+    const arr = [...byNewest];
+    arr.sort((a, b) => {
+      const r = catRank(a.category) - catRank(b.category);
+      if (r !== 0) return r;
+      if (sort === "trending") {
+        return Number(b.trending) - Number(a.trending) || b.copy_count - a.copy_count;
+      }
+      if (sort === "most-copied") return b.copy_count - a.copy_count;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+    return arr;
+  }, [byNewest, sort]);
 
   const showcase = useMemo(
     () => byNewest.filter((p) => p.showcase && p.media_type !== "video").slice(0, 8),
     [byNewest],
   );
+
 
   return (
     <Layout>
@@ -215,63 +201,69 @@ function Index() {
       </section>
 
       {/* Popular categories (collapsed by default) */}
-      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 pt-4 pb-6">
+      <section id="browse" className="max-w-[1500px] mx-auto px-4 sm:px-6 pt-4 pb-6 scroll-mt-24">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <CategoryBar categories={imageCats} />
           <MediaTabs active="image" />
         </div>
+
+        <div className="mt-4 flex items-center gap-2 flex-wrap">
+          {([
+            { key: "latest", label: "Latest", icon: <Clock className="w-3.5 h-3.5" /> },
+            { key: "trending", label: "Trending", icon: <TrendingUp className="w-3.5 h-3.5" /> },
+            { key: "most-copied", label: "Most copied", icon: <Sparkles className="w-3.5 h-3.5" /> },
+          ] as const).map((f) => (
+            <button
+              key={f.key}
+              type="button"
+              onClick={() => {
+                setSort(f.key);
+                setVisible(12);
+              }}
+              aria-pressed={sort === f.key}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition-colors duration-200 ${
+                sort === f.key
+                  ? "border-accent/60 bg-accent-soft text-accent"
+                  : "border-border bg-card/60 text-muted-foreground hover:border-accent/40 hover:text-foreground"
+              }`}
+            >
+              {f.icon}
+              {f.label}
+            </button>
+          ))}
+        </div>
       </section>
 
-      {/* Featured */}
-      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
-        <SectionHeader
-          icon={<Sparkles className="w-4 h-4" />}
-          eyebrow="Featured"
-          title="YouTube thumbnails & creative picks"
-          subtitle="A mixed selection of thumbnail and creative image prompts."
-        />
-        {isLoading && featured.length === 0 ? (
-          <CardSkeletonGrid />
-        ) : featured.length === 0 ? (
-          <EmptyState message="No featured prompts yet." />
-        ) : (
-          <PromptGrid prompts={featured} />
-        )}
-      </section>
-
-      {/* Trending */}
-      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
-        <SectionHeader
-          icon={<TrendingUp className="w-4 h-4" />}
-          eyebrow="Trending"
-          title="Most copied this week"
-          subtitle="What the community is shipping with right now."
-        />
-        {isLoading && trending.length === 0 ? (
-          <CardSkeletonGrid />
-        ) : trending.length === 0 ? (
-          <EmptyState message="No trending prompts yet." />
-        ) : (
-          <PromptGrid prompts={trending} />
-        )}
-      </section>
-
-      {/* Latest */}
-      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
+      {/* Browse all prompts */}
+      <section className="max-w-[1500px] mx-auto px-4 sm:px-6 pb-10 sm:pb-14">
         <SectionHeader
           icon={<Clock className="w-4 h-4" />}
-          eyebrow="Latest"
+          eyebrow="Browse"
           title="Fresh from the library"
-          subtitle="New prompts added by the community and team."
+          subtitle="Every prompt in one place — filter and keep scrolling."
         />
-        {isLoading && latest.length === 0 ? (
-          <CardSkeletonGrid n={4} />
-        ) : latest.length === 0 ? (
+        {isLoading && browse.length === 0 ? (
+          <CardSkeletonGrid />
+        ) : browse.length === 0 ? (
           <EmptyState message="No prompts yet — check back soon." />
         ) : (
-          <PromptGrid prompts={latest} />
+          <>
+            <PromptGrid prompts={browse.slice(0, visible)} />
+            {visible < browse.length && (
+              <div className="mt-10 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => setVisible((v) => v + 12)}
+                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-6 py-2.5 text-sm font-medium transition-colors duration-200 hover:border-accent/60"
+                >
+                  Show more <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </>
         )}
       </section>
+
 
       {/* CTA */}
       <section className="max-w-[1500px] mx-auto px-4 sm:px-6 pb-16 sm:pb-20">
