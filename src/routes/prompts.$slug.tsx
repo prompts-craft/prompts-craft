@@ -153,7 +153,7 @@ function PromptPage() {
 
   return (
     <Layout>
-      <article className="max-w-3xl mx-auto px-6 pt-14 pb-24">
+      <article className="w-full max-w-[1100px] mx-auto px-5 sm:px-8 lg:px-12 pt-14 pb-24">
         <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-6" aria-label="Breadcrumb">
           <Link to="/" className="hover:text-foreground transition">Home</Link>
           <ChevronRight className="w-3 h-3 opacity-60" />
@@ -198,47 +198,52 @@ function PromptPage() {
           </div>
         )}
 
-        <figure className="mt-10 rounded-2xl overflow-hidden border border-border bg-card/60 shadow-elevated">
-          <img
-            src={promptThumb(prompt.image_url)}
-            alt={`AI-generated example result for the prompt: ${prompt.title}`}
-            decoding="async"
-            className="w-full h-auto object-contain"
-          />
+        <div className="mt-10 grid lg:grid-cols-2 gap-6 lg:gap-8 items-start">
+          <figure className="rounded-2xl overflow-hidden border border-border bg-card/60 shadow-elevated">
+            <img
+              src={promptThumb(prompt.image_url)}
+              alt={`AI-generated example result for the prompt: ${prompt.title}`}
+              decoding="async"
+              className="w-full h-auto object-contain"
+            />
 
-          {prompt.image_url && (
-            <figcaption className="px-5 py-2.5 text-xs text-muted-foreground border-t border-border/60 bg-background/40">
-              Example result generated from this prompt.
-            </figcaption>
-          )}
-        </figure>
+            {prompt.image_url && (
+              <figcaption className="px-5 py-2.5 text-xs text-muted-foreground border-t border-border/60 bg-background/40">
+                Example result generated from this prompt.
+              </figcaption>
+            )}
+          </figure>
 
-        {/* Prompt box — main focus */}
-        <div className="relative mt-10 rounded-2xl p-px bg-gradient-to-br from-accent/40 via-border to-border shadow-elevated">
-          <div className="rounded-[15px] bg-card/90 backdrop-blur overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 border-b border-border/60 bg-background/40">
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
+          <div>
+            {/* Prompt box — main focus */}
+            <div className="relative rounded-2xl p-px bg-gradient-to-br from-accent/40 via-border to-border shadow-elevated">
+              <div className="rounded-[15px] bg-card/90 backdrop-blur overflow-hidden">
+                <div className="flex items-center justify-between px-5 py-3 border-b border-border/60 bg-background/40">
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
+                    </div>
+                    <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground ml-2">
+                      Prompt
+                    </span>
+                  </div>
+                  <div className="hidden sm:block">
+                    <CopyButton text={prompt.prompt} slug={prompt.slug} />
+                  </div>
                 </div>
-                <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground ml-2">
-                  Prompt
-                </span>
-              </div>
-              <div className="hidden sm:block">
-                <CopyButton text={prompt.prompt} slug={prompt.slug} />
+                <pre className="p-6 text-[15px] sm:text-base whitespace-pre-wrap font-sans leading-[1.75] tracking-[0.005em] text-foreground/90">{prompt.prompt}</pre>
+                <div className="px-5 py-3 border-t border-border/60 bg-background/40 sm:hidden">
+                  <CopyButton text={prompt.prompt} slug={prompt.slug} fullWidth />
+                </div>
               </div>
             </div>
-            <pre className="p-6 text-sm whitespace-pre-wrap font-mono leading-[1.7] text-foreground/90">{prompt.prompt}</pre>
-            <div className="px-5 py-3 border-t border-border/60 bg-background/40 sm:hidden">
-              <CopyButton text={prompt.prompt} slug={prompt.slug} fullWidth />
-            </div>
+
+            <OpenInAIButtons prompt={prompt.prompt} />
           </div>
         </div>
 
-        <OpenInAIButtons prompt={prompt.prompt} />
 
         {/* How to Use */}
         <section className="mt-14">
@@ -331,21 +336,33 @@ function PromptPage() {
             <h2 className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-4">
               Related prompts
             </h2>
-            <div className="grid sm:grid-cols-2 gap-3">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {related.map((r: Prompt) => (
                 <Link
                   key={r.slug}
                   to="/prompts/$slug"
                   params={{ slug: r.slug }}
-                  className="group block rounded-2xl border border-border bg-card/60 backdrop-blur p-5 hover:border-accent/40 hover:bg-card hover:-translate-y-0.5 transition-all duration-200"
+                  className="group block rounded-2xl border border-border bg-card/60 backdrop-blur overflow-hidden hover:border-accent/40 hover:bg-card hover:-translate-y-0.5 transition-all duration-200"
                 >
-                  <div className="font-medium group-hover:text-foreground transition">{r.title}</div>
-                  <div className="text-sm text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
-                    {r.description}
+                  <div className="overflow-hidden bg-muted/30">
+                    <img
+                      src={promptThumb(r.image_url)}
+                      alt={`Example result for the ${r.title} AI prompt`}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.03]"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <div className="font-medium group-hover:text-foreground transition">{r.title}</div>
+                    <div className="text-sm text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
+                      {r.description}
+                    </div>
                   </div>
                 </Link>
               ))}
             </div>
+
           </section>
         )}
       </article>
