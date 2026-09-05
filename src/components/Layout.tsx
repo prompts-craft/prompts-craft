@@ -118,9 +118,8 @@ export function Layout({ children }: { children: ReactNode }) {
               )}
             </button>
             <Link
-              to="/categories/$slug"
-              params={{ slug: "teachers" }}
-              search={{ sort: "trending" as const }}
+              to="/"
+              hash="browse"
               className="relative overflow-hidden inline-flex items-center gap-1.5 rounded-lg border border-border bg-card/60 px-3.5 py-1.5 text-sm font-medium text-foreground transition-all duration-300 hover:border-accent/60 hover:bg-card hover:-translate-y-0.5"
             >
               <span className="relative z-10">Explore prompts</span>
