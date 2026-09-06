@@ -120,16 +120,24 @@ export type Database = {
       }
       blogs: {
         Row: {
+          author: string | null
+          canonical_url: string | null
           category: string | null
           content: string
           created_at: string
           description: string | null
           featured_image: string | null
+          featured_image_alt: string | null
+          focus_keyword: string | null
           id: string
           meta_description: string | null
           meta_title: string | null
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
           published_at: string | null
           related_slugs: string[]
+          secondary_keywords: string[]
           slug: string
           status: string
           tags: string[]
@@ -137,16 +145,24 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          author?: string | null
+          canonical_url?: string | null
           category?: string | null
           content?: string
           created_at?: string
           description?: string | null
           featured_image?: string | null
+          featured_image_alt?: string | null
+          focus_keyword?: string | null
           id?: string
           meta_description?: string | null
           meta_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
           published_at?: string | null
           related_slugs?: string[]
+          secondary_keywords?: string[]
           slug: string
           status?: string
           tags?: string[]
@@ -154,16 +170,24 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          author?: string | null
+          canonical_url?: string | null
           category?: string | null
           content?: string
           created_at?: string
           description?: string | null
           featured_image?: string | null
+          featured_image_alt?: string | null
+          focus_keyword?: string | null
           id?: string
           meta_description?: string | null
           meta_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
           published_at?: string | null
           related_slugs?: string[]
+          secondary_keywords?: string[]
           slug?: string
           status?: string
           tags?: string[]
@@ -177,9 +201,19 @@ export type Database = {
           created_at: string
           description: string
           emoji: string
+          faq: Json
+          focus_keyword: string | null
           id: string
+          image_alt: string | null
+          long_description: string | null
           media_type: string
+          meta_description: string | null
           name: string
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
+          secondary_keywords: string[]
+          seo_title: string | null
           slug: string
           sort_order: number
           updated_at: string
@@ -188,9 +222,19 @@ export type Database = {
           created_at?: string
           description?: string
           emoji?: string
+          faq?: Json
+          focus_keyword?: string | null
           id?: string
+          image_alt?: string | null
+          long_description?: string | null
           media_type?: string
+          meta_description?: string | null
           name: string
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          secondary_keywords?: string[]
+          seo_title?: string | null
           slug: string
           sort_order?: number
           updated_at?: string
@@ -199,9 +243,19 @@ export type Database = {
           created_at?: string
           description?: string
           emoji?: string
+          faq?: Json
+          focus_keyword?: string | null
           id?: string
+          image_alt?: string | null
+          long_description?: string | null
           media_type?: string
+          meta_description?: string | null
           name?: string
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          secondary_keywords?: string[]
+          seo_title?: string | null
           slug?: string
           sort_order?: number
           updated_at?: string
@@ -310,55 +364,121 @@ export type Database = {
       }
       prompts: {
         Row: {
+          ai_model: string | null
+          author: string | null
+          canonical_url: string | null
           category: string
           copy_count: number
           created_at: string
+          customization_tips: string | null
           description: string | null
+          difficulty: string | null
           example: string | null
+          faq: Json
           featured: boolean
+          focus_keyword: string | null
+          how_to_use: string | null
           id: string
+          image_alt: string | null
           image_url: string | null
+          index_status: string
           media_type: string
+          meta_description: string | null
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
           prompt: string
+          schema_type: string
+          secondary_keywords: string[]
+          seo_keywords: string[]
+          seo_title: string | null
           showcase: boolean
           slug: string
+          status: string
+          subcategory: string | null
           tags: string[]
           title: string
           trending: boolean
+          updated_at: string
+          use_cases: string | null
         }
         Insert: {
+          ai_model?: string | null
+          author?: string | null
+          canonical_url?: string | null
           category: string
           copy_count?: number
           created_at?: string
+          customization_tips?: string | null
           description?: string | null
+          difficulty?: string | null
           example?: string | null
+          faq?: Json
           featured?: boolean
+          focus_keyword?: string | null
+          how_to_use?: string | null
           id?: string
+          image_alt?: string | null
           image_url?: string | null
+          index_status?: string
           media_type?: string
+          meta_description?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
           prompt: string
+          schema_type?: string
+          secondary_keywords?: string[]
+          seo_keywords?: string[]
+          seo_title?: string | null
           showcase?: boolean
           slug: string
+          status?: string
+          subcategory?: string | null
           tags?: string[]
           title: string
           trending?: boolean
+          updated_at?: string
+          use_cases?: string | null
         }
         Update: {
+          ai_model?: string | null
+          author?: string | null
+          canonical_url?: string | null
           category?: string
           copy_count?: number
           created_at?: string
+          customization_tips?: string | null
           description?: string | null
+          difficulty?: string | null
           example?: string | null
+          faq?: Json
           featured?: boolean
+          focus_keyword?: string | null
+          how_to_use?: string | null
           id?: string
+          image_alt?: string | null
           image_url?: string | null
+          index_status?: string
           media_type?: string
+          meta_description?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
           prompt?: string
+          schema_type?: string
+          secondary_keywords?: string[]
+          seo_keywords?: string[]
+          seo_title?: string | null
           showcase?: boolean
           slug?: string
+          status?: string
+          subcategory?: string | null
           tags?: string[]
           title?: string
           trending?: boolean
+          updated_at?: string
+          use_cases?: string | null
         }
         Relationships: []
       }

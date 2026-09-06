@@ -1,5 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
+export type PromptFaq = { question: string; answer: string };
+
 export type Prompt = {
   id: string;
   slug: string;
@@ -16,8 +18,31 @@ export type Prompt = {
   featured?: boolean;
   showcase?: boolean;
   media_type?: "image" | "video";
+  updated_at?: string | null;
+  // Extended content
+  subcategory?: string | null;
+  ai_model?: string | null;
+  difficulty?: string | null;
+  author?: string | null;
+  how_to_use?: string | null;
+  customization_tips?: string | null;
+  use_cases?: string | null;
+  faq?: PromptFaq[] | null;
+  // SEO
+  seo_title?: string | null;
+  meta_description?: string | null;
+  focus_keyword?: string | null;
+  secondary_keywords?: string[] | null;
+  seo_keywords?: string[] | null;
+  canonical_url?: string | null;
+  og_title?: string | null;
+  og_description?: string | null;
+  og_image?: string | null;
+  image_alt?: string | null;
+  schema_type?: string | null;
+  index_status?: string | null;
+  status?: string | null;
 };
-
 
 export type SortKey = "latest" | "trending" | "most-copied";
 
@@ -33,22 +58,27 @@ function applySort<T extends Prompt>(rows: T[], sort: SortKey): T[] {
   return arr;
 }
 
+/** Public reads only ever return published prompts. */
+const PUBLISHED = "published";
+
 export async function fetchAllPrompts(): Promise<Prompt[]> {
   const { data, error } = await supabase
     .from("prompts")
     .select("*")
+    .eq("status", PUBLISHED)
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return (data ?? []) as Prompt[];
+  return (data ?? []) as unknown as Prompt[];
 }
 
 export async function fetchPromptsByCategory(category: string, sort: SortKey = "latest"): Promise<Prompt[]> {
   const { data, error } = await supabase
     .from("prompts")
     .select("*")
+    .eq("status", PUBLISHED)
     .eq("category", category);
   if (error) throw error;
-  return applySort((data ?? []) as Prompt[], sort);
+  return applySort((data ?? []) as unknown as Prompt[], sort);
 }
 
 export async function fetchPromptBySlug(slug: string): Promise<Prompt | null> {
@@ -58,26 +88,58 @@ export async function fetchPromptBySlug(slug: string): Promise<Prompt | null> {
     .eq("slug", slug)
     .maybeSingle();
   if (error) throw error;
-  return (data ?? null) as Prompt | null;
+  return (data ?? null) as unknown as Prompt | null;
 }
 
-export async function fetchRelated(category: string, excludeSlug: string, n = 10): Promise<Prompt[]> {
+/**
+ * Related prompts scored on category, subcategory, shared tags, AI model
+ * and keyword overlap so internal links stay genuinely relevant.
+ */
+export async function fetchRelated(category: string, excludeSlug: string, n = 8, base?: Prompt): Promise<Prompt[]> {
   const { data, error } = await supabase
     .from("prompts")
     .select("*")
-    .eq("category", category)
+    .eq("status", PUBLISHED)
     .neq("slug", excludeSlug)
-    .limit(n);
+    .limit(200);
   if (error) throw error;
-  let rows = (data ?? []) as Prompt[];
-  if (rows.length < n) {
-    const { data: extra } = await supabase
-      .from("prompts")
-      .select("*")
-      .neq("category", category)
-      .neq("slug", excludeSlug)
-      .limit(n - rows.length);
-    rows = [...rows, ...((extra ?? []) as Prompt[])];
-  }
-  return rows;
+  const rows = (data ?? []) as unknown as Prompt[];
+
+  const baseTags = new Set((base?.tags ?? []).map((t) => t.toLowerCase()));
+  const baseWords = new Set(
+    `${base?.title ?? ""} ${base?.description ?? ""}`
+      .toLowerCase()
+      .split(/[^a-z0-9]+/)
+      .filter((w) => w.length > 4),
+  );
+
+  const scored = rows.map((r) => {
+    let score = 0;
+    if (r.category === category) score += 5;
+    if (base?.subcategory && r.subcategory && r.subcategory === base.subcategory) score += 3;
+    if (base?.ai_model && r.ai_model && r.ai_model === base.ai_model) score += 2;
+    for (const t of r.tags ?? []) if (baseTags.has(t.toLowerCase())) score += 2;
+    for (const w of `${r.title} ${r.description ?? ""}`.toLowerCase().split(/[^a-z0-9]+/)) {
+      if (w.length > 4 && baseWords.has(w)) score += 0.5;
+    }
+    if (r.media_type === base?.media_type) score += 0.5;
+    score += Math.min(r.copy_count, 20) * 0.02;
+    return { r, score };
+  });
+
+  return scored
+    .sort((a, b) => b.score - a.score || new Date(b.r.created_at).getTime() - new Date(a.r.created_at).getTime())
+    .slice(0, n)
+    .map((s) => s.r);
+}
+
+export async function fetchPopularPrompts(n = 6, excludeSlug?: string): Promise<Prompt[]> {
+  const { data, error } = await supabase
+    .from("prompts")
+    .select("*")
+    .eq("status", PUBLISHED)
+    .order("copy_count", { ascending: false })
+    .limit(n + 1);
+  if (error) throw error;
+  return ((data ?? []) as unknown as Prompt[]).filter((p) => p.slug !== excludeSlug).slice(0, n);
 }
