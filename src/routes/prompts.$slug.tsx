@@ -34,14 +34,21 @@ export const Route = createFileRoute("/prompts/$slug")({
       return { meta: [{ title: "AI Prompt | PromptCraft" }] };
     }
     const kind = p.media_type === "video" ? "AI Video Prompt" : "AI Prompt";
-    const title = `${p.title} ${kind} | PromptCraft`;
     const source = (p.description ?? p.prompt ?? "").replace(/\s+/g, " ").trim();
-    const desc = `${source.slice(0, 110)}${source.length > 110 ? "…" : ""} Copy this ${kind.toLowerCase()} free on PromptCraft.`.slice(0, 160);
-    const url = `${SITE_URL}/prompts/${params.slug}`;
-    const image = p.image_url ?? `${SITE_URL}/og-default.jpg`;
+    // Saved SEO fields always win; generated copy is only the fallback.
+    const title = p.seo_title?.trim() || `${p.title} ${kind} | PromptCraft`;
+    const desc =
+      p.meta_description?.trim() ||
+      `${source.slice(0, 110)}${source.length > 110 ? "…" : ""} Copy this ${kind.toLowerCase()} free on PromptCraft.`.slice(0, 160);
+    const url = p.canonical_url?.trim() || `${SITE_URL}/prompts/${params.slug}`;
+    const image = p.og_image?.trim() || p.image_url || `${SITE_URL}/og-default.jpg`;
+    const ogTitle = p.og_title?.trim() || `${p.title} — ${kind} | PromptCraft`;
+    const ogDesc = p.og_description?.trim() || desc;
+    const noindex = p.index_status === "noindex" || p.status === "draft";
 
-    const keywords = getSeoKeywords(p).join(", ");
-    const faqs = getFaqs(p);
+    const keywords = (p.seo_keywords?.length ? p.seo_keywords : getSeoKeywords(p)).join(", ");
+    const savedFaqs = Array.isArray(p.faq) ? p.faq.filter((f) => f?.question && f?.answer) : [];
+    const faqs = savedFaqs.length ? savedFaqs.map((f) => ({ q: f.question, a: f.answer })) : getFaqs(p);
     const category = getCategory(p.category);
 
     return {
@@ -49,14 +56,16 @@ export const Route = createFileRoute("/prompts/$slug")({
         { title },
         { name: "description", content: desc },
         { name: "keywords", content: keywords },
-        { property: "og:title", content: `${p.title} — AI Prompt | PromptCraft` },
-        { property: "og:description", content: desc },
+        ...(noindex ? [{ name: "robots", content: "noindex,nofollow" }] : []),
+        { property: "og:title", content: ogTitle },
+        { property: "og:description", content: ogDesc },
         { property: "og:type", content: "article" },
         { property: "og:url", content: url },
         { property: "og:image", content: image },
+        { property: "og:image:alt", content: p.image_alt?.trim() || `${p.title} — ${kind} example` },
         { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: `${p.title} — AI Prompt | PromptCraft` },
-        { name: "twitter:description", content: desc },
+        { name: "twitter:title", content: ogTitle },
+        { name: "twitter:description", content: ogDesc },
         { name: "twitter:image", content: image },
       ],
       links: [{ rel: "canonical", href: url }],
