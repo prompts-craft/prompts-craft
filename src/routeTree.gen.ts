@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VideoRouteImport } from './routes/video'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
@@ -67,6 +68,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VideoRoute = VideoRouteImport.update({
@@ -163,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/video': typeof VideoRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/blogs': typeof AdminBlogsRouteWithChildren
@@ -187,6 +194,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/video': typeof VideoRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/blogs': typeof AdminBlogsRouteWithChildren
@@ -214,6 +222,7 @@ export interface FileRoutesById {
   '/blog': typeof BlogRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/video': typeof VideoRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/blogs': typeof AdminBlogsRouteWithChildren
@@ -242,6 +251,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/privacy'
     | '/sitemap.xml'
+    | '/terms'
     | '/video'
     | '/admin/activity'
     | '/admin/blogs'
@@ -266,6 +276,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/privacy'
     | '/sitemap.xml'
+    | '/terms'
     | '/video'
     | '/admin/activity'
     | '/admin/blogs'
@@ -292,6 +303,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/privacy'
     | '/sitemap.xml'
+    | '/terms'
     | '/video'
     | '/admin/activity'
     | '/admin/blogs'
@@ -319,6 +331,7 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermsRoute: typeof TermsRoute
   VideoRoute: typeof VideoRoute
   CategoriesSlugRoute: typeof CategoriesSlugRoute
   PromptsSlugRoute: typeof PromptsSlugRoute
@@ -373,6 +386,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/video': {
@@ -569,6 +589,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermsRoute: TermsRoute,
   VideoRoute: VideoRoute,
   CategoriesSlugRoute: CategoriesSlugRoute,
   PromptsSlugRoute: PromptsSlugRoute,
