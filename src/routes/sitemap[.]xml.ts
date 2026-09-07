@@ -23,6 +23,9 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/about", changefreq: "monthly", priority: "0.5" },
           { path: "/blog", changefreq: "daily", priority: "0.8" },
           { path: "/video", changefreq: "weekly", priority: "0.6" },
+          { path: "/privacy", changefreq: "yearly", priority: "0.3" },
+          { path: "/terms", changefreq: "yearly", priority: "0.3" },
+          { path: "/contact", changefreq: "yearly", priority: "0.3" },
         ];
 
 
@@ -57,10 +60,15 @@ export const Route = createFileRoute("/sitemap.xml")({
 
         try {
           const prompts = await fetchAllPrompts();
+          const seenPromptSlugs = new Set<string>();
           for (const p of prompts) {
+            // Only published, indexable prompts belong in the sitemap.
+            if (p.index_status === "noindex") continue;
+            if (seenPromptSlugs.has(p.slug)) continue;
+            seenPromptSlugs.add(p.slug);
             entries.push({
               path: `/prompts/${p.slug}`,
-              lastmod: p.created_at?.slice(0, 10),
+              lastmod: (p.updated_at ?? p.created_at)?.slice(0, 10),
               changefreq: "monthly",
               priority: "0.7",
             });

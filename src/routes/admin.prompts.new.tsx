@@ -4,7 +4,12 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
-import { PromptForm, emptyPromptForm, type PromptFormValues } from "@/components/admin/PromptForm";
+import {
+  PromptForm,
+  emptyPromptForm,
+  formToPayload,
+  type PromptFormValues,
+} from "@/components/admin/PromptForm";
 import { createAdminPrompt } from "@/lib/admin-prompts.functions";
 
 export const Route = createFileRoute("/admin/prompts/new")({
@@ -19,30 +24,11 @@ function NewPromptPage() {
 
   async function handleSubmit(values: PromptFormValues) {
     setSubmitting(true);
-    const tags = values.tags
-      .split(",")
-      .map((t) => t.trim())
-      .filter(Boolean);
     try {
-      const data = await createPrompt({
-        data: {
-          title: values.title.trim(),
-          slug: values.slug.trim(),
-          category: values.category,
-          description: values.description.trim() || null,
-          prompt: values.prompt,
-          example: values.example.trim() || null,
-          tags,
-          image_url: values.image_url.trim() || null,
-          trending: values.trending,
-          featured: values.featured,
-          showcase: values.showcase,
-          media_type: values.media_type,
-
-        },
-      });
+      const data = await createPrompt({ data: formToPayload(values) });
       toast.success("Prompt created");
       qc.invalidateQueries({ queryKey: ["admin"] });
+      qc.invalidateQueries({ queryKey: ["prompts"] });
       navigate({ to: "/admin/prompts/$id", params: { id: data.id } });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to create prompt");

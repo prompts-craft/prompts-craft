@@ -5,7 +5,13 @@ import { useState } from "react";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { PromptForm, type PromptFormValues } from "@/components/admin/PromptForm";
+import {
+  PromptForm,
+  promptToForm,
+  formToPayload,
+  type PromptFormValues,
+} from "@/components/admin/PromptForm";
+import type { Prompt } from "@/lib/prompts-api";
 import { AiRatingsEditor } from "@/components/admin/AiRatingsEditor";
 import { deleteAdminPrompt, updateAdminPrompt } from "@/lib/admin-prompts.functions";
 import {
@@ -54,51 +60,12 @@ function EditPromptPage() {
     );
   }
 
-  const initial: PromptFormValues = {
-    title: data.title,
-    slug: data.slug,
-    category: data.category,
-    description: data.description ?? "",
-    prompt: data.prompt,
-    example: data.example ?? "",
-    tags: (data.tags ?? []).join(", "),
-    image_url: data.image_url ?? "",
-    trending: data.trending,
-    featured: (data as { featured?: boolean }).featured ?? false,
-    showcase: (data as { showcase?: boolean }).showcase ?? false,
-    media_type: ((data as { media_type?: string }).media_type === "video"
-      ? "video"
-      : "image") as "image" | "video",
-  };
-
+  const initial: PromptFormValues = promptToForm(data as unknown as Prompt);
 
   async function handleSubmit(values: PromptFormValues) {
     setSubmitting(true);
-    const tags = values.tags
-      .split(",")
-      .map((t) => t.trim())
-      .filter(Boolean);
     try {
-      await updatePrompt({
-        data: {
-          id,
-          values: {
-            title: values.title.trim(),
-            slug: values.slug.trim(),
-            category: values.category,
-            description: values.description.trim() || null,
-            prompt: values.prompt,
-            example: values.example.trim() || null,
-            tags,
-            image_url: values.image_url.trim() || null,
-            trending: values.trending,
-            featured: values.featured,
-            showcase: values.showcase,
-            media_type: values.media_type,
-
-          },
-        },
-      });
+      await updatePrompt({ data: { id, values: formToPayload(values) } });
       toast.success("Prompt updated");
       qc.invalidateQueries({ queryKey: ["admin"] });
       qc.invalidateQueries({ queryKey: ["prompts"] });
