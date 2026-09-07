@@ -5,7 +5,13 @@ import { useState } from "react";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { PromptForm, type PromptFormValues } from "@/components/admin/PromptForm";
+import {
+  PromptForm,
+  promptToForm,
+  formToPayload,
+  type PromptFormValues,
+} from "@/components/admin/PromptForm";
+import type { Prompt } from "@/lib/prompts-api";
 import { AiRatingsEditor } from "@/components/admin/AiRatingsEditor";
 import { deleteAdminPrompt, updateAdminPrompt } from "@/lib/admin-prompts.functions";
 import {
