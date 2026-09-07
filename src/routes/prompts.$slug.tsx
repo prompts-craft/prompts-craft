@@ -74,15 +74,17 @@ export const Route = createFileRoute("/prompts/$slug")({
           type: "application/ld+json",
           children: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Article",
-            headline: p.title,
+            "@type": p.schema_type?.trim() || "Article",
+            headline: p.seo_title?.trim() || p.title,
             description: desc,
             image: [image],
             keywords,
             datePublished: p.created_at,
-            dateModified: p.created_at,
+            dateModified: p.updated_at ?? p.created_at,
             articleSection: category?.name ?? p.category,
-            author: { "@type": "Organization", name: "PromptCraft" },
+            author: p.author?.trim()
+              ? { "@type": "Person", name: p.author }
+              : { "@type": "Organization", name: "PromptCraft" },
             publisher: {
               "@type": "Organization",
               name: "PromptCraft",
