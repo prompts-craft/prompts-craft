@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
-import { LayoutDashboard, ListChecks, Plus, LogOut, Sparkles, Layers, Activity, UserPlus, Upload, FileText, Map } from "lucide-react";
+import { LayoutDashboard, ListChecks, Plus, LogOut, Sparkles, Layers, Activity, UserPlus, Upload, FileText, Map, Search } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import logoSymbol from "@/assets/logo-symbol.svg";
 
