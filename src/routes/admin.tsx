@@ -50,6 +50,7 @@ function AdminLayout({ email, isSuperAdmin }: { email: string | null; isSuperAdm
     { to: "/admin/categories", label: "Categories", icon: Layers },
     { to: "/admin/import", label: "Import XLSX", icon: Upload },
     { to: "/admin/blogs", label: "Blogs", icon: FileText },
+    { to: "/admin/seo", label: "SEO Health", icon: Search },
     { to: "/admin/sitemap", label: "Sitemap", icon: Map },
     ...(isSuperAdmin
       ? [
