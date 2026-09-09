@@ -12,9 +12,40 @@ export const Route = createFileRoute("/admin/import")({
 });
 
 const REQUIRED = ["title", "prompt", "category"] as const;
-const OPTIONAL = ["type", "slug", "description", "example", "tags", "image_url"] as const;
+const OPTIONAL = [
+  "type",
+  "slug",
+  "description",
+  "example",
+  "tags",
+  "image_url",
+  "subcategory",
+  "ai_model",
+  "difficulty",
+  "author",
+  "how_to_use",
+  "customization_tips",
+  "use_cases",
+  "seo_title",
+  "meta_description",
+  "focus_keyword",
+  "secondary_keywords",
+  "image_alt",
+  "status",
+] as const;
 
 type Row = Record<string, unknown>;
+
+function str(v: unknown): string | null {
+  const s = v == null ? "" : String(v).trim();
+  return s ? s : null;
+}
+
+function splitList(v: unknown): string[] {
+  if (Array.isArray(v)) return v.map(String);
+  if (typeof v === "string" && v.trim()) return v.split(/[,;|]/).map((t) => t.trim()).filter(Boolean);
+  return [];
+}
 
 function normalizeKey(k: string) {
   return k.trim().toLowerCase().replace(/\s+/g, "_");
@@ -26,6 +57,7 @@ function ImportPage() {
   const [missing, setMissing] = useState<string[]>([]);
   const [preview, setPreview] = useState<Row[] | null>(null);
   const [loading, setLoading] = useState(false);
+  const [autoSeo, setAutoSeo] = useState(true);
   const [result, setResult] = useState<Awaited<ReturnType<typeof bulkImportPrompts>> | null>(null);
 
   async function handleFile(file: File) {
@@ -83,10 +115,23 @@ function ImportPage() {
             String(r.type ?? "").trim().toLowerCase() === "video"
               ? ("video" as const)
               : ("image" as const),
+          subcategory: str(r.subcategory),
+          ai_model: str(r.ai_model),
+          difficulty: str(r.difficulty),
+          author: str(r.author),
+          how_to_use: str(r.how_to_use),
+          customization_tips: str(r.customization_tips),
+          use_cases: str(r.use_cases),
+          seo_title: str(r.seo_title),
+          meta_description: str(r.meta_description),
+          focus_keyword: str(r.focus_keyword),
+          secondary_keywords: splitList(r.secondary_keywords),
+          image_alt: str(r.image_alt),
+          status: String(r.status ?? "").trim().toLowerCase() === "draft" ? ("draft" as const) : ("published" as const),
         };
 
       });
-      const res = await runImport({ data: { rows } });
+      const res = await runImport({ data: { rows, generateMissingSeo: autoSeo } });
       setResult(res);
       toast.success(`Imported ${res.inserted} prompts`);
     } catch (e) {
@@ -169,6 +214,15 @@ function ImportPage() {
               {loading ? "Importing…" : "Import all"}
             </button>
           </div>
+          <label className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={autoSeo}
+              onChange={(e) => setAutoSeo(e.target.checked)}
+              className="accent-current"
+            />
+            Write SEO title, description and keywords for rows that don't include them
+          </label>
           <div className="mt-4 max-h-80 overflow-auto rounded-md border border-border/60">
             <table className="w-full text-xs">
               <thead className="bg-muted/40 sticky top-0">
