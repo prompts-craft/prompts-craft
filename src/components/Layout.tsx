@@ -314,6 +314,21 @@ export function Layout({ children }: { children: ReactNode }) {
                 </Link>
               </li>
               <li>
+                <Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Terms of Use
+                </Link>
+              </li>
+              <li>
                 <a
                   href="/sitemap.xml"
                   className="text-muted-foreground hover:text-foreground transition-colors"
