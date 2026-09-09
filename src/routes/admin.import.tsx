@@ -214,6 +214,15 @@ function ImportPage() {
               {loading ? "Importing…" : "Import all"}
             </button>
           </div>
+          <label className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={autoSeo}
+              onChange={(e) => setAutoSeo(e.target.checked)}
+              className="accent-current"
+            />
+            Write SEO title, description and keywords for rows that don't include them
+          </label>
           <div className="mt-4 max-h-80 overflow-auto rounded-md border border-border/60">
             <table className="w-full text-xs">
               <thead className="bg-muted/40 sticky top-0">
