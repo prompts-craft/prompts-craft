@@ -61,24 +61,46 @@ function applySort<T extends Prompt>(rows: T[], sort: SortKey): T[] {
 /** Public reads only ever return published prompts. */
 const PUBLISHED = "published";
 
+/**
+ * PostgREST caps a single response at 1000 rows, so page through the table
+ * until every row is loaded.
+ */
+const PAGE_SIZE = 1000;
+
+async function fetchAllPages(
+  build: () => ReturnType<ReturnType<typeof supabase.from>["select"]>,
+): Promise<Prompt[]> {
+  const out: Prompt[] = [];
+  for (let from = 0; ; from += PAGE_SIZE) {
+    const { data, error } = await build().range(from, from + PAGE_SIZE - 1);
+    if (error) throw error;
+    const rows = (data ?? []) as unknown as Prompt[];
+    out.push(...rows);
+    if (rows.length < PAGE_SIZE) break;
+  }
+  return out;
+}
+
 export async function fetchAllPrompts(): Promise<Prompt[]> {
-  const { data, error } = await supabase
-    .from("prompts")
-    .select("*")
-    .eq("status", PUBLISHED)
-    .order("created_at", { ascending: false });
-  if (error) throw error;
-  return (data ?? []) as unknown as Prompt[];
+  return fetchAllPages(() =>
+    supabase
+      .from("prompts")
+      .select("*")
+      .eq("status", PUBLISHED)
+      .order("created_at", { ascending: false }) as never,
+  );
 }
 
 export async function fetchPromptsByCategory(category: string, sort: SortKey = "latest"): Promise<Prompt[]> {
-  const { data, error } = await supabase
-    .from("prompts")
-    .select("*")
-    .eq("status", PUBLISHED)
-    .eq("category", category);
-  if (error) throw error;
-  return applySort((data ?? []) as unknown as Prompt[], sort);
+  const rows = await fetchAllPages(() =>
+    supabase
+      .from("prompts")
+      .select("*")
+      .eq("status", PUBLISHED)
+      .eq("category", category)
+      .order("created_at", { ascending: false }) as never,
+  );
+  return applySort(rows, sort);
 }
 
 export async function fetchPromptBySlug(slug: string): Promise<Prompt | null> {
