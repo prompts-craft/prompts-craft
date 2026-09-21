@@ -12,14 +12,13 @@ export const Route = createFileRoute("/admin/")({
 function AdminDashboard() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "overview"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("prompts")
-        .select("id, slug, title, category, trending, created_at, copy_count")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data ?? [];
-    },
+    queryFn: async () =>
+      fetchAllRows(() =>
+        supabase
+          .from("prompts")
+          .select("id, slug, title, category, trending, created_at, copy_count")
+          .order("created_at", { ascending: false }) as never,
+      ),
   });
 
   const { data: categories = [] } = useCategories();

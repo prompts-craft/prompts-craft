@@ -23,14 +23,10 @@ function SeoDashboard() {
 
   const { data: prompts = [], isLoading } = useQuery({
     queryKey: ["admin", "seo", "prompts"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("prompts")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return (data ?? []) as unknown as Prompt[];
-    },
+    queryFn: async () =>
+      fetchAllRows<Prompt>(() =>
+        supabase.from("prompts").select("*").order("created_at", { ascending: false }) as never,
+      ),
   });
 
   const rows = useMemo(

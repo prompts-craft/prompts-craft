@@ -43,14 +43,10 @@ function AdminPromptsList() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "prompts"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("prompts")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data ?? [];
-    },
+    queryFn: async () =>
+      fetchAllRows(() =>
+        supabase.from("prompts").select("*").order("created_at", { ascending: false }) as never,
+      ),
   });
 
   const filtered = useMemo(() => {
