@@ -2,7 +2,8 @@ import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-r
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
-import { Plus, Search, Trash2, Pencil, TrendingUp } from "lucide-react";
+import { Plus, Search, Trash2, Pencil, TrendingUp, Download } from "lucide-react";
+import * as XLSX from "xlsx";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCategories } from "@/lib/categories-api";
@@ -64,6 +65,60 @@ function AdminPromptsList() {
       );
     });
   }, [data, query, category]);
+
+  const [exporting, setExporting] = useState(false);
+
+  function exportExcel() {
+    const rows = data ?? [];
+    if (!rows.length) {
+      toast.error("No prompts to export");
+      return;
+    }
+    setExporting(true);
+    try {
+      const list = (v: unknown) => (Array.isArray(v) ? (v as string[]).join(", ") : "");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const sheetRows = rows.map((p: any) => ({
+        title: p.title,
+        slug: p.slug,
+        category: p.category,
+        type: p.media_type ?? "image",
+        status: p.status ?? "published",
+        prompt: p.prompt,
+        description: p.description ?? "",
+        example: p.example ?? "",
+        tags: list(p.tags),
+        image_url: p.image_url ?? "",
+        subcategory: p.subcategory ?? "",
+        ai_model: p.ai_model ?? "",
+        difficulty: p.difficulty ?? "",
+        author: p.author ?? "",
+        how_to_use: p.how_to_use ?? "",
+        customization_tips: p.customization_tips ?? "",
+        use_cases: p.use_cases ?? "",
+        seo_title: p.seo_title ?? "",
+        meta_description: p.meta_description ?? "",
+        focus_keyword: p.focus_keyword ?? "",
+        secondary_keywords: list(p.secondary_keywords),
+        image_alt: p.image_alt ?? "",
+        trending: p.trending ? "yes" : "no",
+        featured: p.featured ? "yes" : "no",
+        showcase: p.showcase ? "yes" : "no",
+        copy_count: p.copy_count ?? 0,
+        created_at: p.created_at ?? "",
+        updated_at: p.updated_at ?? "",
+      }));
+      const ws = XLSX.utils.json_to_sheet(sheetRows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Prompts");
+      XLSX.writeFile(wb, `promptcraft-prompts-${new Date().toISOString().slice(0, 10)}.xlsx`);
+      toast.success(`Exported ${sheetRows.length} prompts`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Export failed");
+    } finally {
+      setExporting(false);
+    }
+  }
 
   function toggleOne(id: string, checked: boolean) {
     setSelected((prev) => {
@@ -131,12 +186,21 @@ function AdminPromptsList() {
           <h1 className="text-2xl font-semibold tracking-tight">All prompts</h1>
           <p className="text-sm text-muted-foreground mt-1">Search, edit, or remove prompts.</p>
         </div>
-        <Link
-          to="/admin/prompts/new"
-          className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90"
-        >
-          <Plus className="w-4 h-4" /> New prompt
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={exportExcel}
+            disabled={exporting || isLoading}
+            className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-muted disabled:opacity-60"
+          >
+            <Download className="w-4 h-4" /> {exporting ? "Exporting…" : "Export Excel"}
+          </button>
+          <Link
+            to="/admin/prompts/new"
+            className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90"
+          >
+            <Plus className="w-4 h-4" /> New prompt
+          </Link>
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
