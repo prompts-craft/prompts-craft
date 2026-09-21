@@ -186,12 +186,21 @@ function AdminPromptsList() {
           <h1 className="text-2xl font-semibold tracking-tight">All prompts</h1>
           <p className="text-sm text-muted-foreground mt-1">Search, edit, or remove prompts.</p>
         </div>
-        <Link
-          to="/admin/prompts/new"
-          className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90"
-        >
-          <Plus className="w-4 h-4" /> New prompt
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={exportExcel}
+            disabled={exporting || isLoading}
+            className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-muted disabled:opacity-60"
+          >
+            <Download className="w-4 h-4" /> {exporting ? "Exporting…" : "Export Excel"}
+          </button>
+          <Link
+            to="/admin/prompts/new"
+            className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-primary/90"
+          >
+            <Plus className="w-4 h-4" /> New prompt
+          </Link>
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
