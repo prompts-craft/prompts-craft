@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
-export function RouteError({ error, reset }: { error: Error; reset: () => void }) {
+export function RouteError({ error, reset }: { error: unknown; reset: () => void }) {
   return (
     <div className="max-w-3xl mx-auto px-6 py-24 text-center">
       <h1 className="text-2xl font-semibold tracking-tight">Couldn't load this page</h1>
