@@ -1,3 +1,4 @@
+import { fetchAllRows } from "@/lib/paginate";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { FileText, Layers, TrendingUp, Plus } from "lucide-react";
