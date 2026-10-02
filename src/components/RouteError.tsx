@@ -1,11 +1,11 @@
 import { Link } from "@tanstack/react-router";
 
-export function RouteError({ error, reset }: { error: Error; reset: () => void }) {
+export function RouteError({ error, reset }: { error: unknown; reset: () => void }) {
   return (
     <div className="max-w-3xl mx-auto px-6 py-24 text-center">
       <h1 className="text-2xl font-semibold tracking-tight">Couldn't load this page</h1>
       <p className="text-sm text-muted-foreground mt-2">
-        {error?.message ?? "Something went wrong while fetching data."}
+        {(error instanceof Error ? error.message : null) ?? "Something went wrong while fetching data."}
       </p>
       <div className="mt-6 flex justify-center gap-2">
         <button

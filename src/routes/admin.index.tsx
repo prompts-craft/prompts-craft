@@ -1,3 +1,4 @@
+import { fetchAllRows } from "@/lib/paginate";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { FileText, Layers, TrendingUp, Plus } from "lucide-react";
@@ -13,7 +14,7 @@ function AdminDashboard() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "overview"],
     queryFn: async () =>
-      fetchAllRows(() =>
+      fetchAllRows<{ id: string; slug: string; title: string; category: string; trending: boolean; created_at: string; copy_count: number }>(() =>
         supabase
           .from("prompts")
           .select("id, slug, title, category, trending, created_at, copy_count")

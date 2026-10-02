@@ -1,3 +1,4 @@
+import { fetchAllRows } from "@/lib/paginate";
 import { supabase } from "@/integrations/supabase/client";
 
 export type PromptFaq = { question: string; answer: string };
@@ -61,24 +62,8 @@ function applySort<T extends Prompt>(rows: T[], sort: SortKey): T[] {
 /** Public reads only ever return published prompts. */
 const PUBLISHED = "published";
 
-/**
- * PostgREST caps a single response at 1000 rows, so page through the table
- * until every row is loaded.
- */
-const PAGE_SIZE = 1000;
-
-async function fetchAllPages(
-  build: () => ReturnType<ReturnType<typeof supabase.from>["select"]>,
-): Promise<Prompt[]> {
-  const out: Prompt[] = [];
-  for (let from = 0; ; from += PAGE_SIZE) {
-    const { data, error } = await build().range(from, from + PAGE_SIZE - 1);
-    if (error) throw error;
-    const rows = (data ?? []) as unknown as Prompt[];
-    out.push(...rows);
-    if (rows.length < PAGE_SIZE) break;
-  }
-  return out;
+async function fetchAllPages(build: () => unknown): Promise<Prompt[]> {
+  return fetchAllRows<Prompt>(build as never);
 }
 
 export async function fetchAllPrompts(): Promise<Prompt[]> {

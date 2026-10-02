@@ -1,3 +1,5 @@
+import type { Database } from "@/integrations/supabase/types";
+import { fetchAllRows } from "@/lib/paginate";
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -44,7 +46,7 @@ function AdminPromptsList() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "prompts"],
     queryFn: async () =>
-      fetchAllRows(() =>
+      fetchAllRows<Database["public"]["Tables"]["prompts"]["Row"]>(() =>
         supabase.from("prompts").select("*").order("created_at", { ascending: false }) as never,
       ),
   });
