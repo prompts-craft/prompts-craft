@@ -1,3 +1,4 @@
+import type { Database } from "@/integrations/supabase/types";
 import { fetchAllRows } from "@/lib/paginate";
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
