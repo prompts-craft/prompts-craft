@@ -14,7 +14,7 @@ function AdminDashboard() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "overview"],
     queryFn: async () =>
-      fetchAllRows(() =>
+      fetchAllRows<{ id: string; slug: string; title: string; category: string; trending: boolean; created_at: string; copy_count: number }>(() =>
         supabase
           .from("prompts")
           .select("id, slug, title, category, trending, created_at, copy_count")

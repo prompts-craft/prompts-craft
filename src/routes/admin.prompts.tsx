@@ -45,7 +45,7 @@ function AdminPromptsList() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "prompts"],
     queryFn: async () =>
-      fetchAllRows(() =>
+      fetchAllRows<Database["public"]["Tables"]["prompts"]["Row"]>(() =>
         supabase.from("prompts").select("*").order("created_at", { ascending: false }) as never,
       ),
   });
