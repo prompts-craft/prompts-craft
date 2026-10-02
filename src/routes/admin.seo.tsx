@@ -108,8 +108,12 @@ function SeoDashboard() {
           },
         };
       });
-      const res = await runBulk({ data: { updates } });
-      toast.success(`SEO text filled in for ${res.updated} prompt(s)`);
+      let total = 0;
+      for (let i = 0; i < updates.length; i += 100) {
+        const res = await runBulk({ data: { updates: updates.slice(i, i + 100) } });
+        total += res.updated;
+      }
+      toast.success(`SEO text filled in for ${total} prompt(s)`);
       qc.invalidateQueries({ queryKey: ["admin"] });
       qc.invalidateQueries({ queryKey: ["prompts"] });
     } catch (e) {
