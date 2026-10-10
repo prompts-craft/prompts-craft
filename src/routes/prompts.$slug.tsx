@@ -211,17 +211,34 @@ function PromptPage() {
 
         <div className="mt-10 grid lg:grid-cols-2 gap-6 lg:gap-8 items-start">
           <figure className="rounded-2xl overflow-hidden border border-border bg-card/60 shadow-elevated">
+            {prompt.image_url && /\.(mp4|webm|ogg|mov|m4v)(\?|$)/i.test(prompt.image_url) ? (
+              <video src={prompt.image_url} controls playsInline className="w-full h-auto" />
+            ) : (
             <img
               src={promptThumb(prompt.image_url)}
               alt={`AI-generated example result for the prompt: ${prompt.title}`}
               decoding="async"
               className="w-full h-auto object-contain"
             />
+            )}
 
             {prompt.image_url && (
               <figcaption className="px-5 py-2.5 text-xs text-muted-foreground border-t border-border/60 bg-background/40">
                 Example result generated from this prompt.
               </figcaption>
+            )}
+            {(prompt.gallery ?? []).length > 0 && (
+              <div className="grid grid-cols-3 gap-2 p-3 border-t border-border/60">
+                {(prompt.gallery ?? []).slice(0, 3).map((g) =>
+                  /\.(mp4|webm|ogg|mov|m4v)(\?|$)/i.test(g) ? (
+                    <video key={g} src={g} controls playsInline preload="metadata" className="w-full rounded-lg border border-border" />
+                  ) : (
+                    <a key={g} href={g} target="_blank" rel="noreferrer">
+                      <img src={g} alt={`${prompt.title} example`} loading="lazy" className="w-full h-auto rounded-lg border border-border object-contain" />
+                    </a>
+                  ),
+                )}
+              </div>
             )}
           </figure>
 

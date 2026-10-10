@@ -26,6 +26,7 @@ const promptPayloadSchema = z.object({
   example: z.string().trim().max(10000).nullable(),
   tags: z.array(z.string().trim().min(1).max(40)).max(20),
   image_url: z.string().trim().max(1000).nullable(),
+  gallery: z.array(z.string().trim().min(1).max(1000)).max(3).default([]),
   trending: z.boolean(),
   featured: z.boolean(),
   showcase: z.boolean().default(false),

@@ -77,8 +77,7 @@ function Index() {
   const searching = q.trim().length > 0;
   const byNewest = useMemo(
     () =>
-      prompts
-        .filter((p) => p.media_type !== "video")
+      [...prompts]
         .sort(
           (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         ),
@@ -333,6 +332,12 @@ function SectionHeader({
   );
 }
 
+const VIDEO_RE = /\.(mp4|webm|ogg|mov|m4v)(\?|$)/i;
+function cardVideo(p: Prompt): string | null {
+  const urls = [p.image_url ?? "", ...(p.gallery ?? [])];
+  return urls.find((u) => u && VIDEO_RE.test(u)) ?? null;
+}
+
 export function PromptCard({ prompt: p }: { prompt: Prompt }) {
   const { data: cats = [] } = useCategories();
   const cat = cats.find((c) => c.slug === p.category);
@@ -343,6 +348,20 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
       className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card/60 backdrop-blur transition-all duration-200 hover:border-accent/50 hover:bg-card hover:-translate-y-0.5 hover:shadow-elevated"
     >
       <div className="relative w-full overflow-hidden border-b border-border/60 bg-muted/40">
+        {cardVideo(p) ? (
+          <video
+            src={cardVideo(p)!}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            onMouseEnter={(e) => void e.currentTarget.play().catch(() => {})}
+            onMouseLeave={(e) => {
+              e.currentTarget.pause();
+            }}
+            className="w-full h-auto object-contain"
+          />
+        ) : (
         <img
           src={promptThumb(p.image_url)}
           alt={`AI-generated example result for the ${cat?.name ?? p.category} prompt: ${p.title}`}
@@ -350,6 +369,7 @@ export function PromptCard({ prompt: p }: { prompt: Prompt }) {
           decoding="async"
           className="w-full h-auto object-contain transition-transform duration-200 group-hover:scale-[1.03]"
         />
+        )}
       </div>
 
 

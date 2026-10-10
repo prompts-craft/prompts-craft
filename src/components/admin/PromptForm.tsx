@@ -17,6 +17,7 @@ export type PromptFormValues = {
   example: string;
   tags: string;
   image_url: string;
+  gallery: string[];
   trending: boolean;
   featured: boolean;
   showcase: boolean;
@@ -54,6 +55,7 @@ export const emptyPromptForm: PromptFormValues = {
   example: "",
   tags: "",
   image_url: "",
+  gallery: ["", "", ""],
   trending: false,
   featured: false,
   showcase: false,
@@ -94,6 +96,7 @@ export function promptToForm(data: Prompt): PromptFormValues {
     example: data.example ?? "",
     tags: (data.tags ?? []).join(", "),
     image_url: data.image_url ?? "",
+    gallery: [0, 1, 2].map((i) => (data as { gallery?: string[] | null }).gallery?.[i] ?? ""),
     trending: data.trending,
     featured: data.featured ?? false,
     showcase: data.showcase ?? false,
@@ -131,6 +134,7 @@ export function formToPayload(v: PromptFormValues): AdminPromptPayload {
     example: nn(v.example),
     tags: list(v.tags),
     image_url: nn(v.image_url),
+    gallery: v.gallery.map((g) => g.trim()).filter(Boolean).slice(0, 3),
     trending: v.trending,
     featured: v.featured,
     showcase: v.showcase,
@@ -381,9 +385,27 @@ export function PromptForm({
               <input value={values.tags} onChange={(e) => update("tags", e.target.value)} placeholder="seo, blog, marketing" className="input" />
             </Field>
             <Field label="Thumbnail / Cover Image" hint="Paste an image URL or upload a file.">
-              <ImageUploadField value={values.image_url} onChange={(v) => update("image_url", v)} folder="prompts" />
+              <ImageUploadField value={values.image_url} onChange={(v) => update("image_url", v)} folder="prompts" allowVideo />
             </Field>
           </div>
+
+          <Field label="Extra images / videos (up to 3)" hint="Paste a URL or upload an image or video. Shown on the prompt page.">
+            <div className="grid gap-4 sm:grid-cols-3">
+              {[0, 1, 2].map((i) => (
+                <ImageUploadField
+                  key={i}
+                  value={values.gallery[i] ?? ""}
+                  onChange={(v) => {
+                    const next = [...values.gallery];
+                    next[i] = v;
+                    update("gallery", next);
+                  }}
+                  folder="prompts"
+                  allowVideo
+                />
+              ))}
+            </div>
+          </Field>
 
           <div className="grid gap-5 sm:grid-cols-2">
             <Field label="Type" hint="Video prompts appear on the /video page.">
