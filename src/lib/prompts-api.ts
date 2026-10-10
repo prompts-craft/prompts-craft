@@ -16,6 +16,7 @@ export type Prompt = {
   copy_count: number;
   created_at: string;
   image_url: string | null;
+  gallery?: string[] | null;
   featured?: boolean;
   showcase?: boolean;
   media_type?: "image" | "video";

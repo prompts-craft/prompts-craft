@@ -377,6 +377,7 @@ export type Database = {
           faq: Json
           featured: boolean
           focus_keyword: string | null
+          gallery: string[]
           how_to_use: string | null
           id: string
           image_alt: string | null
@@ -416,6 +417,7 @@ export type Database = {
           faq?: Json
           featured?: boolean
           focus_keyword?: string | null
+          gallery?: string[]
           how_to_use?: string | null
           id?: string
           image_alt?: string | null
@@ -455,6 +457,7 @@ export type Database = {
           faq?: Json
           featured?: boolean
           focus_keyword?: string | null
+          gallery?: string[]
           how_to_use?: string | null
           id?: string
           image_alt?: string | null

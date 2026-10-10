@@ -3,6 +3,10 @@ import { Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
+export function isVideoUrl(src: string) {
+  return /\.(mp4|webm|ogg|mov|m4v)(\?|$)/i.test(src);
+}
+
 const BUCKET = "blog-images";
 // 10-year signed URL — the workspace blocks public buckets, so we sign long.
 const SIGNED_EXPIRES_IN = 60 * 60 * 24 * 365 * 10;
@@ -12,22 +16,26 @@ export function ImageUploadField({
   onChange,
   placeholder = "https://…",
   folder = "uploads",
+  allowVideo = false,
 }: {
   value: string;
   onChange: (url: string) => void;
   placeholder?: string;
   folder?: string;
+  allowVideo?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
 
   async function handleFile(file: File) {
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please choose an image file.");
+    const isVid = file.type.startsWith("video/");
+    if (!file.type.startsWith("image/") && !(allowVideo && isVid)) {
+      toast.error(allowVideo ? "Please choose an image or video file." : "Please choose an image file.");
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image must be under 5 MB.");
+    const max = isVid ? 50 : 5;
+    if (file.size > max * 1024 * 1024) {
+      toast.error(`File must be under ${max} MB.`);
       return;
     }
     setUploading(true);
@@ -77,7 +85,7 @@ export function ImageUploadField({
         <input
           ref={inputRef}
           type="file"
-          accept="image/*"
+          accept={allowVideo ? "image/*,video/*" : "image/*"}
           className="hidden"
           onChange={(e) => {
             const f = e.target.files?.[0];
@@ -85,7 +93,9 @@ export function ImageUploadField({
           }}
         />
       </div>
-      {value && (
+      {value && isVideoUrl(value) ? (
+        <video src={value} controls muted playsInline className="max-h-40 rounded-md border border-border" />
+      ) : value && (
         <img
           src={value}
           alt="preview"
