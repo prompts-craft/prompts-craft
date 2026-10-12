@@ -58,8 +58,26 @@ export function PromptShowcase({ prompts }: { prompts: Prompt[] }) {
   return (
     <section
       aria-label="Featured prompt"
-      className="hero-bg relative w-full overflow-hidden"
+      className="relative w-full overflow-hidden bg-black"
     >
+      {/* Blurred backdrop tinted by the active slide's colors */}
+      {items.map((item, idx) => {
+        const { image } = mediaFor(item);
+        return (
+          <div
+            key={`bg-${item.slug}`}
+            aria-hidden
+            className={`absolute inset-0 transition-opacity duration-1000 ease-out ${idx === index ? "opacity-100" : "opacity-0"}`}
+          >
+            <img
+              src={promptThumb(image)}
+              alt=""
+              loading="lazy"
+              className="h-full w-full object-cover scale-125 blur-3xl saturate-150 brightness-[0.55]"
+            />
+          </div>
+        );
+      })}
       <div className="relative max-w-[1500px] mx-auto grid lg:grid-cols-[2fr_3fr] items-center gap-6 lg:gap-0 px-4 sm:px-6 lg:pr-0 py-8 lg:py-0">
         {/* Text — 40% */}
         <div className="relative z-10 lg:pr-10 lg:py-12 order-2 lg:order-1">
