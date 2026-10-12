@@ -46,6 +46,7 @@
 :root {
   --hero-ink: oklch(0.985 0 0);
   --hero-ink-muted: oklch(0.82 0 0);
+  --hero-gradient-mobile: linear-gradient(180deg, oklch(0.96 0 0) 0%, oklch(0.55 0 0) 38%, oklch(0.08 0 0) 58%, oklch(0.06 0 0) 100%);
   --hero-gradient: linear-gradient(90deg, oklch(0.06 0 0) 0%, oklch(0.08 0 0) 28%, oklch(0.32 0 0) 45%, oklch(0.72 0 0) 62%, oklch(0.96 0 0) 80%, oklch(1 0 0) 100%);
   --radius: 0.875rem;
   --background: oklch(0.13 0.018 265);
@@ -303,5 +304,12 @@
   @media (prefers-reduced-motion: reduce) {
     .page-fade { animation: none; }
     html { scroll-behavior: auto; }
+  }
+}
+
+@utility hero-bg {
+  background-image: var(--hero-gradient-mobile);
+  @media (width >= 64rem) {
+    background-image: var(--hero-gradient);
   }
 }

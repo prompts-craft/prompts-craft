@@ -58,12 +58,11 @@ export function PromptShowcase({ prompts }: { prompts: Prompt[] }) {
   return (
     <section
       aria-label="Featured prompt"
-      className="relative w-full overflow-hidden"
-      style={{ backgroundImage: "var(--hero-gradient)" }}
+      className="hero-bg relative w-full overflow-hidden"
     >
-      <div className="relative max-w-[1500px] mx-auto grid lg:grid-cols-[2fr_3fr] items-center gap-6 lg:gap-0 px-4 sm:px-6 py-8 lg:py-0 lg:min-h-[480px]">
+      <div className="relative max-w-[1500px] mx-auto grid lg:grid-cols-[2fr_3fr] items-center gap-6 lg:gap-0 px-4 sm:px-6 lg:pr-0 py-8 lg:py-0">
         {/* Text — 40% */}
-        <div className="relative z-10 lg:pr-10 order-2 lg:order-1">
+        <div className="relative z-10 lg:pr-10 lg:py-12 order-2 lg:order-1">
           <div className="text-xs uppercase tracking-[0.22em] text-hero-ink-muted">Featured prompt</div>
           <div key={current.slug} className="page-fade">
             <h2 className="mt-3 text-2xl sm:text-4xl lg:text-5xl font-semibold tracking-tight leading-tight text-hero-ink line-clamp-3">
@@ -85,7 +84,7 @@ export function PromptShowcase({ prompts }: { prompts: Prompt[] }) {
         </div>
 
         {/* Media — 60% */}
-        <div className="relative order-1 lg:order-2 aspect-video w-full overflow-hidden lg:rounded-none rounded-xl">
+        <div className="relative order-1 lg:order-2 aspect-video w-full overflow-hidden rounded-xl lg:rounded-none">
           {items.map((item, idx) => {
             const { video, image } = mediaFor(item);
             const active = idx === index;
