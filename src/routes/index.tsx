@@ -109,7 +109,7 @@ function Index() {
   }, [byNewest, sort]);
 
   const showcase = useMemo(
-    () => byNewest.filter((p) => p.showcase && p.media_type !== "video").slice(0, 8),
+    () => (byNewest.some((p) => p.showcase) ? byNewest.filter((p) => p.showcase) : byNewest.filter((p) => p.image_url)).slice(0, 8),
     [byNewest],
   );
 
