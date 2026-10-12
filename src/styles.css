@@ -8,6 +8,8 @@
 
 
 @theme inline {
+  --color-hero-ink: var(--hero-ink);
+  --color-hero-ink-muted: var(--hero-ink-muted);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -42,6 +44,9 @@
 
 /* Dark-mode default — deep midnight matching PromptCraft logo */
 :root {
+  --hero-ink: oklch(0.985 0 0);
+  --hero-ink-muted: oklch(0.82 0 0);
+  --hero-gradient: linear-gradient(90deg, oklch(0.06 0 0) 0%, oklch(0.08 0 0) 28%, oklch(0.32 0 0) 45%, oklch(0.72 0 0) 62%, oklch(0.96 0 0) 80%, oklch(1 0 0) 100%);
   --radius: 0.875rem;
   --background: oklch(0.13 0.018 265);
   --foreground: oklch(0.985 0.003 250);
