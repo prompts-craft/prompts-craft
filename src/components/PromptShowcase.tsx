@@ -1,122 +1,115 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { Prompt } from "@/lib/prompts-api";
-import { promptThumb } from "@/lib/default-thumb";
+import { promptThumb, DEFAULT_PROMPT_THUMB } from "@/lib/default-thumb";
 
-function isVideoSrc(src: string) {
-  return /\.(mp4|webm|ogg|mov)(\?|$)/i.test(src);
+const VIDEO_RE = /\.(mp4|webm|ogg|mov|m4v)(\?|$)/i;
+const AUTOPLAY_MS = 6000;
+
+function mediaFor(p: Prompt) {
+  const urls = [p.image_url ?? "", ...(p.gallery ?? [])].filter(Boolean);
+  const video = urls.find((u) => VIDEO_RE.test(u)) ?? null;
+  const image = urls.find((u) => !VIDEO_RE.test(u)) ?? DEFAULT_PROMPT_THUMB;
+  return { video, image };
 }
 
-const AUTOPLAY_MS = 5000;
+function HeroVideo({ src, poster, active }: { src: string; poster: string; active: boolean }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    if (active) v.play().catch(() => {});
+    else v.pause();
+  }, [active]);
+  return (
+    <video
+      ref={ref}
+      src={src}
+      poster={poster}
+      muted
+      loop
+      playsInline
+      autoPlay
+      preload="metadata"
+      disablePictureInPicture
+      controls={false}
+      className="absolute inset-0 h-full w-full object-cover pointer-events-none"
+    />
+  );
+}
 
 export function PromptShowcase({ prompts }: { prompts: Prompt[] }) {
   const items = prompts.slice(0, 8);
   const [i, setI] = useState(0);
-  const [paused, setPaused] = useState(false);
   const count = items.length;
-  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    if (count < 2 || paused) return;
-    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    timer.current = setInterval(() => setI((v) => (v + 1) % count), AUTOPLAY_MS);
-    return () => {
-      if (timer.current) clearInterval(timer.current);
-    };
-  }, [count, paused]);
+    if (count < 2) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const t = setInterval(() => setI((v) => (v + 1) % count), AUTOPLAY_MS);
+    return () => clearInterval(t);
+  }, [count]);
 
   if (count === 0) return null;
-
   const index = Math.min(i, count - 1);
   const current = items[index];
-  const go = (d: number) => setI((v) => (v + d + count) % count);
 
   return (
-    <section className="max-w-[1500px] mx-auto px-4 sm:px-6 pt-6 sm:pt-8">
-      <div
-        className="relative rounded-3xl border border-border bg-card/60 backdrop-blur overflow-hidden"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-      >
-        <div className="relative flex items-center justify-center bg-muted/30 overflow-hidden min-h-[220px] h-[46vw] max-h-[480px]">
+    <section
+      aria-label="Featured prompt"
+      className="relative w-full overflow-hidden"
+      style={{ backgroundImage: "var(--hero-gradient)" }}
+    >
+      <div className="relative max-w-[1500px] mx-auto grid lg:grid-cols-[2fr_3fr] items-center gap-6 lg:gap-0 px-4 sm:px-6 py-8 lg:py-0 lg:min-h-[480px]">
+        {/* Text — 40% */}
+        <div className="relative z-10 lg:pr-10 order-2 lg:order-1">
+          <div className="text-xs uppercase tracking-[0.22em] text-hero-ink-muted">Featured prompt</div>
+          <div key={current.slug} className="page-fade">
+            <h2 className="mt-3 text-2xl sm:text-4xl lg:text-5xl font-semibold tracking-tight leading-tight text-hero-ink line-clamp-3">
+              {current.title}
+            </h2>
+            {current.description && (
+              <p className="mt-4 text-sm sm:text-base leading-relaxed text-hero-ink-muted line-clamp-3 max-w-lg">
+                {current.description}
+              </p>
+            )}
+          </div>
+          <Link
+            to="/prompts/$slug"
+            params={{ slug: current.slug }}
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-hero-ink text-background px-5 py-2.5 text-sm font-medium transition hover:opacity-90"
+          >
+            Use this prompt <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        {/* Media — 60% */}
+        <div className="relative order-1 lg:order-2 aspect-video w-full overflow-hidden lg:rounded-none rounded-xl">
           {items.map((item, idx) => {
-            const src = promptThumb(item.image_url);
+            const { video, image } = mediaFor(item);
             const active = idx === index;
             return (
               <div
                 key={item.slug}
                 aria-hidden={!active}
-                className={`absolute inset-0 flex items-center justify-center transition-all duration-700 ease-out ${
-                  active ? "opacity-100 scale-100" : "opacity-0 scale-[1.03] pointer-events-none"
-                }`}
+                className={`absolute inset-0 transition-opacity duration-1000 ease-out ${active ? "opacity-100" : "opacity-0"}`}
               >
-                {isVideoSrc(src) ? (
-                  <video
-                    src={src}
-                    controls
-                    playsInline
-                    muted
-                    className="h-full w-full object-contain"
-                  />
+                {video ? (
+                  <HeroVideo src={video} poster={promptThumb(image)} active={active} />
                 ) : (
                   <img
-                    src={src}
-                    alt={item.title}
-                    loading={active ? "eager" : "lazy"}
-                    className="h-full w-full object-contain"
+                    src={image}
+                    alt={item.image_alt || item.title}
+                    loading={idx === 0 ? "eager" : "lazy"}
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                 )}
               </div>
             );
           })}
-
-          {count > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={() => go(-1)}
-                aria-label="Previous showcase item"
-                className="absolute left-3 top-1/2 -translate-y-1/2 inline-flex w-10 h-10 items-center justify-center rounded-full border border-border bg-background/80 backdrop-blur hover:bg-background hover:scale-110 active:scale-95 transition-all duration-300"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => go(1)}
-                aria-label="Next showcase item"
-                className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex w-10 h-10 items-center justify-center rounded-full border border-border bg-background/80 backdrop-blur hover:bg-background hover:scale-110 active:scale-95 transition-all duration-300"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </>
-          )}
-        </div>
-
-        <div className="flex items-center justify-between gap-4 flex-wrap border-t border-border/60 px-5 py-4">
-          <div className="min-w-0">
-            <div className="text-xs uppercase tracking-[0.18em] text-accent">Showcase</div>
-            <Link
-              to="/prompts/$slug"
-              params={{ slug: current.slug }}
-              className="font-medium hover:underline truncate block transition-colors"
-            >
-              {current.title}
-            </Link>
-          </div>
-          <div className="flex items-center gap-1.5">
-            {items.map((p, idx) => (
-              <button
-                key={p.slug}
-                type="button"
-                onClick={() => setI(idx)}
-                aria-label={`Show item ${idx + 1}`}
-                className={`h-1.5 rounded-full transition-all duration-500 ${
-                  idx === index ? "w-6 bg-accent" : "w-1.5 bg-muted-foreground/40 hover:bg-muted-foreground/70"
-                }`}
-              />
-            ))}
-          </div>
+          {/* Soft blend into the gradient on the left edge */}
+          <div aria-hidden className="hidden lg:block absolute inset-y-0 left-0 w-24 pointer-events-none" style={{ backgroundImage: "linear-gradient(90deg, oklch(0.2 0 0 / 0.6), transparent)" }} />
         </div>
       </div>
     </section>
